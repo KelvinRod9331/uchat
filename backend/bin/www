@@ -41,13 +41,15 @@ io.on('connection', socket => {
     clientInfo.customId = data.customId;
     clientInfo.clientId = socket.id;
     clients.push(clientInfo);
+
+    console.log(clients)
 });
   
   socket.on('chat', (data) => {
     console.log("Socket Chat Data", data)
     googleTranslate.translate(data.messages, "es", function(err, translation) {
       io.sockets.emit('chat', {
-        handle: data.handle,
+        user: data.user,
         messages: translation.translatedText
       });
     });

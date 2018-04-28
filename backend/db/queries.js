@@ -116,6 +116,17 @@ const updateUserInfo = (userInfo, callback) => {
       })
   }
 
+const storeThreads = (req, res, next) => {
+    db
+    
+    
+}
+
+const storeMessages = (req, res, next) => {
+    db
+    
+}
+
   module.exports = {
       registerUser,
       getSingleUser,

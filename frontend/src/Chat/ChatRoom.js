@@ -16,13 +16,13 @@ class ChatRoom extends Component {
 
   getUser = () => {
     axios.get("/singleUser").then(res => {
-      console.log(res.data.data)
+      console.log(res.data.data);
       this.setState({
         userInfo: res.data.data[0]
-      })
-        socket.emit("storeClientInfo", { 
-          customId: res.data.data[0].id 
-        });
+      });
+      socket.emit("storeClientInfo", {
+        customId: res.data.data[0].id
+      });
     });
   };
 
@@ -34,10 +34,10 @@ class ChatRoom extends Component {
 
   // method for emitting a socket.io event
   sendMessages = () => {
-    const { messageValue, handleValue, userInfo } = this.state;
+    const { messageValue, userInfo } = this.state;
     socket.emit("chat", {
       messages: messageValue,
-      handle: userInfo.username
+      user: userInfo.username
     });
 
     this.setState({
@@ -45,12 +45,12 @@ class ChatRoom extends Component {
     });
   };
 
-  componentDidMount(){
-    this.getUser()
+  componentDidMount() {
+    this.getUser();
   }
 
   render() {
-    const { messageValue, handleValue, dataOutput, userInfo } = this.state;
+    const { messageValue, dataOutput, userInfo } = this.state;
 
     socket.on("chat", data => {
       this.setState({
@@ -70,7 +70,7 @@ class ChatRoom extends Component {
         <div>
           <div className="username-header">
             {" "}
-            <h2> Username Header</h2>
+            <h2>{userInfo.username}</h2>
           </div>
           <div
             className="message-container"
@@ -84,10 +84,9 @@ class ChatRoom extends Component {
             {dataOutput.map(e => {
               return (
                 <div>
-                  <span>
-                    <h3>{e.handle}:</h3>
-                  </span>
-                  <span>{e.messages}</span>
+                  <p>
+                    {e.user}: {e.messages}
+                  </p>
                 </div>
               );
             })}
