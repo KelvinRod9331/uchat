@@ -53,7 +53,6 @@ export default class Registration extends Component {
       fullNameInput,
       usernameInput,
       passwordInput,
-      zipcodeInput
     } = this.props;
 
 

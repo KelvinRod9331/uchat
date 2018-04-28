@@ -69,8 +69,7 @@ export default class Login extends Component {
       usernameInput,
       passwordInput,
       message,
-      loggedIn,
-      user
+      loggedIn
     } = this.state;
     // eslint-disable-next-line
     const { submitForm } = this;
