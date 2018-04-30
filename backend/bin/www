@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
 var socket = require('socket.io');
+var P2P = require('socket.io-p2p');
 var googleTranslate = require("google-translate")(
   "AIzaSyAs8uMskaW00-Omo8HOr8nICE7ZEkGnRfE"
 );
