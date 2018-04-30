@@ -9,7 +9,6 @@ class ChatRoom extends Component {
     this.state = {
       userInfo: {},
       messageValue: "",
-      handleValue: "",
       dataOutput: []
     };
   }
@@ -57,33 +56,29 @@ class ChatRoom extends Component {
         dataOutput: [...dataOutput, data]
       });
     });
+
+ 
     return (
-      <div
-        className="chatroom-container"
-        style={{
-          width: "50%",
-          height: "580px",
-          border: " 2px solid blue",
-          marginLeft: "25%"
-        }}
-      >
+      <div className="chatroom-container">
         <div>
           <div className="username-header">
             {" "}
-            <h2>{userInfo.username}</h2>
+            <h4>{userInfo.username}</h4>
           </div>
-          <div
-            className="message-container"
-            style={{
-              width: "100%",
-              height: "400px",
-              border: " 2px solid blue",
-              marginTop: "10%"
-            }}
-          >
-            {dataOutput.map(e => {
+          <div className="message-container">
+            {dataOutput.map((e, i )=> {
               return (
-                <div>
+                <div
+                style ={
+                {
+                  float: i % 2 === 0 ? 'left' : 'right',
+                  border: '1px solid black',
+                  position: 'static',
+                  top: '0'
+                }
+
+                }
+                >
                   <p>
                     {e.user}: {e.messages}
                   </p>
@@ -92,24 +87,17 @@ class ChatRoom extends Component {
             })}
           </div>
         </div>
-        <input
-          type="text"
-          className="input-message"
-          value={userInfo.username}
-          name={"handleValue"}
-          placeholder="Handle"
-          onChange={this.handleInput}
-        />
-
-        <input
-          type="text"
-          className="input-message"
-          value={messageValue}
-          name={"messageValue"}
-          onChange={this.handleInput}
-          placeholder="Send Message"
-        />
-        <button onClick={this.sendMessages}>Send</button>
+        <div className='message-form'>
+          <input
+            type="text"
+            className="input-message"
+            value={messageValue}
+            name={"messageValue"}
+            onChange={this.handleInput}
+            placeholder="Send Message"
+          />
+          <button onClick={this.sendMessages}>Send</button>
+        </div>
       </div>
     );
   }
