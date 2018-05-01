@@ -2,6 +2,14 @@ import React, { Component } from "react";
 // import "./Form.css";
 import { Link , Redirect } from "react-router-dom";
 import axios from 'axios'
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  HelpBlock,
+  DropdownButton,
+  MenuItem
+} from "react-bootstrap";
 
 
 export default class Registration extends Component {
@@ -13,7 +21,9 @@ export default class Registration extends Component {
     confirmInput: "",
     message: "",
     registered: false,
-    alert: false
+    alert: false,
+    languages: [],
+    lanSelected: ''
   };
 
   handleUsernameChange = e => {
@@ -46,32 +56,44 @@ export default class Registration extends Component {
     });
   };
 
+  handleLanguageSelector = e => {
+    this.setState({
+      lanSelected: e.target.value
+    })
+  }
+
   
-  submitForm = () => {
+  submitForm = (e) => {
+   e.preventDefault()
     const {
       emailInput,
       fullNameInput,
       usernameInput,
       passwordInput,
-    } = this.props;
+      confirmInput,
+      message,
+      registered,
+      lanSelected,
+    } = this.state;
 
+    console.log("Languages Selected",lanSelected)
 
     axios
-      .post("/signup", {
+      .post("/register", {
         username: usernameInput,
         password: passwordInput,
         email: emailInput,
-        fullname: fullNameInput
+        fullname: fullNameInput,
+        language: lanSelected
       })
       .then(res => {
         console.log(res.data);
         this.setState({
           registered: true,
-          usernameInput: "",
-          passwordInput: "",
           confirmInput: "",
           submitted: true,
           emailInput: "",
+          lanSelected: '',
           message: `Welcome to the site ${this.state.usernameInput}`
         });
       })
@@ -82,10 +104,23 @@ export default class Registration extends Component {
           passwordInput: "",
           confirmInput: "",
           emailInput: "",
+          fullNameInput: '',
+          lanSelected: '',
           message: "Error inserting user"
         });
       });
   };
+
+  componentDidMount(){
+    axios
+    .get('/lang')
+    .then(res => {
+      this.setState({
+        languages: res.data.languages
+      })
+    })
+    .catch(err => console.log('Couldnt Fetch Languages:', err))
+  }
 
   render() {
     const {
@@ -95,7 +130,9 @@ export default class Registration extends Component {
       passwordInput,
       confirmInput,
       message,
-      registered
+      registered,
+      languages,
+      lanSelected
     } = this.state;
 
     const {
@@ -105,8 +142,28 @@ export default class Registration extends Component {
       handleUsernameChange
     } = this;
 
-    if (registered) {
-        return <Redirect to="" />;
+      if (registered) {
+        axios
+        .post('/login', {
+          username: usernameInput,
+          password: passwordInput
+        })
+        .then(res => {
+          this.setState({
+            registered: false,
+            usernameInput: '',
+            passwordInput: ''
+          });
+        })
+        .catch(err => {
+          this.setState({
+            message: 'username/password not found',
+            registered: false
+          });
+        });
+
+        return <Redirect to='/dashboard' />
+        
       }
 
     return (
@@ -172,6 +229,22 @@ export default class Registration extends Component {
                     type="submit"
                     value="Sign Up"
                   />
+
+                  <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  bsClass="formControlsSelect"
+                  onChange={this.handleLanguageSelector}
+                  
+                >
+                  {languages.map((lan, i) => {
+                    return (
+                      <option key={i} value={lan.abbreviation}>
+                        {lan.name}
+                      </option>
+                    );
+                  })}
+                </FormControl>
                   <p>{message}</p>
                   <p id="question">
                     Have an account? <Link to="/login">Log In</Link>

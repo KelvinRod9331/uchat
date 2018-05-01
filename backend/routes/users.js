@@ -3,8 +3,11 @@ var express = require("express");
 var router = express.Router();
 const { loginRequired } = require("../auth/helpers");
 
-router.get("/singleUser", db.getSingleUser);
+router.get("/singleUser",loginRequired, db.getSingleUser);
 router.get("/allUsers", db.getAllUsers);
+router.get("/logout", db.logoutUser)
+router.get("/lang", db.getLanguages)
+router.get("/contacts", loginRequired, db.getUsersContacts)
 router.get("/logout", db.logoutUser)
 
 router.post("/register", db.registerUser);

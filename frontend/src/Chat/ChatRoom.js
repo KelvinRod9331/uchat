@@ -36,7 +36,8 @@ class ChatRoom extends Component {
     const { messageValue, userInfo } = this.state;
     socket.emit("chat", {
       messages: messageValue,
-      user: userInfo.username
+      user: userInfo.username,
+      language: userInfo.language
     });
 
     this.setState({
