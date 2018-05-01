@@ -116,6 +116,42 @@ const updateUserInfo = (userInfo, callback) => {
       })
   }
 
+
+  const getLanguages = (req, res, next) => {
+    db
+    .any('select * from languages')
+    .then(data => {
+      res.status(200).json({
+        status: 'Successful',
+        languages: data,
+        message: 'Fetched All Langauges'
+      })
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+
+  }
+
+  const getUsersContacts = (req, res, next) => {
+    db
+    .any('SELECT contact_id, username, language, profile_pic, full_name FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id}', req.user)
+    .then(data => {
+      res.status(200).json({
+        status: 'Successful',
+        contacts: data,
+        message: 'Fetched User\'s Contacts'
+      })
+    })
+    .catch(function(err) {
+      return next(err);
+    }); 
+  }
+
+  const addContacts = (req, res, next) => {
+
+  }
+
 const storeThreads = (req, res, next) => {
     db
     
@@ -134,5 +170,7 @@ const storeMessages = (req, res, next) => {
       logoutUser,
       getAllUsers,
       updateUserInfo,
-      changeProfilePic
+      changeProfilePic,
+      getLanguages,
+      getUsersContacts
   }

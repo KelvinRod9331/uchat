@@ -7,10 +7,10 @@ class Home extends React.Component {
     state = { user: undefined }
     getUser = () => {
         axios
-        .get('')
+        .get('/singleUser')
         .then(res => {
             this.setState({
-                user: res.data.user.username
+                user: res.data.data[0].username
             })
         }).catch(err => {
             this.setState({
@@ -23,10 +23,9 @@ class Home extends React.Component {
     }
     render() {
         const { user } = this.state
-       
         if (user) {
             console.log('User detected')
-            return <Redirect to='' />
+            return <Redirect to='/dashboard' />
         } else if (user === null) {
             return <Redirect to='/login' />
         }

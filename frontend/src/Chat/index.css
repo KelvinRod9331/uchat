@@ -1,45 +1,54 @@
-.dashboard-container{
-    border: 2px solid black;
-    width: 150vh;
-    height: 80vh;
-    margin: 5% 0 0 8%;
+.dashboard-container {
+  border: 2px solid black;
+  width: 150vh;
+  height: 80vh;
+  margin: 5% 0 0 8%;
 }
 
-.component-container{
-    /* border: 2px solid black; */
+.component-container {
+  /* border: 2px solid black; */
+  width: auto;
+  height: 10vh;
+}
+
+.component-box {
+  width: 241px;
+  height: 10vh;
+  border-right: 1px solid grey;
+  border-bottom: 1px solid grey;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.display-container {
+  width: auto;
+  height: 87%;
+}
+
+.chatroom-container {
+  width: 150vh;
+  height: 86%;
+}
+
+.message-container {
+  width: 150vh;
+  height: 256px;
+  overflow-y: auto;
+}
+
+.message-form {
+  position: relative;
+  bottom: 0px;
+}
+
+.contactlist-container {
+  width: auto;
+  height: 87%;
+}
+
+.contacts-container{
     width: auto;
-    height: 10vh;
-}
-
-.component-box{
-    width: 241px;
-    height: 10vh;
-    border-right: 1px solid grey;
-    border-bottom: 1px solid grey;
-    display: inline-block;
+    height: 10vh; 
     cursor: pointer;
-}
-
-
-.display-container{
-    width: auto;
-    height: 87%;
-   
-}
-
-
-.chatroom-container{
-    width: 150vh;
-    height: 86%;
-}
-
-.message-container{
-    width: 150vh;
-    height: 256px;
-    overflow-y: auto;
-}
-
-.message-form{
-position: relative;
-bottom: 0px;
+    border: 1px solid black
 }
