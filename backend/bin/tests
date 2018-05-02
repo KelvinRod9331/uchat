@@ -1,0 +1,20 @@
+To send to a specific user
+
+let sender = data.username;
+    console.log('Sender', data)
+    let userCID = [];
+    if (sender === "Aang") {
+      userCID = clients.filter(c => {
+        if (c.username === "Zero") {
+          return c;
+        }
+      });
+    } else if (sender === "Zero")
+      userCID = clients.filter(c => {
+        if (c.username === "Aang") {
+          return c;
+        }
+      });
+      console.log('UserID', userCID)
+
+      

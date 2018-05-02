@@ -6,14 +6,16 @@ import "./index.css";
 import ChatRoom from "./ChatRoom";
 import Contacts from "./Contacts";
 
-var loggedIn = false
+var loggedIn = false;
 
 class Dashboard extends Component {
   constructor() {
     super();
-    
+
     this.state = {
-      selected: "chats"
+      selected: "chats",
+      userInfo: [],
+      threads: []
     };
   }
 
@@ -21,66 +23,80 @@ class Dashboard extends Component {
     axios
       .get("/singleUser")
       .then(res => {
-       loggedIn = true
+        this.setState({
+          userInfo: res.data.data[0]
+        });
+        loggedIn = true;
       })
       .catch(err => {
-        loggedIn = false
+        loggedIn = false;
       });
   };
 
-
+  fetchUserThreads = () => {
+    axios
+      .get("/threads")
+      .then(res => {
+        this.setState({
+          threads: res.data.threads
+        });
+      })
+      .catch(err => console.log("Error:", err));
+  };
 
   handleSelection = e => {
     this.setState({ selected: e.target.id });
   };
 
   displayWindow = () => {
-    const { selected } = this.state;
-
+    const { selected, userInfo, threads } = this.state;
     switch (selected) {
       case "chats":
-        return <ChatRoom />;
+        return <ChatRoom threads={threads} />;
       case "contacts":
-        return <Contacts />;
+        return <Contacts userInfo={userInfo} />;
       default:
         return "";
     }
   };
 
-  componentWillMount(){
-      this.userLoggedIn()
+  componentDidMount() {
+    this.userLoggedIn();
+    this.fetchUserThreads();
   }
 
-
   render() {
-    const { handleSelection, displayWindow, userLoggedIn} = this;
-    if(loggedIn){
-        return (
-          <Grid bsClass="dashboard-container">
-            <Row bsClass="component-container">
-              <div className="component-box" id="chats" onClick={handleSelection}>
-                <p id="chats">Chats</p>
-              </div>
-              <div
-                className="component-box"
-                id="contacts"
-                onClick={handleSelection}
-              >
-                <p id="contacts">Contacts</p>
-              </div>
-              <div className="component-box" id="status" onClick={handleSelection}>
-                <p id="status">Status </p>
-              </div>
-            </Row>
-            <Row bsClass="display-container">
-              <div className="display-box">{displayWindow()}</div>
-            </Row>
-          </Grid>
-        );  
-    }else{
-        return <Redirect to='/' />
+    const { handleSelection, displayWindow, userLoggedIn } = this;
+    if (loggedIn) {
+      return (
+        <Grid bsClass="dashboard-container">
+          <Row bsClass="component-container">
+            <div className="component-box" id="chats" onClick={handleSelection}>
+              <p id="chats">Chats</p>
+            </div>
+            <div
+              className="component-box"
+              id="contacts"
+              onClick={handleSelection}
+            >
+              <p id="contacts">Contacts</p>
+            </div>
+            <div
+              className="component-box"
+              id="status"
+              onClick={handleSelection}
+            >
+              <p id="status">Status </p>
+            </div>
+          </Row>
+          <Row bsClass="display-container">
+            <div className="display-box">{displayWindow()}</div>
+          </Row>
+        </Grid>
+      );
+    } else {
+      return <Redirect to="/" />;
     }
-
   }
 }
 

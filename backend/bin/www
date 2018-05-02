@@ -4,10 +4,10 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('backend:server');
-var http = require('http');
-var socket = require('socket.io');
+var app = require("../app");
+var debug = require("debug")("backend:server");
+var http = require("http");
+var socket = require("socket.io");
 
 var googleTranslate = require("google-translate")(
   "AIzaSyAs8uMskaW00-Omo8HOr8nICE7ZEkGnRfE"
@@ -17,8 +17,8 @@ var googleTranslate = require("google-translate")(
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3100');
-app.set('port', port);
+var port = normalizePort(process.env.PORT || "3100");
+app.set("port", port);
 
 /**
  * Create HTTP server.
@@ -26,57 +26,76 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-
 /**
  * Setting Up Socket
  */
-var io = socket(server)
-var clients =[];
+var io = socket(server);
+var clients = [];
 
-io.on('connection', socket => {
-  console.log('User connected', socket.id)
+io.on("connection", socket => {
+  console.log("User connected", socket.id);
 
-  socket.on('storeClientInfo', (data) => {
-    console.log("Socket Client Data", data)
+  socket.on("storeClientInfo", data => {
+    console.log("Socket Client Data", data);
     var clientInfo = new Object();
-    clientInfo.customId = data.customId;
-    clientInfo.clientId = socket.id;
+    clientInfo.username = data.username;
+    clientInfo.userId = data.userId;
+    clientInfo.connectionId = socket.id;
+    clientInfo.language = data.language;
     clients.push(clientInfo);
 
-    console.log(clients)
-});
-  
-  socket.on('chat', (data) => {
-    console.log("Socket Chat Data", data)
-    googleTranslate.translate(data.messages, data.language, function(err, translation) {
-      io.sockets.emit('chat', {
-        user: data.user,
-        messages: translation.translatedText
+    console.log(clients);
+  });
+
+  socket.on("chat", data => {
+    console.log('Chat Data', data)
+    if (data.user_id === data.sender_id) {
+      let user = clients.find(u => u.userId === data.receiver_id);
+      console.log('Backend User', user)
+      googleTranslate.translate(data.messages, user.language, function(
+        err,
+        translation
+      ) {
+        socket.broadcast.to(user.connectionId).emit("chat", {
+          username: data.username,
+          messages: translation.translatedText
+        });
       });
-    });
-  })
+    } else if (data.user_id === data.receiver_id){
+      let user = clients.find(u => u.userId === data.sender_id);
+      console.log('Backend User', user)
+      googleTranslate.translate(data.messages, user.language, function(
+        err,
+        translation
+      ) {
+        socket.broadcast.to(user.connectionId).emit("chat", {
+          username: data.username,
+          messages: translation.translatedText
+        });
+      });
+    }
+  });
 
-  socket.on('disconnect', (data) => {
-
-    for( var i=0, len=clients.length; i<len; ++i ){
+  socket.on("disconnect", data => {
+    for (var i = 0, len = clients.length; i < len; ++i) {
       var c = clients[i];
 
-      if(c.clientId == socket.id){
-          clients.splice(i,1);
-          break;
+      if (c.clientId == socket.id) {
+        clients.splice(i, 1);
+        break;
       }
-  }
-    console.log('user disconnected', socket.id)
-  })
-})
+    }
+    console.log("user disconnected", socket.id);
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+server.on("error", onError);
+server.on("listening", onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -103,22 +122,20 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
+  if (error.syscall !== "listen") {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
       process.exit(1);
       break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
       process.exit(1);
       break;
     default:
@@ -132,8 +149,6 @@ function onError(error) {
 
 function onListening() {
   var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  debug("Listening on " + bind);
 }

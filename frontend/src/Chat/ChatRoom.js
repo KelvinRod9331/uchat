@@ -9,7 +9,8 @@ class ChatRoom extends Component {
     this.state = {
       userInfo: {},
       messageValue: "",
-      dataOutput: []
+      dataOutput: [],
+      errMessage: ''
     };
   }
 
@@ -20,7 +21,9 @@ class ChatRoom extends Component {
         userInfo: res.data.data[0]
       });
       socket.emit("storeClientInfo", {
-        customId: res.data.data[0].id
+        userId: res.data.data[0].id,
+        username: res.data.data[0].username,
+        language: res.data.data[0].language
       });
     });
   };
@@ -34,30 +37,70 @@ class ChatRoom extends Component {
   // method for emitting a socket.io event
   sendMessages = () => {
     const { messageValue, userInfo } = this.state;
-    socket.emit("chat", {
-      messages: messageValue,
-      user: userInfo.username,
-      language: userInfo.language
-    });
-
-    this.setState({
-      messageValue: ""
-    });
+    const {threads} = this.props
+    
+    axios
+    .post("/messages",{
+      thread_id: threads[0].id,
+      sender_id: userInfo.id,
+      receiver_id: threads[0].user_two,
+      sender_body: threads[0].user_one === userInfo.id ? messageValue : '',
+      receiver_body: threads[0].user_two === userInfo.id ? messageValue : '',
+      date_sent: 'no time',
+      isread: 'false'
+    })
+    .then(res => {
+      socket.emit("chat", {
+        messages: messageValue,
+        username: userInfo.username,
+        user_id: userInfo.id,
+        sender_id: threads[0].user_one,
+        receiver_id: threads[0].user_two,
+        language: userInfo.language
+      });
+      this.setState({
+        messageValue: ""
+      });
+    })
+    .catch(err => {
+      errMessage: "Could Not Send Message"
+    })
   };
+
+
+  fetchConversation = () => {
+    const {threads} = this.props
+    
+    const { dataOutput} = this.state;
+    axios
+    .get(`/messages/1`)
+    .then(res => {
+      console.log('res', res.data.messages)
+      this.setState({
+        dataOutput: res.data.messages
+      });
+    })
+    .catch(err => console.log('err', err))
+  }
 
   componentDidMount() {
     this.getUser();
+    // this.fetchConversation()
   }
+
 
   render() {
     const { messageValue, dataOutput, userInfo } = this.state;
 
     socket.on("chat", data => {
+      console.log("ChatRomm Data:", data)
       this.setState({
         dataOutput: [...dataOutput, data]
       });
     });
 
+    console.log("ChatRoom Data Output", dataOutput)
+    
  
     return (
       <div className="chatroom-container">
@@ -68,23 +111,26 @@ class ChatRoom extends Component {
           </div>
           <div className="message-container">
             {dataOutput.map((e, i )=> {
-              return (
-                <div
-                style ={
-                {
-                  float: i % 2 === 0 ? 'left' : 'right',
-                  border: '1px solid black',
-                  position: 'static',
-                  top: '0'
-                }
+              if(e.sender_body){
+                return (
+                  <div
+                  style ={
+                  {
+                    float: i % 2 === 0 ? 'left' : 'right',
+                    border: '1px solid black',
+                    position: 'static',
+                    top: '0'
+                  }
+  
+                  }
+                  >
+                    <p>
+                      {e.username}: {e.sender_body}
+                    </p>
+                  </div>
+                );
 
-                }
-                >
-                  <p>
-                    {e.user}: {e.messages}
-                  </p>
-                </div>
-              );
+              }
             })}
           </div>
         </div>

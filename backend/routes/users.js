@@ -9,9 +9,13 @@ router.get("/logout", db.logoutUser)
 router.get("/lang", db.getLanguages)
 router.get("/contacts", loginRequired, db.getUsersContacts)
 router.get("/logout", db.logoutUser)
+router.get("/messages/:threadId", loginRequired, db.fetchAllMessages)
+router.get("/threads", loginRequired, db.fetchedThreads)
 
 router.post("/register", db.registerUser);
 router.post("/login", db.loginUser);
+router.post("/newThread",loginRequired, db.createThread)
+router.post("/messages", loginRequired, db.storeMessages)
 
 router.patch("/changeProfilePic", loginRequired, db.changeProfilePic);
 router.patch("/updateUser", loginRequired, db.updateUserInfo);

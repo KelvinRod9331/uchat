@@ -28,9 +28,10 @@ CREATE TABLE threads (
 CREATE TABLE messages (
     ID SERIAL PRIMARY KEY,
     thread_ID INTEGER REFERENCES threads,
-    sender VARCHAR,
-    receiver VARCHAR,
-    body VARCHAR,
+    sender_id INTEGER REFERENCES users,
+    receiver_id INTEGER REFERENCES users,
+    sender_body VARCHAR,
+    receiver_body VARCHAR,
     date_sent VARCHAR,
     isread BOOLEAN
 );
@@ -67,14 +68,6 @@ VALUES
 ('6','4'),
 ('6','3');
 
-INSERT INTO  threads (user_one,user_two)
-VALUES
-('1','2'),
-('2','3'),
-('3','1'),
-('4','1');
-
--- INSERT INTO messages (thread_ID,sender,receiver,body,date_sent,isread)
 
 INSERT INTO languages(abbreviation, name)
 VALUES
