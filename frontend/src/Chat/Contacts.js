@@ -53,7 +53,7 @@ export default class Contacts extends Component {
       this.setState({
         threadCreated: false
       });
-      return <Redirect to="/chat" />;
+      return <Redirect to="/dashboard" />;
     }
     return (
       <div className="contactlist-container">

@@ -43,7 +43,7 @@ class ChatRoom extends Component {
     .post("/messages",{
       thread_id: threads[0].id,
       sender_id: userInfo.id,
-      receiver_id: threads[0].user_two,
+      receiver_id: userInfo.id === threads[0].user_two? threads[0].user_one : threads[0].user_two,
       sender_body: threads[0].user_one === userInfo.id ? messageValue : '',
       receiver_body: threads[0].user_two === userInfo.id ? messageValue : '',
       date_sent: 'no time',
@@ -94,6 +94,7 @@ class ChatRoom extends Component {
 
     socket.on("chat", data => {
       console.log("ChatRomm Data:", data)
+      
       this.setState({
         dataOutput: [...dataOutput, data]
       });
@@ -111,7 +112,6 @@ class ChatRoom extends Component {
           </div>
           <div className="message-container">
             {dataOutput.map((e, i )=> {
-              if(e.sender_body){
                 return (
                   <div
                   style ={
@@ -125,12 +125,10 @@ class ChatRoom extends Component {
                   }
                   >
                     <p>
-                      {e.username}: {e.sender_body}
+                      {e.username}: {e.messages}
                     </p>
                   </div>
                 );
-
-              }
             })}
           </div>
         </div>
