@@ -8,9 +8,10 @@ var app = require("../app");
 var debug = require("debug")("backend:server");
 var http = require("http");
 var socket = require("socket.io");
+var APIKey = require('../config')
 
 var googleTranslate = require("google-translate")(
-  "AIzaSyAs8uMskaW00-Omo8HOr8nICE7ZEkGnRfE"
+  APIKey.keys.googleTranslate
 );
 
 /**

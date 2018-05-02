@@ -94,7 +94,6 @@ class ChatRoom extends Component {
 
     socket.on("chat", data => {
       console.log("ChatRomm Data:", data)
-      
       this.setState({
         dataOutput: [...dataOutput, data]
       });
@@ -129,6 +128,7 @@ class ChatRoom extends Component {
                     </p>
                   </div>
                 );
+
             })}
           </div>
         </div>
