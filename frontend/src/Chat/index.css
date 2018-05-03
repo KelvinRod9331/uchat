@@ -1,18 +1,28 @@
 .dashboard-container {
   border: 2px solid black;
-  width: 150vh;
-  height: 80vh;
-  margin: 5% 0 0 8%;
+  width: 167vh;
+  height: 90vh;
+  margin: 2% 0 0 2.5%;
+}
+
+/* .dashboard-container:first-child{
+position: absolute;
+background-color: yellow;
+} */
+
+.dashboard-container > div {
+  position: absolute;
 }
 
 .component-container {
   /* border: 2px solid black; */
-  width: auto;
+  width: 80vh;
   height: 10vh;
+  background-color: aqua;
 }
 
 .component-box {
-  width: 241px;
+  width: 26.5vh;
   height: 10vh;
   border-right: 1px solid grey;
   border-bottom: 1px solid grey;
@@ -21,18 +31,25 @@
 }
 
 .display-container {
-  width: auto;
+  width: 80vh;
   height: 87%;
+  position: absolute;
 }
 
 .chatroom-container {
   width: 150vh;
   height: 86%;
+  position: absolute;
+}
+
+.chatroom-container > div{
+  margin-left: 25.8%;
+  width: 87vh;
 }
 
 .message-container {
-  width: 150vh;
-  height: 256px;
+  width: 87vh;
+  height: 79vh;
   overflow-y: auto;
 }
 
@@ -46,9 +63,32 @@
   height: 87%;
 }
 
-.contacts-container{
-    width: auto;
-    height: 10vh; 
-    cursor: pointer;
-    border: 1px solid black
+.contacts-container {
+  /* width: auto; */
+  height: 10vh;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+.threads-container {
+  position: absolute;
+  height: 80vh;
+  width: 80vh;
+  overflow: auto;
+}
+
+.individual-thread {
+  /* width: ; */
+  height: 10vh;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+.column-components {
+  position: absolute;
+}
+
+.chatroom-container {
+  position: absolute;
+  margin-left: 300px;
 }

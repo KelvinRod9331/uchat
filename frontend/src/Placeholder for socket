@@ -46,3 +46,50 @@ class App extends Component {
 }
 
 export default App
+
+
+
+if (size) {
+      return (
+        <div className="chatroom-container">
+          <div>
+            <div className="username-header">
+              {" "}
+              <h4>{thread.username}</h4>
+            </div>
+            <div className="message-container">
+              {dataOutput.map((e, i) => {
+                return (
+                  <div
+                    style={{
+                      float: i % 2 === 0 ? "left" : "right",
+                      border: "1px solid black",
+                      position: "static",
+                      top: "0"
+                    }}
+                  >
+                    <p>
+                      {e.username}: {e.messages}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="message-form">
+            <input
+              type="text"
+              className="input-message"
+              value={messageValue}
+              name={"messageValue"}
+              onChange={this.handleInput}
+              placeholder="Send Message"
+            />
+            <button onClick={this.sendMessages}>Send</button>
+          </div>
+        </div>
+      );
+    } else {
+      return <div>Hello</div>;
+    }
+  }
