@@ -93,3 +93,33 @@ if (size) {
       return <div>Hello</div>;
     }
   }
+
+  SELECT threads.id, user_one, user_two, username,full_name, language, profile_pic FROM threads RIGHT JOIN users ON users.id = user_one OR users.id = user_two WHERE user_one=6 AND user_two = 4
+
+//For the Backend on WWW.js
+  if (data.user_id === data.sender_id) {
+      let user = clients.find(u => u.userId === data.receiver_id);
+      console.log('Backend User', user)
+      googleTranslate.translate(data.messages, user.language, function(
+        err,
+        translation
+      ) {
+        socket.broadcast.to(user.connectionId).emit("chat", {
+          username: data.username,
+          messages: translation.translatedText
+        });
+      });
+    } 
+  else if (data.user_id === data.receiver_id){
+      let user = clients.find(u => u.userId === data.sender_id);
+      console.log('Backend User', user)
+      googleTranslate.translate(data.messages, user.language, function(
+        err,
+        translation
+      ) {
+        socket.broadcast.to(user.connectionId).emit("chat", {
+          username: data.username,
+          messages: translation.translatedText
+        });
+      });
+    }

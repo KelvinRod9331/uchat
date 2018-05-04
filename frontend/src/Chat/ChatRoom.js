@@ -43,10 +43,7 @@ class ChatRoom extends Component {
       .post("/messages", {
         thread_id: thread.id,
         sender_id: userInfo.id,
-        receiver_id:
-          userInfo.id === thread.user_two
-            ? thread.user_one
-            : thread.user_two,
+        receiver_id: userInfo.id === thread.user_two ? thread.user_one : thread.user_two,
         sender_body: thread.user_one === userInfo.id ? messageValue : "",
         receiver_body: thread.user_two === userInfo.id ? messageValue : "",
         date_sent: "no time",
@@ -57,8 +54,8 @@ class ChatRoom extends Component {
           messages: messageValue,
           username: userInfo.username,
           user_id: userInfo.id,
-          sender_id: thread.user_one,
-          receiver_id: thread.user_two,
+          sender_id: userInfo.id === thread.user_two ? thread.user_two : thread.user_one,
+          receiver_id: userInfo.id === thread.user_one ? thread.user_two : thread.user_one,
           language: userInfo.language
         });
         this.setState({
