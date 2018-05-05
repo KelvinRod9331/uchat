@@ -4,19 +4,19 @@ import axios from "axios";
 const socket = socketIOClient("http://localhost:3100");
 
 class ChatRoom extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       userInfo: {},
       messageValue: "",
       dataOutput: [],
-      errMessage: ""
+      errMessage: "",
+      id: ''
     };
   }
 
   getUser = () => {
     axios.get("/singleUser").then(res => {
-      console.log(res.data.data);
       this.setState({
         userInfo: res.data.data[0]
       });
@@ -39,108 +39,129 @@ class ChatRoom extends Component {
     const { messageValue, userInfo } = this.state;
     const { thread } = this.props;
 
-    axios
-      .post("/messages", {
-        thread_id: thread.id,
-        sender_id: userInfo.id,
-        receiver_id: userInfo.id === thread.user_two ? thread.user_one : thread.user_two,
-        sender_body: thread.user_one === userInfo.id ? messageValue : "",
-        receiver_body: thread.user_two === userInfo.id ? messageValue : "",
-        date_sent: "no time",
-        isread: "false"
-      })
-      .then(res => {
-        socket.emit("chat", {
-          messages: messageValue,
-          username: userInfo.username,
-          user_id: userInfo.id,
-          sender_id: userInfo.id === thread.user_two ? thread.user_two : thread.user_one,
-          receiver_id: userInfo.id === thread.user_one ? thread.user_two : thread.user_one,
-          language: userInfo.language
-        });
-        this.setState({
-          messageValue: ""
-        });
-      })
-      .catch(err => {
-        errMessage: "Could Not Send Message";
-      });
+    socket.emit("chat", {
+      messages: messageValue,
+      username: userInfo.username,
+      user_id: userInfo.id,
+      sender_id:
+        userInfo.id === thread.user_two ? thread.user_two : thread.user_one,
+      receiver_id:
+        userInfo.id === thread.user_one ? thread.user_two : thread.user_one,
+      language: userInfo.language
+    });
+
+    this.setState({
+      messageValue: ""
+    });
   };
 
-  fetchConversation = () => {
-    const { thread } = this.props;
-
-    const { dataOutput } = this.state;
-    axios
-      .get(`/messages/1`)
-      .then(res => {
-        console.log("res", res.data.messages);
-        this.setState({
-          dataOutput: res.data.messages
+  storeMessages = () => {
+    const { Conversation } = this.props;
+    
+    socket.on("chat", data => {
+      const {thread} = this.props
+      console.log(thread)
+      axios
+        .post("/messages", {
+          thread_id: thread.id,
+          sender_id: data.sender_id,
+          receiver_id: data.receiver_id,
+          sender_message: data.originalMessage,
+          receiver_message: data.translatedMessage,
+          date_sent: "no time",
+          isread: "false"
+        })
+        .then(() => {
+          Conversation();
+        })
+        .catch(err => {
+          errMessage: "Could Not Send Message";
         });
-      })
-      .catch(err => console.log("err", err));
+    });
   };
 
-  componentDidMount() {
+  componentWillMount() {
     this.getUser();
-    // this.fetchConversation()
+    this.storeMessages();
   }
 
   render() {
-    const { messageValue, dataOutput, userInfo } = this.state;
-    const { thread } = this.props;
+    const {
+      messageValue,
+      dataOutput,
+      userInfo,
+      id
+    } = this.state;
+    const { threadMessages, thread, Conversation } = this.props;
+
     var size = Object.keys(thread).length;
-    console.log("thread from Chatroom:", size);
 
-    socket.on("chat", data => {
-      console.log("ChatRomm Data:", data);
-      this.setState({
-        dataOutput: [...dataOutput, data]
-      });
-    });
+    var home = [], away = []
+      threadMessages.forEach(thread => {
+        if(userInfo.id === thread.sender_id){
+          home.push(thread)
+        }else if(userInfo.id === thread.receiver_id){
+          away.push(thread)
+        }
+      })
 
-    console.log("ChatRoom Data Output", dataOutput);
 
-    return (
-      <div className="chatroom-container">
-        <div>
-          <div className="username-header">
-            {" "}
-            <h4>{thread.username}</h4>
+      // console.log('thread', thread.id, 'Username', userInfo.username)
+    
+
+    if (size) {
+      return (
+        <div className="chatroom-container">
+          <div>
+            <div className="username-header">
+              {" "}
+              <h4>{userInfo.username === thread.username? userInfo.username:thread.username}</h4>
+            </div>
+            <div className="message-container">
+              <div
+                style={{
+                  float: "left"
+                }}
+              >
+                {away.map((e, i) => {
+                  return (
+                    <div>
+                      <p>{e.receiver_message}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <div
+                style={{
+                  float: "right"
+                }}
+              >
+                {home.map((e, i) => {
+                  return (
+                    <div>
+                      <p>{e.sender_message}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          <div className="message-container">
-            {dataOutput.map((e, i) => {
-              return (
-                <div
-                  style={{
-                    float: i % 2 === 0 ? "left" : "right",
-                    border: "1px solid black",
-                    position: "static",
-                    top: "0"
-                  }}
-                >
-                  <p>
-                    {e.username}: {e.messages}
-                  </p>
-                </div>
-              );
-            })}
+          <div className="message-form">
+            <input
+              type="text"
+              className="input-message"
+              value={messageValue}
+              name={"messageValue"}
+              onChange={this.handleInput}
+              placeholder="Send Message"
+            />
+            <button onClick={this.sendMessages}>Send</button>
           </div>
         </div>
-        <div className="message-form">
-          <input
-            type="text"
-            className="input-message"
-            value={messageValue}
-            name={"messageValue"}
-            onChange={this.handleInput}
-            placeholder="Send Message"
-          />
-          <button onClick={this.sendMessages}>Send</button>
-        </div>
-      </div>
-    );
+      );
+    } else {
+      return <div className="chatroom-container">Placeholder For Now</div>;
+    }
   }
 }
 

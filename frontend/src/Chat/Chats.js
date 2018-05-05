@@ -7,13 +7,13 @@ export default class Chats extends Component {
   constructor() {
     super();
     this.state = {
-      threadSelected: {}
+      threadSelected: {},
+      threadMessages: []
     };
   }
 
   openChatRoom = e => {
     const { usersThreads } = this.props;
-    console.log(e.target.id);
     let threadSelected = usersThreads.find(thread => {
       if (thread.id === Number(e.target.id)) {
         return thread;
@@ -21,17 +21,29 @@ export default class Chats extends Component {
     });
 
     this.setState({
-        threadSelected: threadSelected
-    })
+      threadSelected: threadSelected
+    }, () => this.fetchConversation());
   };
 
-  
+  fetchConversation = () => {
+    const { threadSelected } = this.state;
+    axios
+      .get(`/messages/${threadSelected.id}`)
+      .then(res => {
+        this.setState({
+          threadMessages: res.data.messages
+        });
+      })
+      .catch(err => console.log("err", err));
+  };
+
+  componentWillUnmount(){
+    this.fetchConversation()
+  }
 
   render() {
-    const { usersThreads } = this.props;
-    const { threadSelected } = this.state
-    console.log("thread state", threadSelected)
-   
+    const { usersThreads, userInfo} = this.props;
+    const { threadMessages, threadSelected } = this.state;
     return (
       <Grid>
         <div className="threads-container">
@@ -49,9 +61,9 @@ export default class Chats extends Component {
             </div>
           ))}
         </div>
-              <Col bsClass="chatroom-container">
-              <ChatRoom thread={threadSelected}/>
-              </Col>
+        <Col bsClass="chatroom-container">
+          <ChatRoom thread={threadSelected} threadMessages={threadMessages} Conversation={this.fetchConversation} userInfo={userInfo}/>
+        </Col>
       </Grid>
     );
   }

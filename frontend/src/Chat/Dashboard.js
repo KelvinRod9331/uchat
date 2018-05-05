@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Grid, Row, Col } from "react-bootstrap";
 import { Redirect } from "react-router";
+import socketIOClient from "socket.io-client";
 import axios from "axios";
 import "./index.css";
 import ChatRoom from "./ChatRoom";
 import Contacts from "./Contacts";
 import Chats from "./Chats";
+const socket = socketIOClient("http://localhost:3100");
 
 var loggedIn = false;
 
@@ -53,7 +55,7 @@ class Dashboard extends Component {
     const { selected, userInfo, threads } = this.state;
     switch (selected) {
       case "chats":
-        return <Chats usersThreads={threads} />;
+        return <Chats usersThreads={threads} userInfo={userInfo} />;
       case "contacts":
         return <Contacts userInfo={userInfo} />;
       default:
@@ -61,14 +63,15 @@ class Dashboard extends Component {
     }
   };
 
-  componentDidMount() {
+  componentWillMount() {
     this.userLoggedIn();
     this.fetchUserThreads();
   }
 
   render() {
     const { handleSelection, displayWindow, userLoggedIn } = this;
-    if (loggedIn) {
+
+    if(loggedIn){
       return (
         <Grid bsClass="dashboard-container">
         <Col bsClass='column-components'>
@@ -102,10 +105,11 @@ class Dashboard extends Component {
             </Col>
         </Grid>
       );
-    } else {
-      return <Redirect to="/" />;
+    }else{
+      return <Redirect to='/login' />
     }
-  }
+
+    } 
 }
 
 export default Dashboard;

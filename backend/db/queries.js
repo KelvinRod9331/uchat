@@ -196,7 +196,7 @@ db
 
 const storeMessages = (req, res, next) => {
   db.none(
-    "INSERT INTO messages (thread_id,sender_id,receiver_id,sender_body,receiver_body,date_sent,isread) VALUES (${thread_id}, ${sender_id}, $(receiver_id), ${sender_body}, ${receiver_body}, ${date_sent}, ${isread})",
+    "INSERT INTO messages (thread_id, sender_id, receiver_id, sender_message, receiver_message, date_sent, isread) VALUES (${thread_id}, ${sender_id}, $(receiver_id), ${sender_message}, ${receiver_message}, ${date_sent}, ${isread})",
     req.body
   ).then(() => {
     res.status(200).json({
@@ -204,13 +204,14 @@ const storeMessages = (req, res, next) => {
     })
   })
   .catch(function(err) {
+    console.log("Error Storing", err)
     return next(err);
   });
 };
 
 const fetchAllMessages = (req, res, next) => {
   db
-  .any('SELECT sender_body, receiver_body, sender_id, receiver_id FROM messages JOIN threads ON threads.id = thread_id WHERE thread_id = ${threadId}', req.params)
+  .any('SELECT sender_message, receiver_message, sender_id, receiver_id FROM messages JOIN threads ON threads.id = thread_id WHERE thread_id = ${threadId}', req.params)
   .then(data => {
     res.status(200).json({
       messages: data

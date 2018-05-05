@@ -25,6 +25,7 @@ app.set("port", port);
  * Create HTTP server.
  */
 
+
 var server = http.createServer(app);
 
 /**
@@ -37,28 +38,32 @@ io.on("connection", socket => {
   console.log("User connected", socket.id);
 
   socket.on("storeClientInfo", data => {
-    console.log("Socket Client Data", data);
-    var clientInfo = new Object();
-    clientInfo.username = data.username;
-    clientInfo.userId = data.userId;
-    clientInfo.connectionId = socket.id;
-    clientInfo.language = data.language;
-    clients.push(clientInfo);
-
-    console.log(clients);
+    if(data.username){
+      var clientInfo = new Object();
+      clientInfo.username = data.username;
+      clientInfo.userId = data.userId;
+      clientInfo.connectionId = socket.id;
+      clientInfo.language = data.language;
+      clients.push(clientInfo);
+    }
+    console.log('Clients Being Stored:',clients);
   });
 
   socket.on("chat", data => {
     console.log('Chat Data', data)
+   
       let user = clients.find(u => u.userId === data.receiver_id);
-      console.log('Backend User', user)
+      console.log('User Receiving Message', user)
       googleTranslate.translate(data.messages, user.language, function(
         err,
         translation
       ) {
-        socket.broadcast.to(user.connectionId).emit("chat", {
+        socket.to(user.connectionId).emit("chat", {
+          sender_id: data.sender_id,
+          receiver_id: data.receiver_id,
           username: data.username,
-          messages: translation.translatedText
+          translatedMessage: translation.translatedText,
+          originalMessage: translation.originalText
         });
       });
   });
@@ -67,8 +72,9 @@ io.on("connection", socket => {
     for (var i = 0, len = clients.length; i < len; ++i) {
       var c = clients[i];
 
-      if (c.clientId == socket.id) {
+      if (c.connectionId == socket.id) {
         clients.splice(i, 1);
+        console.log('running?')
         break;
       }
     }

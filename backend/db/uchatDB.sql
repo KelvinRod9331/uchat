@@ -30,8 +30,8 @@ CREATE TABLE messages (
     thread_ID INTEGER REFERENCES threads,
     sender_id INTEGER REFERENCES users,
     receiver_id INTEGER REFERENCES users,
-    sender_body VARCHAR,
-    receiver_body VARCHAR,
+    sender_message VARCHAR,
+    receiver_message VARCHAR,
     date_sent VARCHAR,
     isread BOOLEAN
 );
