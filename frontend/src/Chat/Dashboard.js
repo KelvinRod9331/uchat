@@ -106,7 +106,7 @@ class Dashboard extends Component {
         </Grid>
       );
     }else{
-      return <Redirect to='/login' />
+      return <Redirect to='/' />
     }
 
     } 

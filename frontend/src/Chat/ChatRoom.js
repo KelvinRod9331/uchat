@@ -11,7 +11,7 @@ class ChatRoom extends Component {
       messageValue: "",
       dataOutput: [],
       errMessage: "",
-      id: ''
+      id: ""
     };
   }
 
@@ -38,11 +38,11 @@ class ChatRoom extends Component {
   sendMessages = () => {
     const { messageValue, userInfo } = this.state;
     const { thread } = this.props;
-
     socket.emit("chat", {
       messages: messageValue,
       username: userInfo.username,
       user_id: userInfo.id,
+      threadID: thread.id,
       sender_id:
         userInfo.id === thread.user_two ? thread.user_two : thread.user_one,
       receiver_id:
@@ -57,13 +57,11 @@ class ChatRoom extends Component {
 
   storeMessages = () => {
     const { Conversation } = this.props;
-    
+  
     socket.on("chat", data => {
-      const {thread} = this.props
-      console.log(thread)
       axios
         .post("/messages", {
-          thread_id: thread.id,
+          thread_id: data.threadID,
           sender_id: data.sender_id,
           receiver_id: data.receiver_id,
           sender_message: data.originalMessage,
@@ -72,7 +70,7 @@ class ChatRoom extends Component {
           isread: "false"
         })
         .then(() => {
-          Conversation();
+          Conversation(data.threadID);
         })
         .catch(err => {
           errMessage: "Could Not Send Message";
@@ -86,28 +84,20 @@ class ChatRoom extends Component {
   }
 
   render() {
-    const {
-      messageValue,
-      dataOutput,
-      userInfo,
-      id
-    } = this.state;
+    const { messageValue, dataOutput, userInfo, id } = this.state;
     const { threadMessages, thread, Conversation } = this.props;
 
     var size = Object.keys(thread).length;
-
-    var home = [], away = []
-      threadMessages.forEach(thread => {
-        if(userInfo.id === thread.sender_id){
-          home.push(thread)
-        }else if(userInfo.id === thread.receiver_id){
-          away.push(thread)
-        }
-      })
-
-
-      // console.log('thread', thread.id, 'Username', userInfo.username)
-    
+  
+    var home = [],
+      away = [];
+    threadMessages.forEach(thread => {
+      if (userInfo.id === thread.receiver_id ) {
+        home.push(thread);
+      } else if (userInfo.id === thread.sender_id) {
+        away.push(thread);
+      }
+    });
 
     if (size) {
       return (
@@ -115,31 +105,40 @@ class ChatRoom extends Component {
           <div>
             <div className="username-header">
               {" "}
-              <h4>{userInfo.username === thread.username? userInfo.username:thread.username}</h4>
+              <h4>
+                {userInfo.username === thread.username
+                  ? userInfo.username
+                  : thread.username}
+              </h4>
             </div>
             <div className="message-container">
               <div
                 style={{
-                  float: "left"
+                  float: "right",
+                  border: "1px solid black",
+                  width: "200px",
                 }}
               >
                 {away.map((e, i) => {
                   return (
-                    <div>
-                      <p>{e.receiver_message}</p>
+                    <div key={i}>
+                      <p>{e.sender_message}</p>
                     </div>
                   );
                 })}
               </div>
+
               <div
                 style={{
-                  float: "right"
+                  float: "left",
+                  border: "1px solid black",
+                  width: "200px",
                 }}
               >
                 {home.map((e, i) => {
                   return (
-                    <div>
-                      <p>{e.sender_message}</p>
+                    <div key={i}>
+                      <p>{e.receiver_message}</p>
                     </div>
                   );
                 })}

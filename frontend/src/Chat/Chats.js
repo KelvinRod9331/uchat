@@ -22,13 +22,12 @@ export default class Chats extends Component {
 
     this.setState({
       threadSelected: threadSelected
-    }, () => this.fetchConversation());
+    }, () => this.fetchConversation(threadSelected.id));
   };
 
-  fetchConversation = () => {
-    const { threadSelected } = this.state;
+  fetchConversation = (id) => {
     axios
-      .get(`/messages/${threadSelected.id}`)
+      .get(`/messages/${id}`)
       .then(res => {
         this.setState({
           threadMessages: res.data.messages
@@ -37,9 +36,6 @@ export default class Chats extends Component {
       .catch(err => console.log("err", err));
   };
 
-  componentWillUnmount(){
-    this.fetchConversation()
-  }
 
   render() {
     const { usersThreads, userInfo} = this.props;

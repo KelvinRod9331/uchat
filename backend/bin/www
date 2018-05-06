@@ -58,13 +58,25 @@ io.on("connection", socket => {
         err,
         translation
       ) {
-        socket.to(user.connectionId).emit("chat", {
+
+        socket.emit("chat", {
+          threadID: data.threadID,
           sender_id: data.sender_id,
           receiver_id: data.receiver_id,
           username: data.username,
           translatedMessage: translation.translatedText,
           originalMessage: translation.originalText
         });
+
+        // socket.to(user.connectionId).emit("chat", {
+        //   threadID: data.threadID,
+        //   sender_id: data.sender_id,
+        //   receiver_id: data.receiver_id,
+        //   username: data.username,
+        //   translatedMessage: translation.translatedText,
+        //   originalMessage: translation.originalText
+        // });
+
       });
   });
 
