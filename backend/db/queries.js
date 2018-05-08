@@ -85,11 +85,11 @@ function getSingleUser(req, res, next) {
 
 function getAllUsers(req, res, next) {
   db
-    .any("select * from users")
+    .any("select id, username, email, full_name, language, profile_pic from users")
     .then(function(data) {
       res.status(200).json({
         status: "success",
-        data: data,
+        allUsers: data,
         message: "Retrieved single users"
       });
     })

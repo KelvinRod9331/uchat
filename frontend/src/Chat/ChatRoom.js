@@ -38,6 +38,7 @@ class ChatRoom extends Component {
   sendMessages = () => {
     const { messageValue, userInfo } = this.state;
     const { thread } = this.props;
+
     socket.emit("chat", {
       messages: messageValue,
       username: userInfo.username,
@@ -78,7 +79,7 @@ class ChatRoom extends Component {
     });
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.getUser();
     this.storeMessages();
   }
