@@ -11,7 +11,7 @@ const socket = socketIOClient("http://localhost:3100");
 
 var loggedIn = false;
 
-export default class DashboardUpdate extends Component {
+class Dashboard extends Component {
   constructor() {
     super();
 
@@ -69,76 +69,12 @@ export default class DashboardUpdate extends Component {
   }
 
   render() {
-    const { handleSelection, displayWindow, userLoggedIn} = this;
-    const {userInfo} = this.state
+    const { handleSelection, displayWindow, userLoggedIn } = this;
+
     if(loggedIn){
       return (
         <Grid bsClass="dashboard-container">
-        <Row bsClass='leftside-navbar'>
-        <Col>
-        <div
-        className='user-profile-img-container'
-        >
-            <img 
-            src={`https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/30821925_204356536843208_2842258653858203098_o.jpg?_nc_cat=0&oh=54b74a965018171b01d5101e362b5c85&oe=5B8A54A1`}  
-            className='user-profile-img'/>
-        </div>
-        </Col>
-            <Col> 
-            <div
-                className="component-box"
-                id="chats"
-                onClick={handleSelection}
-              >
-                <h3 id="chats">Chats</h3>
-              </div>
-            </Col>
-            <Col>
-            <div
-                className="component-box"
-                id="contacts"
-                onClick={handleSelection}
-              >
-                <h3 id="contacts">Contacts</h3>
-              </div>
-            </Col>
-
-            <Col> 
-            <div
-                className="component-box"
-                id="status"
-                onClick={handleSelection}
-              >
-                <h3 id="status">Status </h3>
-              </div>
-            </Col>
-            <Col>
-            <div
-                className="component-box"
-                id="status"
-                onClick={handleSelection}
-              >
-                <h3 id="status">Settings</h3>
-              </div>
-            </Col>
-        </Row>
-
-         <Row>
-              <div className="display-box">{displayWindow()}</div>
-        </Row>
-        </Grid>
-      );
-    }else{
-      return <Redirect to='/' />
-    }
-
-    } 
-}
-
-
-
-/**
- * <Col bsClass='column-components'>
+        <Col bsClass='column-components'>
             <Row bsClass="component-container">
           
               <div
@@ -167,4 +103,13 @@ export default class DashboardUpdate extends Component {
               <div className="display-box">{displayWindow()}</div>
             </Row>
             </Col>
- */
+        </Grid>
+      );
+    }else{
+      return <Redirect to='/' />
+    }
+
+    } 
+}
+
+export default Dashboard;

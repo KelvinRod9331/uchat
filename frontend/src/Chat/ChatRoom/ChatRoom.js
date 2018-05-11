@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
+import SingleMessage from './SingleMessage'
+
 const socket = socketIOClient("http://localhost:3100");
 
 class ChatRoom extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userInfo: {},
+      currentUser: {},
       messageValue: "",
       dataOutput: [],
       errMessage: "",
@@ -18,7 +20,7 @@ class ChatRoom extends Component {
   getUser = () => {
     axios.get("/singleUser").then(res => {
       this.setState({
-        userInfo: res.data.data[0]
+        currentUser: res.data.data[0]
       });
       socket.emit("storeClientInfo", {
         userId: res.data.data[0].id,
@@ -36,19 +38,19 @@ class ChatRoom extends Component {
 
   // method for emitting a socket.io event
   sendMessages = () => {
-    const { messageValue, userInfo } = this.state;
+    const { messageValue, currentUser } = this.state;
     const { thread } = this.props;
 
     socket.emit("chat", {
       messages: messageValue,
-      username: userInfo.username,
-      user_id: userInfo.id,
+      username: currentUser.username,
+      user_id: currentUser.id,
       threadID: thread.id,
       sender_id:
-        userInfo.id === thread.user_two ? thread.user_two : thread.user_one,
+        currentUser.id === thread.user_two ? thread.user_two : thread.user_one,
       receiver_id:
-        userInfo.id === thread.user_one ? thread.user_two : thread.user_one,
-      language: userInfo.language
+        currentUser.id === thread.user_one ? thread.user_two : thread.user_one,
+      language: currentUser.language
     });
 
     this.setState({
@@ -85,18 +87,18 @@ class ChatRoom extends Component {
   }
 
   render() {
-    const { messageValue, dataOutput, userInfo, id } = this.state;
+    const { messageValue, dataOutput, currentUser, id } = this.state;
     const { threadMessages, thread, Conversation } = this.props;
-
+    console.log(thread)
     var size = Object.keys(thread).length;
 
-    var home = [],
-      away = [];
-    threadMessages.forEach(thread => {
-      if (userInfo.id === thread.receiver_id) {
-        home.push(thread);
-      } else if (userInfo.id === thread.sender_id) {
-        away.push(thread);
+    var sendingMessages = [],
+      receivingMessages = [];
+    threadMessages.forEach(messenger => {
+      if (currentUser.id === messenger.receiver_id) {
+        sendingMessages.push(messenger);
+      } else if (currentUser.id === messenger.sender_id) {
+        receivingMessages.push(messenger);
       }
     });
 
@@ -106,8 +108,8 @@ class ChatRoom extends Component {
           <div className="username-container">
             <span id="username-header">
               <p>
-                {userInfo.username === thread.username
-                  ? userInfo.username
+                {currentUser.username === thread.username
+                  ? currentUser.username
                   : thread.username}
               </p>
             </span>
@@ -115,33 +117,15 @@ class ChatRoom extends Component {
             <span id="username-header">
               <p>Online</p>
             </span>
-        
+
             <div className="video-call-setting-container">
-            <i class="fas fa-phone"></i>
-            <i class="fas fa-video"></i>
-            <i class="fas fa-ellipsis-v"></i>
+              <i class="fas fa-phone" />
+              <i class="fas fa-video" />
+              <i class="fas fa-ellipsis-v" />
             </div>
           </div>
           <div className="message-container">
-            <div className="receiver-container">
-              {away.map((e, i) => {
-                return (
-                  <div key={i}>
-                    <p>{e.sender_message}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="sender-container">
-              {home.map((e, i) => {
-                return (
-                  <div key={i}>
-                    <p>{e.receiver_message}</p>
-                  </div>
-                );
-              })}
-            </div>
+            <SingleMessage currentUser={currentUser}  message={threadMessages} contact={thread} receivingMessages={receivingMessages}  sendingMessages={sendingMessages}/>
           </div>
           <div className="message-form">
             <input
@@ -152,7 +136,9 @@ class ChatRoom extends Component {
               onChange={this.handleInput}
               placeholder="Type your message here..."
             />
-            <button onClick={this.sendMessages}>Send</button>
+            <button onClick={this.sendMessages} className="send-btn">
+              <i class="fas fa-arrow-circle-right" />
+            </button>
           </div>
         </div>
       );
@@ -165,9 +151,31 @@ class ChatRoom extends Component {
 export default ChatRoom;
 
 /**
- * style={{
-                  float: "right",
-                  border: "1px solid black",
-                  width: "200px",
-                }}
+ {away.map((e, i) => {
+                return (
+                  <div key={i} className="receiver-individual-messages">
+                    <div>
+                    <img
+                        // src={thread.profile_pic}
+                        src={`https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/30821925_204356536843208_2842258653858203098_o.jpg?_nc_cat=0&oh=54b74a965018171b01d5101e362b5c85&oe=5B8A54A1`}
+                        className="inchat-profile-img"
+                        />
+                      
+                    </div>  
+
+                        <div>
+                      {e.sender_message}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {home.map((e, i) => {
+                return (
+                  <div key={i} className="sender-individual-messages">
+                    <p>{e.receiver_message}</p>
+                  </div>
+                );
+              })}
+receivingMessages={receivingMessages}  sendingMessages={sendingMessages}
  */

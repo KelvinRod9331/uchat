@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Grid, Row, Col } from "react-bootstrap";
-import ChatRoom from "./ChatRoom";
+import ChatRoom from "./ChatRoom/ChatRoom";
 import Search from "./Search";
 
 export default class Chats extends Component {
