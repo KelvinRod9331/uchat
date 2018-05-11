@@ -125,7 +125,7 @@ class ChatRoom extends Component {
             </div>
           </div>
           <div className="message-container">
-            <SingleMessage currentUser={currentUser}  message={threadMessages} contact={thread} receivingMessages={receivingMessages}  sendingMessages={sendingMessages}/>
+            <SingleMessage currentUser={currentUser}  threadMessages={threadMessages} contact={thread} receivingMessages={receivingMessages}  sendingMessages={sendingMessages}/>
           </div>
           <div className="message-form">
             <input
