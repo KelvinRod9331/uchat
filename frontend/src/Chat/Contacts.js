@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Redirect } from "react-router";
+import Search from './Search'
 
 export default class Contacts extends Component {
   constructor() {
@@ -46,6 +47,7 @@ export default class Contacts extends Component {
 
   render() {
     const { contactList, threadCreated, threadID } = this.state;
+    const { userInfo } = this.props;
 
     console.log(threadID);
 
@@ -53,10 +55,13 @@ export default class Contacts extends Component {
       this.setState({
         threadCreated: false
       });
-      return <Redirect to="/dashboard" />;
+      return <Redirect to="/" />;
     }
     return (
       <div className="contactlist-container">
+      <div className='search-placeholder'>
+        <Search userID = {userInfo.id} />
+      </div>
         {contactList.map(c => (
           <div
             className="contacts-container"

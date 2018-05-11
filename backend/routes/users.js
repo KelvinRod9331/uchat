@@ -16,6 +16,7 @@ router.post("/register", db.registerUser);
 router.post("/login", db.loginUser);
 router.post("/newThread",loginRequired, db.createThread)
 router.post("/messages", loginRequired, db.storeMessages)
+router.post("/addContact", loginRequired, db.addToContacts)
 
 router.patch("/changeProfilePic", loginRequired, db.changeProfilePic);
 router.patch("/updateUser", loginRequired, db.updateUserInfo);

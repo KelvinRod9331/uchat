@@ -1,3 +1,5 @@
+/* Dashboard Elements and Components */
+
 .dashboard-container {
   border: 2px solid black;
   width: 167vh;
@@ -5,29 +7,44 @@
   margin: 2% 0 0 2.5%;
 }
 
-/* .dashboard-container:first-child{
-position: absolute;
-background-color: yellow;
-} */
+.user-profile-img {
+  width: 50px;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  margin: 30%;
+}
 
-.dashboard-container > div {
+.contact-profile-pic{
+  width: 50px;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  margin-top: 2.5%;
+}
+
+.leftside-navbar {
+  margin-top: 1.5%;
+  margin-left: 1%;
+  border: 2px solid lightblue;
+  height: 86vh;
+  width: 15vh;
   position: absolute;
 }
 
+.component-box {
+  width: 12.5vh;
+  height: 10vh;
+  margin: 5%;
+  border: 2px solid blue;
+  display: block;
+  cursor: pointer;
+}
+
+/*Components Containers*/
+
 .component-container {
-  /* border: 2px solid black; */
   width: 80vh;
   height: 10vh;
   background-color: aqua;
-}
-
-.component-box {
-  width: 26.5vh;
-  height: 10vh;
-  border-right: 1px solid grey;
-  border-bottom: 1px solid grey;
-  display: inline-block;
-  cursor: pointer;
 }
 
 .display-container {
@@ -36,15 +53,51 @@ background-color: yellow;
   position: absolute;
 }
 
-.chatroom-container {
-  width: 150vh;
-  height: 86%;
+.threads-container {
   position: absolute;
+  height: 86vh;
+  width: 47vh;
+  overflow: auto;
+  margin-left: 12%;
 }
 
-.chatroom-container > div{
-  margin-left: 25.8%;
-  width: 87vh;
+.individual-thread {
+  height: 10vh;
+  margin-bottom: 3%;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+/*ChatRoom Containers*/
+/*---------------------------------*/
+
+
+.chatroom-container {
+  width: 95vh;
+  margin: 1% 0 0 40%;
+  height: 86%;
+  position: absolute;
+  background-color: beige;
+}
+
+.username-container{
+  border: 1px solid forestgreen;
+  height: 8vh;
+}
+
+#username-header{
+  float: left;
+  margin-left: 3%;
+}
+
+.video-call-setting-container{
+  margin: 2% 0 0 80%;
+  position: absolute;
+  width: 22vh;
+}
+
+.video-call-setting-container > i{
+  margin-right: 20%;
 }
 
 .message-container {
@@ -54,41 +107,52 @@ background-color: yellow;
 }
 
 .message-form {
-  position: relative;
-  bottom: 0px;
+    border: 2px solid red;
+    width: 94vh;
+    height: 8vh;
+    position: absolute;
+    bottom: 0px;
 }
 
+.input-message{
+  width: 85vh;
+  border: none;
+}
+/*---------------------------------*/
+
 .contactlist-container {
-  width: auto;
-  height: 87%;
+  width: 44vh;
+  height: 85vh;
+  position: absolute;
+  margin: 2% 0 0 18%;
 }
 
 .contacts-container {
   /* width: auto; */
-  height: 10vh;
+  height: 12vh;
   cursor: pointer;
   border: 1px solid black;
-}
-
-.threads-container {
-  position: absolute;
-  height: 80vh;
-  width: 80vh;
-  overflow: auto;
-}
-
-.individual-thread {
-  /* width: ; */
-  height: 10vh;
-  cursor: pointer;
-  border: 1px solid black;
+  margin-bottom: 5%;
 }
 
 .column-components {
   position: absolute;
 }
 
-.chatroom-container {
+
+/*Search Components and Elements*/
+#search-icon{
   position: absolute;
-  margin-left: 300px;
+  margin-top: 3%;
+}
+.search-placeholder {
+  margin-top: 5%;
+  margin-bottom: 10%;
+}
+
+.search-inputbox{
+  width: 46vh;
+  height: 5vh;
+  border: none;
+  margin-left: 6%;
 }

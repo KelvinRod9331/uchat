@@ -38,15 +38,28 @@ io.on('connection', socket => {
 
   socket.on('storeClientInfo', (data) => {
     console.log("Socket Client Data", data)
-    if(data.userId){
-      var clientInfo = new Object();
-        clientInfo.username = data.username;
-        clientInfo.userId = data.userId;
-        clientInfo.connectionId = socket.id;
-        clientInfo.language = data.language;
-        clients.push(clientInfo);
+
+    if(!clients.length){
+      var clientInfo = {
+        username: data.username,
+        userId: data.userId,
+        connectionId: socket.id,
+        language: data.language
+      }
+      clients.push(clientInfo);
     }
 
+    clients.forEach(client => {
+      if(client.userId !== data.userId){
+        var clientInfo = {
+          username: data.username,
+          userId: data.userId,
+          connectionId: socket.id,
+          language: data.language
+        }
+        clients.push(clientInfo);
+      }
+    })
     console.log(clients)
 });
 
@@ -81,14 +94,14 @@ io.on('connection', socket => {
       });
   });
 
-  socket.on("disconnect", data => {
+  socket.on("disconnect", () => {
     for (var i = 0, len = clients.length; i < len; ++i) {
       var c = clients[i];
 
       if (c.connectionId == socket.id) {
         clients.splice(i, 1);
         console.log('running?')
-        break;
+        return;
       }
     }
   });

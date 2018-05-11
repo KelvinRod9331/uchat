@@ -90,7 +90,7 @@ function getAllUsers(req, res, next) {
       res.status(200).json({
         status: "success",
         allUsers: data,
-        message: "Retrieved single users"
+        message: "Retrieved All Users"
       });
     })
     .catch(err => next(err));
@@ -222,7 +222,19 @@ const fetchAllMessages = (req, res, next) => {
   });
 };
 
-const addContacts = (req, res, next) => {};
+const addToContacts = (req, res, next) => {
+db
+.none('INSERT INTO contacts (user_ID, contact_ID) VALUES (${userID}, ${contactID})', req.body)
+.then(() => {
+  res.status(200).json({
+    status: 'Successful On Adding a Contact to Users Contact list'
+  })
+})
+.catch(function(err) {
+  console.log("Error Adding To Contacts", err)
+  return next(err);
+});
+};
 
 module.exports = {
   registerUser,
@@ -233,6 +245,7 @@ module.exports = {
   updateUserInfo,
   changeProfilePic,
   getLanguages,
+  addToContacts,
   getUsersContacts,
   createThread,
   storeMessages,

@@ -58,7 +58,7 @@ class ChatRoom extends Component {
 
   storeMessages = () => {
     const { Conversation } = this.props;
-  
+
     socket.on("chat", data => {
       axios
         .post("/messages", {
@@ -89,11 +89,11 @@ class ChatRoom extends Component {
     const { threadMessages, thread, Conversation } = this.props;
 
     var size = Object.keys(thread).length;
-  
+
     var home = [],
       away = [];
     threadMessages.forEach(thread => {
-      if (userInfo.id === thread.receiver_id ) {
+      if (userInfo.id === thread.receiver_id) {
         home.push(thread);
       } else if (userInfo.id === thread.sender_id) {
         away.push(thread);
@@ -103,47 +103,44 @@ class ChatRoom extends Component {
     if (size) {
       return (
         <div className="chatroom-container">
-          <div>
-            <div className="username-header">
-              {" "}
-              <h4>
+          <div className="username-container">
+            <span id="username-header">
+              <p>
                 {userInfo.username === thread.username
                   ? userInfo.username
                   : thread.username}
-              </h4>
-            </div>
-            <div className="message-container">
-              <div
-                style={{
-                  float: "right",
-                  border: "1px solid black",
-                  width: "200px",
-                }}
-              >
-                {away.map((e, i) => {
-                  return (
-                    <div key={i}>
-                      <p>{e.sender_message}</p>
-                    </div>
-                  );
-                })}
-              </div>
+              </p>
+            </span>
 
-              <div
-                style={{
-                  float: "left",
-                  border: "1px solid black",
-                  width: "200px",
-                }}
-              >
-                {home.map((e, i) => {
-                  return (
-                    <div key={i}>
-                      <p>{e.receiver_message}</p>
-                    </div>
-                  );
-                })}
-              </div>
+            <span id="username-header">
+              <p>Online</p>
+            </span>
+        
+            <div className="video-call-setting-container">
+            <i class="fas fa-phone"></i>
+            <i class="fas fa-video"></i>
+            <i class="fas fa-ellipsis-v"></i>
+            </div>
+          </div>
+          <div className="message-container">
+            <div className="receiver-container">
+              {away.map((e, i) => {
+                return (
+                  <div key={i}>
+                    <p>{e.sender_message}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="sender-container">
+              {home.map((e, i) => {
+                return (
+                  <div key={i}>
+                    <p>{e.receiver_message}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="message-form">
@@ -153,7 +150,7 @@ class ChatRoom extends Component {
               value={messageValue}
               name={"messageValue"}
               onChange={this.handleInput}
-              placeholder="Send Message"
+              placeholder="Type your message here..."
             />
             <button onClick={this.sendMessages}>Send</button>
           </div>
@@ -166,3 +163,11 @@ class ChatRoom extends Component {
 }
 
 export default ChatRoom;
+
+/**
+ * style={{
+                  float: "right",
+                  border: "1px solid black",
+                  width: "200px",
+                }}
+ */

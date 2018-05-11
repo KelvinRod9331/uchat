@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Grid, Row, Col } from "react-bootstrap";
 import ChatRoom from "./ChatRoom";
+import Search from "./Search";
 
 export default class Chats extends Component {
   constructor() {
@@ -20,12 +21,15 @@ export default class Chats extends Component {
       }
     });
 
-    this.setState({
-      threadSelected: threadSelected
-    }, () => this.fetchConversation(threadSelected.id));
+    this.setState(
+      {
+        threadSelected: threadSelected
+      },
+      () => this.fetchConversation(threadSelected.id)
+    );
   };
 
-  fetchConversation = (id) => {
+  fetchConversation = id => {
     axios
       .get(`/messages/${id}`)
       .then(res => {
@@ -36,13 +40,15 @@ export default class Chats extends Component {
       .catch(err => console.log("err", err));
   };
 
-
   render() {
-    const { usersThreads, userInfo} = this.props;
+    const { usersThreads, userInfo } = this.props;
     const { threadMessages, threadSelected } = this.state;
     return (
       <Grid>
         <div className="threads-container">
+          <div className="search-placeholder">
+            <Search userID={userInfo.id} />
+          </div>
           {usersThreads.map(thread => (
             <div
               className="individual-thread"
@@ -50,7 +56,9 @@ export default class Chats extends Component {
               onClick={this.openChatRoom}
             >
               <span id={thread.id}>
-                <img src={thread.profile_pic} width="50px" />
+                <img 
+                className='contact-profile-pic'
+                src={thread.profile_pic} width="50px" />
               </span>{" "}
               <span id={thread.id}>Username: {thread.username}</span>{" "}
               <span id={thread.id}>Language: {thread.language}</span>{" "}
@@ -58,7 +66,12 @@ export default class Chats extends Component {
           ))}
         </div>
         <Col bsClass="chatroom-container">
-          <ChatRoom thread={threadSelected} threadMessages={threadMessages} Conversation={this.fetchConversation} userInfo={userInfo}/>
+          <ChatRoom
+            thread={threadSelected}
+            threadMessages={threadMessages}
+            Conversation={this.fetchConversation}
+            userInfo={userInfo}
+          />
         </Col>
       </Grid>
     );
