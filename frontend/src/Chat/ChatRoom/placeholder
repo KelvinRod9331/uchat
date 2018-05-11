@@ -1,0 +1,69 @@
+import React, { Component } from "react";
+// import dateFormat from 'dateformat';
+import "./SingleMessage.css";
+
+const SingleMessage = ({
+  threadMessages,
+  currentUser,
+  contact,
+  sendingMessages,
+  receivingMessages
+}) => {
+  console.log("Single Message", threadMessages, currentUser, contact);
+
+  const messageClass =
+    contact.username === currentUser.username
+      ? "currentUserMessage"
+      : "otherUserMessage";
+
+  let currentUserObj = {};
+  let otherUserObj = {};
+  var sendingMessages = [],
+    receivingMessages = [];
+  threadMessages.forEach(messenger => {
+    if (currentUser.id === messenger.sender_id) {
+      currentUserObj.message = messenger.sender_message;
+      currentUserObj.username = currentUser.username;
+      sendingMessages.push(currentUserObj);
+    } else if (currentUser.id === messenger.receiver_id) {
+      otherUserObj.message = messenger.receiver_message;
+      otherUserObj.username = contact.username;
+      receivingMessages.push(otherUserObj);
+    }
+  });
+
+  return (
+    <div>
+      {sendingMessages.map(currentUser => {
+        console.log("CurrentUser", currentUser);
+        return (
+          <div className={"currentUserMessage"}>
+            <div className="message-header">
+              {/* <div className="message-date">{dateFormat(message.date_sent)}</div> */}
+              <div className="message-sender">{currentUser.username}</div>
+            </div>
+            <div className="message-body-container">
+              <div className="message-body-content">{currentUser.message}</div>
+            </div>
+          </div>
+        );
+      })}
+      {receivingMessages.map(otherUser => {
+        console.log("otherUser", otherUser);
+        return (
+          <div className={"otherUserMessage"}>
+            <div className="message-header">
+              {/* <div className="message-date">{dateFormat(message.date_sent)}</div> */}
+              <div className="message-sender">{otherUser.username}</div>
+            </div>
+            <div className="message-body-container">
+              <div className="message-body-content">{otherUser.message}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default SingleMessage;
