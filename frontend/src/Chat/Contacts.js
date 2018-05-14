@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Redirect } from "react-router";
-import Search from './Search'
+import Search from "./Search";
 
 export default class Contacts extends Component {
   constructor() {
@@ -25,11 +25,11 @@ export default class Contacts extends Component {
   };
 
   createChatRoom = e => {
-    const { userInfo } = this.props;
+    const { currentUser } = this.props;
 
     axios
       .post("/newThread", {
-        user_id: userInfo.id,
+        user_id: currentUser.id,
         contact_id: e.target.id
       })
       .then(res => {
@@ -41,15 +41,14 @@ export default class Contacts extends Component {
       .catch(err => console.log("Could not create Thread"));
   };
 
-  componentDidMount() {
+  componentWillMount() {
     this.getUsersContacts();
   }
 
   render() {
     const { contactList, threadCreated, threadID } = this.state;
-    const { userInfo } = this.props;
-
-    console.log(threadID);
+    const { createChatRoom } = this;
+    const { currentUser, search } = this.props;
 
     if (threadCreated) {
       this.setState({
@@ -59,20 +58,35 @@ export default class Contacts extends Component {
     }
     return (
       <div className="contactlist-container">
-      <div className='search-placeholder'>
-        <Search userID = {userInfo.id} />
-      </div>
+        <div className="search-placeholder">
+          <Search
+            userID={currentUser.id}
+            search={search}
+            createChatRoom={createChatRoom}
+          />
+        </div>
         {contactList.map(c => (
           <div
-            className="contacts-container"
+            // className="contacts-container"
             id={c.contact_id}
             onClick={this.createChatRoom}
+            class={`flag-background flag-us`}
           >
-            <span id={c.contact_id}>
-              <img src={c.profile_pic} width="80px" />
-            </span>{" "}
-            <span id={c.contact_id}>Username: {c.username}</span>{" "}
-            <span id={c.contact_id}>Language: {c.language}</span>{" "}
+            <div
+            className="contact-profile-pic-container"
+            >
+              <img
+              className="contact-profile-pic "
+                id={c.contact_id}
+                src={c.profile_pic}
+              />
+            </div>
+            <div
+            className='contact-info-container'
+            >
+            <span id={c.contact_id}> {c.username}</span>{" "}
+            <span id={c.contact_id} ></span>
+            </div>
           </div>
         ))}
       </div>

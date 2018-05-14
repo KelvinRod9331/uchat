@@ -4,9 +4,13 @@ import { Redirect } from "react-router";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import "./index.css";
+import "../../node_modules/flag-icon-css/css/flag-icon.css"
+import "./FlagsBackground.css"
 import ChatRoom from "./ChatRoom/ChatRoom";
 import Contacts from "./Contacts";
 import Chats from "./Chats";
+import Search from "./Search";
+
 const socket = socketIOClient("http://localhost:3100");
 
 var loggedIn = false;
@@ -17,8 +21,9 @@ export default class DashboardUpdate extends Component {
 
     this.state = {
       selected: "chats",
-      userInfo: [],
-      threads: []
+      currentUser: {},
+      threads: [],
+      recentMsg: []
     };
   }
 
@@ -27,7 +32,12 @@ export default class DashboardUpdate extends Component {
       .get("/singleUser")
       .then(res => {
         this.setState({
-          userInfo: res.data.data[0]
+          currentUser: res.data.data[0]
+        });
+        socket.emit("storeClientInfo", {
+          userId: res.data.data[0].id,
+          username: res.data.data[0].username,
+          language: res.data.data[0].language
         });
         loggedIn = true;
       })
@@ -47,91 +57,140 @@ export default class DashboardUpdate extends Component {
       .catch(err => console.log("Error:", err));
   };
 
+  fetchRecentMessage = () => {
+    axios
+      .get("/recentMsg")
+      .then(res => {
+        this.setState({
+          recentMsg: res.data.recentMsg
+        })
+      })
+      .catch(err => console.log("Error Getting Recent Message", err));
+  };
+
   handleSelection = e => {
     this.setState({ selected: e.target.id });
   };
 
   displayWindow = () => {
-    const { selected, userInfo, threads } = this.state;
+    const { selected, currentUser, threads, recentMsg } = this.state;
     switch (selected) {
       case "chats":
-        return <Chats usersThreads={threads} userInfo={userInfo} />;
+        return (
+          <Chats
+            usersThreads={threads}
+            currentUser={currentUser}
+            recentMsg={recentMsg}
+            search={"conversation"}
+          />
+        );
       case "contacts":
-        return <Contacts userInfo={userInfo} />;
+        return <Contacts currentUser={currentUser} search={"contacts"} />;
+      case "feed":
+        return;
+      case "add-friend":
+        return <Search userId={currentUser.id} search={"users"} />;
       default:
-        return "";
+        return (
+          <Chats
+            usersThreads={threads}
+            currentUser={currentUser}
+            recentMsg={recentMsg}
+            search={"conversation"}
+          />
+        );
     }
   };
 
   componentWillMount() {
     this.userLoggedIn();
+    this.fetchRecentMessage();
     this.fetchUserThreads();
+    this.displayWindow();
   }
 
   render() {
-    const { handleSelection, displayWindow, userLoggedIn} = this;
-    const {userInfo} = this.state
-    if(loggedIn){
+    const { handleSelection, displayWindow, userLoggedIn } = this;
+    // const {currentUser} = this.state
+    if (loggedIn) {
       return (
         <Grid bsClass="dashboard-container">
-        <Row bsClass='leftside-navbar'>
-        <Col>
-        <div
-        className='user-profile-img-container'
-        >
-            <img 
-            src={`https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/30821925_204356536843208_2842258653858203098_o.jpg?_nc_cat=0&oh=54b74a965018171b01d5101e362b5c85&oe=5B8A54A1`}  
-            className='user-profile-img'/>
-        </div>
-        </Col>
-            <Col> 
-            <div
+          <Row bsClass="leftside-navbar">
+            <Col>
+              <div className="user-profile-img-container">
+                <img
+                  src={`https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/30821925_204356536843208_2842258653858203098_o.jpg?_nc_cat=0&oh=54b74a965018171b01d5101e362b5c85&oe=5B8A54A1`}
+                  className="user-profile-img"
+                />
+              </div>
+            </Col>
+            <Col>
+              <div
                 className="component-box"
                 id="chats"
                 onClick={handleSelection}
               >
-                <h3 id="chats">Chats</h3>
+                <img
+                  id="chats"
+                  src="/images/speech-bubble-square.png"
+                  width="45px"
+                />
               </div>
             </Col>
             <Col>
-            <div
+              <div
                 className="component-box"
                 id="contacts"
                 onClick={handleSelection}
               >
-                <h3 id="contacts">Contacts</h3>
+                <img
+                  id="contacts"
+                  src="/images/contacts-icon.png"
+                  width="45px"
+                />
               </div>
             </Col>
 
-            <Col> 
-            <div
+            <Col>
+              <div
                 className="component-box"
-                id="status"
+                id="feed"
                 onClick={handleSelection}
               >
-                <h3 id="status">Status </h3>
+                <img id="feed" src="/images/world-feed.png" width="45px" />
               </div>
             </Col>
             <Col>
-            <div
+              <div
                 className="component-box"
-                id="status"
+                id="add-friend"
                 onClick={handleSelection}
               >
-                <h3 id="status">Settings</h3>
+                <img
+                  id="add-friend"
+                  src="/images/add-contacts.png"
+                  width="48px"
+                />
               </div>
             </Col>
-        </Row>
+            <Col>
+              <div
+                className="component-box"
+                id="settings"
+                onClick={handleSelection}
+              >
+                <img id="settings" src="/images/settings.png" width="45px" />
+              </div>
+            </Col>
+          </Row>
 
-         <Row>
-              <div className="display-box">{displayWindow()}</div>
-        </Row>
+          <Row>
+            <div className="display-box">{displayWindow()}</div>
+          </Row>
         </Grid>
       );
-    }else{
-      return <Redirect to='/' />
+    } else {
+      return <Redirect to="/" />;
     }
-
-    } 
+  }
 }
-

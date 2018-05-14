@@ -3,9 +3,7 @@ import React, { Component } from "react";
 import "./SingleMessage.css";
 
 const SingleMessage = ({ threadMessages, currentUser, contact, sendingMessages, receivingMessages }) => {
-  console.log('Single Message', threadMessages, currentUser)
- 
-
+  
   return threadMessages.map(messenger => {
     if (currentUser.id === messenger.sender_id) {
       return (

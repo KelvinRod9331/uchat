@@ -4,21 +4,19 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('backend:server');
-var http = require('http');
-var socket = require('socket.io');
-var APIKey = require('../config')
-var googleTranslate = require("google-translate")(
-  APIKey.keys.googleTranslate
-);
+var app = require("../app");
+var debug = require("debug")("backend:server");
+var http = require("http");
+var socket = require("socket.io");
+var APIKey = require("../config");
+var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3100');
-app.set('port', port);
+var port = normalizePort(process.env.PORT || "3100");
+app.set("port", port);
 
 /**
  * Create HTTP server.
@@ -26,72 +24,64 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-
 /**
  * Setting Up Socket
  */
-var io = socket(server)
-var clients =[];
+var io = socket(server);
+var clients = [];
 
-io.on('connection', socket => {
-  console.log('User connected', socket.id)
+io.on("connection", socket => {
+  console.log("User connected", socket.id);
 
-  socket.on('storeClientInfo', (data) => {
-    console.log("Socket Client Data", data)
+  socket.on("storeClientInfo", data => {
+    console.log("Socket Client Data", data);
 
-    if(!clients.length){
-      var clientInfo = {
-        username: data.username,
-        userId: data.userId,
-        connectionId: socket.id,
-        language: data.language
-      }
-      clients.push(clientInfo);
-    }
-
-    clients.forEach(client => {
-      if(client.userId !== data.userId){
-        var clientInfo = {
-          username: data.username,
-          userId: data.userId,
-          connectionId: socket.id,
-          language: data.language
+    if (clients.length !== 0) {
+      clients.forEach((client, i) => {
+        if (Number(client.userId) === Number(data.userId)) {
+          clients.splice(i, 1);
         }
-        clients.push(clientInfo);
-      }
-    })
-    console.log(clients)
-});
+      });
+    }
+    var clientInfo = {
+      username: data.username,
+      userId: data.userId,
+      connectionId: socket.id,
+      language: data.language
+    };
+    clients.push(clientInfo);
+    console.log(clients);
+  });
 
   socket.on("chat", data => {
-    console.log('Chat Data', data)
-   
-      let user = clients.find(u => u.userId === data.receiver_id);
-      console.log('User Receiving Message', user)
-      googleTranslate.translate(data.messages, user.language, function(
-        err,
-        translation
-      ) {
+    console.log("Chat Data", data);
 
-        socket.emit("chat", {
-          threadID: data.threadID,
-          sender_id: data.sender_id,
-          receiver_id: data.receiver_id,
-          username: data.username,
-          translatedMessage: translation.translatedText,
-          originalMessage: translation.originalText
-        });
-
-        // socket.to(user.connectionId).emit("chat", {
-        //   threadID: data.threadID,
-        //   sender_id: data.sender_id,
-        //   receiver_id: data.receiver_id,
-        //   username: data.username,
-        //   translatedMessage: translation.translatedText,
-        //   originalMessage: translation.originalText
-        // });
-
+    let user = clients.find(u => u.userId === data.receiver_id);
+    console.log("User Receiving Message", user);
+    googleTranslate.translate(data.messages, user.language, function(
+      err,
+      translation
+    ) {
+      
+      socket.broadcast.emit("chat", {
+        threadID: data.threadID,
+        sender_id: data.sender_id,
+        receiver_id: data.receiver_id,
+        username: data.username,
+        translatedMessage: translation.translatedText,
+        originalMessage: translation.originalText
       });
+
+      // socket.emit("chat", {
+      //   threadID: data.threadID,
+      //   sender_id: data.sender_id,
+      //   receiver_id: data.receiver_id,
+      //   username: data.username,
+      //   translatedMessage: translation.translatedText,
+      //   originalMessage: translation.originalText
+      // });
+
+    });
   });
 
   socket.on("disconnect", () => {
@@ -100,7 +90,7 @@ io.on('connection', socket => {
 
       if (c.connectionId == socket.id) {
         clients.splice(i, 1);
-        console.log('running?')
+        console.log("running?");
         return;
       }
     }

@@ -222,6 +222,21 @@ const fetchAllMessages = (req, res, next) => {
   });
 };
 
+const fetchRecentMessages = (req, res, next) => {
+  console.log('Queries:', req.user)
+db
+.any('SELECT * FROM messages WHERE sender_id = ${user.id} OR receiver_id = ${user.id}', req)
+.then(data => {
+  res.status(200).json({
+    recentMsg: data
+  })
+})
+.catch(function(err) {
+  return next(err);
+  console.log('Error On Getting Recent Message', err)
+});
+}
+
 const addToContacts = (req, res, next) => {
 db
 .none('INSERT INTO contacts (user_ID, contact_ID) VALUES (${userID}, ${contactID})', req.body)
@@ -250,5 +265,6 @@ module.exports = {
   createThread,
   storeMessages,
   fetchAllMessages,
+  fetchRecentMessages,
   fetchedThreads
 };

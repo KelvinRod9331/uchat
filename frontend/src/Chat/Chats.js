@@ -40,37 +40,61 @@ export default class Chats extends Component {
       .catch(err => console.log("err", err));
   };
 
+  
   render() {
-    const { usersThreads, userInfo } = this.props;
+    const { usersThreads, currentUser, search, recentMsg} = this.props;
     const { threadMessages, threadSelected } = this.state;
+
+    console.log('recentMsg', recentMsg)
     return (
       <Grid>
         <div className="threads-container">
           <div className="search-placeholder">
-            <Search userID={userInfo.id} />
+            <Search
+              userID={currentUser.id}
+              search={search}
+              usersThreads={usersThreads}
+              openChatRoom={this.openChatRoom}
+            />
           </div>
-          {usersThreads.map(thread => (
-            <div
-              className="individual-thread"
-              id={thread.id}
-              onClick={this.openChatRoom}
-            >
-              <span id={thread.id}>
-                <img 
-                className='contact-profile-pic'
-                src={thread.profile_pic} width="50px" />
-              </span>{" "}
-              <span id={thread.id}>Username: {thread.username}</span>{" "}
-              <span id={thread.id}>Language: {thread.language}</span>{" "}
-            </div>
-          ))}
+          {usersThreads.map(thread => {
+            
+           let recentArr = recentMsg.filter(msg => {
+              if(msg.thread_id === thread.id){
+                return msg
+              }
+            })
+            
+            let recentObj = recentArr[recentArr.length - 1]
+ 
+            return (
+              <div
+                className="individual-thread"
+                id={thread.id}
+                onClick={this.openChatRoom}
+              >
+                <span id={thread.id}>
+                  <img
+                    className="contact-profile-pic"
+                    src={thread.profile_pic}
+                    width="50px"
+                  />
+                </span>{" "}
+                <span id={thread.id}>{thread.username}</span>{" "}
+                <span id={thread.id}>{thread.language}</span> <div />
+                <div>
+                    {recentObj ? recentObj.receiver_message : ""}
+                </div>
+              </div>
+            );
+          })}
         </div>
         <Col bsClass="chatroom-container">
           <ChatRoom
             thread={threadSelected}
             threadMessages={threadMessages}
             Conversation={this.fetchConversation}
-            userInfo={userInfo}
+            currentUser={currentUser}
           />
         </Col>
       </Grid>
