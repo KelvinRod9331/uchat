@@ -9,8 +9,8 @@ function createUser(req) {
   const salt = bcrypt.genSaltSync();
   const hash = bcrypt.hashSync(req.body.password, salt);
   return db.none(
-    "INSERT INTO users (username, password_digest, email, full_name) VALUES (${username}, ${password}, ${email}, ${full_name})",
-    { username: req.body.username, password: hash, email: req.body.email, full_name: req.body.full_name }
+    "INSERT INTO users (username, password_digest, email, full_name, language, country) VALUES (${username}, ${password}, ${email}, ${full_name}, ${language}, ${country})",
+    { username: req.body.username, password: hash, email: req.body.email, full_name: req.body.fullname, language: req.body.language, country: req.body.country }
   );
 }
 

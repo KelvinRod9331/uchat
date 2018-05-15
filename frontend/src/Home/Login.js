@@ -64,18 +64,33 @@ export default class Login extends Component {
       });
   };
 
+  componentDidMount(){
+    axios
+    .get('/singleUser')
+    .then(res => {
+        this.setState({
+            user: res.data.data[0].username
+        })
+    }).catch(err => {
+        this.setState({
+            user: null
+        })
+    })
+  }
+
   render() {
     const {
       usernameInput,
       passwordInput,
       message,
-      loggedIn
+      loggedIn,
+      user
     } = this.state;
     // eslint-disable-next-line
     const { submitForm } = this;
 
-    if (loggedIn) {
-      return <Redirect to="/chat" />;
+    if (loggedIn || user) {
+      return <Redirect to="/" />;
     }
     
     return (

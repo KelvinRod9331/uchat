@@ -2,6 +2,14 @@ import React, { Component } from "react";
 // import "./Form.css";
 import { Link , Redirect } from "react-router-dom";
 import axios from 'axios'
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  HelpBlock,
+  DropdownButton,
+  MenuItem
+} from "react-bootstrap";
 
 
 export default class Registration extends Component {
@@ -13,7 +21,11 @@ export default class Registration extends Component {
     confirmInput: "",
     message: "",
     registered: false,
-    alert: false
+    alert: false,
+    languages: [],
+    countries: [],
+    lanSelected: '',
+    conSelected: ''
   };
 
   handleUsernameChange = e => {
@@ -46,32 +58,50 @@ export default class Registration extends Component {
     });
   };
 
+  handleLanguageSelector = e => {
+    this.setState({
+      lanSelected: e.target.value
+    })
+  }
+
+  handleCountrySelector = e => {
+    this.setState({
+      conSelected: e.target.value
+    })
+  }
+
   
-  submitForm = () => {
+  submitForm = (e) => {
+   e.preventDefault()
     const {
       emailInput,
       fullNameInput,
       usernameInput,
       passwordInput,
-    } = this.props;
-
+      confirmInput,
+      message,
+      registered,
+      conSelected,
+      lanSelected,
+    } = this.state;
 
     axios
-      .post("/signup", {
+      .post("/register", {
         username: usernameInput,
         password: passwordInput,
         email: emailInput,
-        fullname: fullNameInput
+        fullname: fullNameInput,
+        language: lanSelected,
+        country: conSelected
       })
       .then(res => {
         console.log(res.data);
         this.setState({
           registered: true,
-          usernameInput: "",
-          passwordInput: "",
           confirmInput: "",
           submitted: true,
           emailInput: "",
+          lanSelected: '',
           message: `Welcome to the site ${this.state.usernameInput}`
         });
       })
@@ -82,10 +112,33 @@ export default class Registration extends Component {
           passwordInput: "",
           confirmInput: "",
           emailInput: "",
+          fullNameInput: '',
+          lanSelected: '',
+          conSelected: '',
           message: "Error inserting user"
         });
       });
   };
+
+  componentDidMount(){
+    axios
+    .get('/lang')
+    .then(res => {
+      this.setState({
+        languages: res.data.languages
+      })
+    })
+    .catch(err => console.log('Couldnt Fetch Languages:', err))
+
+    axios
+    .get('/countries')
+    .then(res => {
+      this.setState({
+        countries: res.data.countries
+      })
+    })
+    .catch(err => console.log('Couldnt Fetch Languages:', err))
+  }
 
   render() {
     const {
@@ -95,18 +148,45 @@ export default class Registration extends Component {
       passwordInput,
       confirmInput,
       message,
-      registered
+      registered,
+      languages,
+      lanSelected,
+      countries
     } = this.state;
 
     const {
       submitForm,
       handleEmailChange,
       handleFullNameChange,
-      handleUsernameChange
+      handleUsernameChange,
+      handleCountrySelector,
+      handlePasswordChange,
+      handleConfirmChange,
+      handleLanguageSelector
     } = this;
 
-    if (registered) {
-        return <Redirect to="" />;
+      if (registered) {
+        axios
+        .post('/login', {
+          username: usernameInput,
+          password: passwordInput
+        })
+        .then(res => {
+          this.setState({
+            registered: false,
+            usernameInput: '',
+            passwordInput: ''
+          });
+        })
+        .catch(err => {
+          this.setState({
+            message: 'username/password not found',
+            registered: false
+          });
+        });
+
+        return <Redirect to='/dashboard' />
+        
       }
 
     return (
@@ -153,7 +233,7 @@ export default class Registration extends Component {
                     name="password"
                     placeholder="Password"
                     value={passwordInput}
-                    onChange={this.handlePasswordChange}
+                    onChange={handlePasswordChange}
                   />
                   <br />
                   <input
@@ -163,15 +243,51 @@ export default class Registration extends Component {
                     name="confirm-input"
                     placeholder="Confirm Password"
                     value={confirmInput}
-                    onChange={this.handleConfirmChange}
+                    onChange={handleConfirmChange}
                   />
                   <br />
+
+                   <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  bsClass="formControlsSelect"
+                  onChange={handleCountrySelector}
+                  
+                >
+                  {countries.map((c, i) => {
+                    return (
+                      <option key={i} value={c.code}>
+                        {c.name}
+                      </option>
+                    );
+                  })}
+                </FormControl>
+                <br />
+
+                  <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  bsClass="formControlsSelect"
+                  onChange={handleLanguageSelector}
+                  
+                >
+                  {languages.map((lan, i) => {
+                    return (
+                      <option key={i} value={lan.abbreviation}>
+                        {lan.name}
+                      </option>
+                    );
+                  })}
+                </FormControl>
+                <br />
+
                   <input
                     class="input"
                     id="login-submit"
                     type="submit"
                     value="Sign Up"
                   />
+
                   <p>{message}</p>
                   <p id="question">
                     Have an account? <Link to="/login">Log In</Link>
