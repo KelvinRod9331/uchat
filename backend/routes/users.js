@@ -8,6 +8,7 @@ router.get("/singleUser",loginRequired, db.getSingleUser);
 router.get("/allUsers", db.getAllUsers);
 router.get("/logout", db.logoutUser)
 router.get("/lang", db.getLanguages)
+router.get("/countries", db.getAllCountries)
 router.get("/contacts", loginRequired, db.getUsersContacts)
 router.get("/logout", db.logoutUser)
 router.get("/messages/:threadId", loginRequired, db.fetchAllMessages)

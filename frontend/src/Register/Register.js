@@ -23,7 +23,9 @@ export default class Registration extends Component {
     registered: false,
     alert: false,
     languages: [],
-    lanSelected: ''
+    countries: [],
+    lanSelected: '',
+    conSelected: ''
   };
 
   handleUsernameChange = e => {
@@ -62,6 +64,12 @@ export default class Registration extends Component {
     })
   }
 
+  handleCountrySelector = e => {
+    this.setState({
+      conSelected: e.target.value
+    })
+  }
+
   
   submitForm = (e) => {
    e.preventDefault()
@@ -73,10 +81,9 @@ export default class Registration extends Component {
       confirmInput,
       message,
       registered,
+      conSelected,
       lanSelected,
     } = this.state;
-
-    console.log("Languages Selected",lanSelected)
 
     axios
       .post("/register", {
@@ -84,7 +91,8 @@ export default class Registration extends Component {
         password: passwordInput,
         email: emailInput,
         fullname: fullNameInput,
-        language: lanSelected
+        language: lanSelected,
+        country: conSelected
       })
       .then(res => {
         console.log(res.data);
@@ -106,6 +114,7 @@ export default class Registration extends Component {
           emailInput: "",
           fullNameInput: '',
           lanSelected: '',
+          conSelected: '',
           message: "Error inserting user"
         });
       });
@@ -117,6 +126,15 @@ export default class Registration extends Component {
     .then(res => {
       this.setState({
         languages: res.data.languages
+      })
+    })
+    .catch(err => console.log('Couldnt Fetch Languages:', err))
+
+    axios
+    .get('/countries')
+    .then(res => {
+      this.setState({
+        countries: res.data.countries
       })
     })
     .catch(err => console.log('Couldnt Fetch Languages:', err))
@@ -132,14 +150,19 @@ export default class Registration extends Component {
       message,
       registered,
       languages,
-      lanSelected
+      lanSelected,
+      countries
     } = this.state;
 
     const {
       submitForm,
       handleEmailChange,
       handleFullNameChange,
-      handleUsernameChange
+      handleUsernameChange,
+      handleCountrySelector,
+      handlePasswordChange,
+      handleConfirmChange,
+      handleLanguageSelector
     } = this;
 
       if (registered) {
@@ -210,7 +233,7 @@ export default class Registration extends Component {
                     name="password"
                     placeholder="Password"
                     value={passwordInput}
-                    onChange={this.handlePasswordChange}
+                    onChange={handlePasswordChange}
                   />
                   <br />
                   <input
@@ -220,21 +243,32 @@ export default class Registration extends Component {
                     name="confirm-input"
                     placeholder="Confirm Password"
                     value={confirmInput}
-                    onChange={this.handleConfirmChange}
+                    onChange={handleConfirmChange}
                   />
                   <br />
-                  <input
-                    class="input"
-                    id="login-submit"
-                    type="submit"
-                    value="Sign Up"
-                  />
+
+                   <FormControl
+                  componentClass="select"
+                  placeholder="select"
+                  bsClass="formControlsSelect"
+                  onChange={handleCountrySelector}
+                  
+                >
+                  {countries.map((c, i) => {
+                    return (
+                      <option key={i} value={c.code}>
+                        {c.name}
+                      </option>
+                    );
+                  })}
+                </FormControl>
+                <br />
 
                   <FormControl
                   componentClass="select"
                   placeholder="select"
                   bsClass="formControlsSelect"
-                  onChange={this.handleLanguageSelector}
+                  onChange={handleLanguageSelector}
                   
                 >
                   {languages.map((lan, i) => {
@@ -245,6 +279,15 @@ export default class Registration extends Component {
                     );
                   })}
                 </FormControl>
+                <br />
+
+                  <input
+                    class="input"
+                    id="login-submit"
+                    type="submit"
+                    value="Sign Up"
+                  />
+
                   <p>{message}</p>
                   <p id="question">
                     Have an account? <Link to="/login">Log In</Link>

@@ -89,7 +89,13 @@ export default class DashboardUpdate extends Component {
       case "feed":
         return;
       case "add-friend":
-        return <Search userId={currentUser.id} search={"users"} />;
+        return (
+          <div className='add-friend-container'>
+            <Search userId={currentUser.id} search={"users"} />
+          </div>
+        )
+        
+        
       default:
         return (
           <Chats

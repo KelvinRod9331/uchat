@@ -4,11 +4,13 @@
   -o-background-size: cover;
   background-size: cover;
   background-repeat: no-repeat;
-  width: 40vh;
+  background-position: center;
+  width: 42vh;
   height: 11vh;
   cursor: pointer;
   border: 1px solid black;
   margin-bottom: 5%;
+  margin-left: 6%;
 }
 
 .flag-background:before {

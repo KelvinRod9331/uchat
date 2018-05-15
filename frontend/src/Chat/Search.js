@@ -13,7 +13,7 @@ export default class Search extends Component {
 
   determineAction = () => {
     const { search } = this.props;
-    
+
     switch (search) {
       case "users":
         return this.fetchUsers();
@@ -22,7 +22,7 @@ export default class Search extends Component {
         return this.getUsersContacts();
 
       case "conversation":
-        return this.fetchUserThreads()
+        return this.fetchUserThreads();
     }
   };
 
@@ -74,19 +74,24 @@ export default class Search extends Component {
           ) {
             return (
               <div
-                className="contacts-container"
+                // className="contacts-container"
                 id={contact.contact_id}
-                onClick={e => this.setState({inputValue: ''}, createChatRoom(e)) }
+                onClick={e =>
+                  this.setState({ inputValue: "" }, createChatRoom(e))
+                }
+                class={`flag-background flag-${contact.country.toLowerCase()}`}
               >
-                <span id={contact.contact_id}>
-                  <img src={contact.profile_pic} width="80px" />
-                </span>{" "}
-                <span id={contact.contact_id}>
-                  Username: {contact.username}
-                </span>{" "}
-                <span id={contact.contact_id}>
-                  Language: {contact.language}
-                </span>{" "}
+                <div className="contact-profile-pic-container">
+                  <img
+                    className="contact-profile-pic "
+                    id={contact.contact_id}
+                    src={contact.profile_pic}
+                  />
+                </div>
+                <div className="contact-info-container">
+                  <span id={contact.contact_id}> {contact.username}</span>{" "}
+                  <span id={contact.contact_id} />
+                </div>
               </div>
             );
           }
@@ -99,17 +104,29 @@ export default class Search extends Component {
             inputValue
           ) {
             return (
-              <div className="contacts-container">
-                <span>
-                  <img src={user.profile_pic} width="80px" />
-                </span>{" "}
-                <span>Username: {user.username}</span>{" "}
-                <span>Language: {user.language}</span>{" "}
+              
+            <div
+              // className="contacts-container"
+              id={user.contact_id}
+              class={`flag-background flag-${user.country.toLowerCase()}`}
+            >
+              <div className="contact-profile-pic-container">
+                <img
+                  className="contact-profile-pic "
+                  id={user.contact_id}
+                  src={user.profile_pic}
+                />
+              </div>
+              <div className="contact-info-container">
+                <span id={user.contact_id}> {user.username}</span>{" "}
+                <span id={user.contact_id} />
                 <button id={user.id} onClick={this.addToContactList}>
                   Friend Request
                 </button>
               </div>
+            </div>
             );
+
           }
         });
 
@@ -123,7 +140,9 @@ export default class Search extends Component {
               <div
                 className="contacts-container"
                 id={thread.id}
-                onClick={e => this.setState({inputValue: ''},openChatRoom(e)) }
+                onClick={e =>
+                  this.setState({ inputValue: "" }, openChatRoom(e))
+                }
               >
                 <span id={thread.id}>
                   <img
@@ -168,6 +187,19 @@ export default class Search extends Component {
 
   render() {
     const { inputValue } = this.state;
+    let style = {}
+    if(inputValue){
+        style = {
+            paddingTop: "10%",
+            backgroundColor: "white",
+            zIndex: "3",
+            position: "absolute",
+            height: "97%",
+            width: "47vh"
+          }
+    }
+
+    
     return (
       <div className="search-placeholder">
         <form>
@@ -184,7 +216,10 @@ export default class Search extends Component {
             />
           </span>
         </form>
-        <div>{this.searchEngine()}</div>
+        <div 
+        className='search-results'
+        style={style}
+        >{this.searchEngine()}</div>
       </div>
     );
   }

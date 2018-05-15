@@ -85,7 +85,7 @@ function getSingleUser(req, res, next) {
 
 function getAllUsers(req, res, next) {
   db
-    .any("select id, username, email, full_name, language, profile_pic from users")
+    .any("select id, username, email, full_name, language, profile_pic, country from users")
     .then(function(data) {
       res.status(200).json({
         status: "success",
@@ -142,10 +142,25 @@ const getLanguages = (req, res, next) => {
     });
 };
 
+const getAllCountries = (req, res, next) => {
+  db
+    .any("select * from countries")
+    .then(data => {
+      res.status(200).json({
+        status: "Successful",
+        countries: data,
+        message: "Fetched All Countries"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
 const getUsersContacts = (req, res, next) => {
   db
     .any(
-      "SELECT contact_id, username, language, profile_pic, full_name FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id}",
+      "SELECT contact_id, username, language, profile_pic, full_name, country FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id}",
       req.user
     )
     .then(data => {
@@ -223,7 +238,7 @@ const fetchAllMessages = (req, res, next) => {
 };
 
 const fetchRecentMessages = (req, res, next) => {
-  console.log('Queries:', req.user)
+
 db
 .any('SELECT * FROM messages WHERE sender_id = ${user.id} OR receiver_id = ${user.id}', req)
 .then(data => {
@@ -260,6 +275,7 @@ module.exports = {
   updateUserInfo,
   changeProfilePic,
   getLanguages,
+  getAllCountries,
   addToContacts,
   getUsersContacts,
   createThread,

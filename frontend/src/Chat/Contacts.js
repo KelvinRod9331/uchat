@@ -58,19 +58,17 @@ export default class Contacts extends Component {
     }
     return (
       <div className="contactlist-container">
-        <div className="search-placeholder">
           <Search
             userID={currentUser.id}
             search={search}
             createChatRoom={createChatRoom}
           />
-        </div>
         {contactList.map(c => (
           <div
             // className="contacts-container"
             id={c.contact_id}
             onClick={this.createChatRoom}
-            class={`flag-background flag-us`}
+            class={`flag-background flag-${c.country.toLowerCase()}`}
           >
             <div
             className="contact-profile-pic-container"
