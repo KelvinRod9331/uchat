@@ -24,7 +24,6 @@ class Home extends React.Component {
     render() {
         const { user } = this.state
         if (user) {
-            console.log('User detected')
             return <Redirect to='/dashboard' />
         } else if (user === null) {
             return <Redirect to='/login' />

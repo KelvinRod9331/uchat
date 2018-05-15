@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "all-countries": "^2.0.2",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.0",
+    "flag-icon-css": "^3.0.0",
+    "google-translate": "^2.1.0",
     "proxy": "^0.2.4",
     "react": "^16.3.2",
     "react-bootstrap": "^0.32.1",
