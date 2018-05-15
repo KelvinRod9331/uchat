@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import socketIOClient from "socket.io-client";
 import axios from "axios";
 import { Grid, Row, Col } from "react-bootstrap";
 import ChatRoom from "./ChatRoom/ChatRoom";
 import Search from "./Search";
+
+const socket = socketIOClient("http://localhost:3100");
 
 export default class Chats extends Component {
   constructor() {
     super();
     this.state = {
       threadSelected: {},
-      threadMessages: []
+      threadMessages: [],
+      testMessages: {}
     };
   }
 
@@ -29,6 +33,29 @@ export default class Chats extends Component {
     );
   };
 
+  // storeMessages = () => {
+    
+  //   socket.on("chat", data => {
+  //     console.log('This is fired?', data)
+  //     axios
+  //       .post("/messages", {
+  //         thread_id: data.threadID,
+  //         sender_id: data.sender_id,
+  //         receiver_id: data.receiver_id,
+  //         sender_message: data.originalMessage,
+  //         receiver_message: data.translatedMessage,
+  //         date_sent: "no time",
+  //         isread: "false"
+  //       })
+  //       .then(() => {
+  //         this.fetchConversation(data.threadID);
+  //       })
+  //       .catch(err => {
+  //         errMessage: "Could Not Send Message";
+  //       });
+  //   });
+  // };
+
   fetchConversation = id => {
     axios
       .get(`/messages/${id}`)
@@ -40,12 +67,14 @@ export default class Chats extends Component {
       .catch(err => console.log("err", err));
   };
 
+ 
+
   
   render() {
     const { usersThreads, currentUser, search, recentMsg} = this.props;
     const { threadMessages, threadSelected } = this.state;
 
-    console.log('recentMsg', recentMsg)
+ 
     return (
       <Grid>
         <div className="threads-container">
@@ -75,6 +104,7 @@ export default class Chats extends Component {
               >
                 <span id={thread.id}>
                   <img
+                    id={thread.id}
                     className="contact-profile-pic"
                     src={thread.profile_pic}
                     width="50px"
@@ -82,8 +112,10 @@ export default class Chats extends Component {
                 </span>{" "}
                 <span id={thread.id}>{thread.username}</span>{" "}
                 <span id={thread.id}>{thread.language}</span> <div />
-                <div>
-                    {recentObj ? recentObj.receiver_message : ""}
+                <div
+                id={thread.id}
+                >
+                    {recentObj ? recentObj.receiver_message : ''}
                 </div>
               </div>
             );

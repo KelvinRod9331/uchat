@@ -70,7 +70,7 @@ class ChatRoom extends Component {
   };
 
   componentDidMount() {
-    this.storeMessages();
+    this.storeMessages()
   }
 
   render() {
@@ -78,6 +78,7 @@ class ChatRoom extends Component {
     const { threadMessages, thread, Conversation, currentUser} = this.props;
   
     var size = Object.keys(thread).length;
+    
 
     if (size) {
       return (
