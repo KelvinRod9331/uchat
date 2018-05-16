@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Animation from "../Animations/LetterOpen"
 import socketIOClient from "socket.io-client";
 const socket = socketIOClient("http://localhost:3100");
 
@@ -24,8 +25,9 @@ export default class Notifications extends Component {
 
     switch (action) {
       case "incoming-msg":
-        notification = new Notification(action, {
-          body: `${data} Sent You A Message`
+        notification = new Notification(`${data} Sent You A Message`, {
+        icon: `/images/mail-icon.png `,
+        body: `${data} Sent You A Message`
         })
         break;
       case "granted":
@@ -34,30 +36,17 @@ export default class Notifications extends Component {
         })
         break;
       case "friend-request":
-        notification = new Notification(action, {
+        notification = new Notification(`${data} Sent You A Friend Request`, {
           body: `${data} Sent You A Friend Request`
         })
         break;
     }
 
-    // if (action === "incoming-msg") {
-    //   notification = new Notification(action, {
-    //     body: `${data} Sent You A Message`
-    //   });
-    // } else if (action === "granted") {
-    //   notification = new Notification(action, {
-    //     body: data
-    //   });
-    // } else if (action === "friend-request") {
-    //   notification = new Notification(action, {
-    //     body: `${data} Sent You A Friend Request`
-    //   });
-    // }
-
+  
     notification.onclick = function() {
       window.open("http://localhost:3000/dashboard");
     };
-    setTimeout(notification.close.bind(notification), 3000);
+    setTimeout(notification.close.bind(notification), 5000);
   };
 
   render() {

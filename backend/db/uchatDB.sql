@@ -39,6 +39,15 @@ CREATE TABLE messages (
     isread BOOLEAN
 );
 
+CREATE TABLE notifications (
+    ID SERIAL PRIMARY KEY,
+    receiver_ID INTEGER REFERENCES users,
+    sender_id INTEGER REFERENCES users,
+    type_notification VARCHAR,
+    date_sent VARCHAR,
+    read BOOLEAN DEFAULT false
+)
+
 CREATE TABLE languages (
     ID SERIAL PRIMARY KEY,
     abbreviation VARCHAR,
