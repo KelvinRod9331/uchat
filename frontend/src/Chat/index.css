@@ -1,10 +1,12 @@
 /* Dashboard Elements and Components */
 
+
 .dashboard-container {
   border: 2px solid black;
   width: 167vh;
   height: 90vh;
   margin: 2% 0 0 2.5%;
+  background-color: #E9EBEE;
 }
 
 .user-profile-img {
@@ -22,7 +24,7 @@
 
 .contact-profile-pic-container {
   position: absolute;
-  margin: 2.5% 0 0 3.5%;
+  margin: -4.5% 0 0 4.5%;
 }
 
 .contact-info-container {
@@ -60,6 +62,7 @@
   height: 87%;
   position: absolute;
 }
+
 
 .threads-container {
   position: absolute;

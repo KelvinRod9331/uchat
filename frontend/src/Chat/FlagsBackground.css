@@ -5,6 +5,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+ 
   width: 42vh;
   height: 11vh;
   cursor: pointer;
@@ -15,6 +16,7 @@
 
 .flag-background:before {
   content: "\00a0";
+ 
 }
 
 .flag-ad {

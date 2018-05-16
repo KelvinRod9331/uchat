@@ -25,12 +25,20 @@ export default class Contacts extends Component {
   };
 
   createChatRoom = e => {
-    const { currentUser } = this.props;
+    const { currentUser, allUsers } = this.props;
+   
+   let contactSelected = e.target.id
+
+   let contact = allUsers.find( u => {
+     return u.id === Number(contactSelected)
+   })
 
     axios
       .post("/newThread", {
         user_id: currentUser.id,
-        contact_id: e.target.id
+        contact_id: contactSelected,
+        user_one_name: currentUser.username,
+        user_two_name: contact.username
       })
       .then(res => {
         this.setState({
@@ -39,6 +47,9 @@ export default class Contacts extends Component {
         });
       })
       .catch(err => console.log("Could not create Thread"));
+
+    console.log({contact: contact.username, contactSelected: contactSelected})
+
   };
 
   componentWillMount() {
@@ -49,6 +60,8 @@ export default class Contacts extends Component {
     const { contactList, threadCreated, threadID } = this.state;
     const { createChatRoom } = this;
     const { currentUser, search } = this.props;
+
+    console.log(contactList)
 
     if (threadCreated) {
       this.setState({
@@ -72,6 +85,8 @@ export default class Contacts extends Component {
           >
             <div
             className="contact-profile-pic-container"
+            id={c.contact_id}
+            onClick={this.createChatRoom}
             >
               <img
               className="contact-profile-pic "
@@ -81,6 +96,7 @@ export default class Contacts extends Component {
             </div>
             <div
             className='contact-info-container'
+            id={c.contact_id}
             >
             <span id={c.contact_id}> {c.username}</span>{" "}
             <span id={c.contact_id} ></span>

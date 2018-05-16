@@ -56,13 +56,10 @@ io.on("connection", socket => {
   socket.on("chat", data => {
     console.log("Chat Data", data);
 
-    let user = clients.find(u => u.userId === data.receiver_id);
-    console.log("User Receiving Message", user);
-    googleTranslate.translate(data.messages, user.language, function(
+    googleTranslate.translate(data.messages, data.language, function(
       err,
       translation
     ) {
-      
       socket.broadcast.emit("chat", {
         threadID: data.threadID,
         sender_id: data.sender_id,
@@ -80,9 +77,18 @@ io.on("connection", socket => {
       //   translatedMessage: translation.translatedText,
       //   originalMessage: translation.originalText
       // });
-
     });
   });
+
+  socket.on("notify", data => {
+    console.log("notify fired and received data", data);
+    socket.broadcast.emit("notify", {
+      type: data.action,
+      username: data.username
+    });
+  });
+
+ 
 
   socket.on("disconnect", () => {
     for (var i = 0, len = clients.length; i < len; ++i) {

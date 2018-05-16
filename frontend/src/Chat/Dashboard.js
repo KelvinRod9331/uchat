@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import { Grid, Row, Col } from "react-bootstrap";
+import { Grid, Row, Col, } from "react-bootstrap";
 import { Redirect } from "react-router";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import "./index.css";
-import "../../node_modules/flag-icon-css/css/flag-icon.css"
-import "./FlagsBackground.css"
+import "../../node_modules/flag-icon-css/css/flag-icon.css";
+import "./FlagsBackground.css";
+import "react-notifications/lib/notifications.css";
 import ChatRoom from "./ChatRoom/ChatRoom";
 import Contacts from "./Contacts";
 import Chats from "./Chats";
 import Search from "./Search";
+import Notifications from "./Notifications";
+import ModalPages from "./ModalPages"
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -18,12 +21,13 @@ var loggedIn = false;
 export default class DashboardUpdate extends Component {
   constructor() {
     super();
-
+    this.trigger = false
     this.state = {
       selected: "chats",
       currentUser: {},
       threads: [],
-      recentMsg: []
+      recentMsg: [],
+      allUsers: []
     };
   }
 
@@ -46,6 +50,17 @@ export default class DashboardUpdate extends Component {
       });
   };
 
+  fetchUsers = () => {
+    axios
+      .get("/allUsers")
+      .then(res => {
+        this.setState({
+          allUsers: res.data.allUsers
+        });
+      })
+      .catch(err => console.log("Error", err));
+  };
+
   fetchUserThreads = () => {
     axios
       .get("/threads")
@@ -63,7 +78,7 @@ export default class DashboardUpdate extends Component {
       .then(res => {
         this.setState({
           recentMsg: res.data.recentMsg
-        })
+        });
       })
       .catch(err => console.log("Error Getting Recent Message", err));
   };
@@ -73,8 +88,11 @@ export default class DashboardUpdate extends Component {
   };
 
   displayWindow = () => {
-    const { selected, currentUser, threads, recentMsg } = this.state;
+    const { selected, currentUser, threads, recentMsg, allUsers } = this.state;
+
     switch (selected) {
+      case "notifications":
+      this.trigger = true
       case "chats":
         return (
           <Chats
@@ -85,17 +103,26 @@ export default class DashboardUpdate extends Component {
           />
         );
       case "contacts":
-        return <Contacts currentUser={currentUser} search={"contacts"} />;
+        return (
+          <Contacts
+            currentUser={currentUser}
+            allUsers={allUsers}
+            search={"contacts"}
+          />
+        );
       case "feed":
         return;
       case "add-friend":
         return (
-          <div className='add-friend-container'>
-            <Search userId={currentUser.id} search={"users"} />
+          <div className="add-friend-container">
+            <Search
+              allUsers={allUsers}
+              currentUser={currentUser}
+              search={"users"}
+            />
           </div>
-        )
-        
-        
+        );
+
       default:
         return (
           <Chats
@@ -110,6 +137,7 @@ export default class DashboardUpdate extends Component {
 
   componentWillMount() {
     this.userLoggedIn();
+    this.fetchUsers();
     this.fetchRecentMessage();
     this.fetchUserThreads();
     this.displayWindow();
@@ -117,10 +145,11 @@ export default class DashboardUpdate extends Component {
 
   render() {
     const { handleSelection, displayWindow, userLoggedIn } = this;
-    // const {currentUser} = this.state
+
     if (loggedIn) {
       return (
         <Grid bsClass="dashboard-container">
+          <Notifications />
           <Row bsClass="leftside-navbar">
             <Col>
               <div className="user-profile-img-container">
@@ -133,13 +162,26 @@ export default class DashboardUpdate extends Component {
             <Col>
               <div
                 className="component-box"
+                id="notifications"
+                onClick={handleSelection}
+              >
+                <img
+                  id="notifications"
+                  src="/images/notifications-icon.png"
+                  width="60px"
+                />
+              </div>
+            </Col>
+            <Col>
+              <div
+                className="component-box"
                 id="chats"
                 onClick={handleSelection}
               >
                 <img
                   id="chats"
                   src="/images/speech-bubble-square.png"
-                  width="45px"
+                  width="50px"
                 />
               </div>
             </Col>
@@ -152,7 +194,7 @@ export default class DashboardUpdate extends Component {
                 <img
                   id="contacts"
                   src="/images/contacts-icon.png"
-                  width="45px"
+                  width="50px"
                 />
               </div>
             </Col>
@@ -163,7 +205,7 @@ export default class DashboardUpdate extends Component {
                 id="feed"
                 onClick={handleSelection}
               >
-                <img id="feed" src="/images/world-feed.png" width="45px" />
+                <img id="feed" src="/images/world-feed.png" width="50px" />
               </div>
             </Col>
             <Col>
@@ -185,7 +227,7 @@ export default class DashboardUpdate extends Component {
                 id="settings"
                 onClick={handleSelection}
               >
-                <img id="settings" src="/images/settings.png" width="45px" />
+                <img id="settings" src="/images/settings.png" width="50px" />
               </div>
             </Col>
           </Row>

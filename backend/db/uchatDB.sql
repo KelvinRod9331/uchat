@@ -23,7 +23,9 @@ CREATE TABLE contacts (
 CREATE TABLE threads (
     ID SERIAL PRIMARY KEY,
     user_one INTEGER REFERENCES users,
-    user_two INTEGER REFERENCES users
+    user_two INTEGER REFERENCES users,
+    user_one_name VARCHAR,
+    user_two_name VARCHAR
 );
 
 CREATE TABLE messages (

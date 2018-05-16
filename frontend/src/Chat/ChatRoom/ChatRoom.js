@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
-import SingleMessage from './SingleMessage'
+import SingleMessage from "./SingleMessage";
+
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -12,10 +13,12 @@ class ChatRoom extends Component {
       messageValue: "",
       dataOutput: [],
       errMessage: "",
-      id: ""
+      id: "",
+     
     };
   }
 
+  
 
   handleInput = e => {
     this.setState({
@@ -26,30 +29,42 @@ class ChatRoom extends Component {
   // method for emitting a socket.io event
   sendMessages = () => {
     const { messageValue } = this.state;
-    const { thread, currentUser } = this.props;
+  
+    const { thread, currentUser, contactUser } = this.props;
 
-    socket.emit("chat", {
-      messages: messageValue,
-      username: currentUser.username,
-      user_id: currentUser.id,
-      threadID: thread.id,
-      sender_id:
-        currentUser.id === thread.user_two ? thread.user_two : thread.user_one,
-      receiver_id:
-        currentUser.id === thread.user_one ? thread.user_two : thread.user_one,
-      language: currentUser.language
-    });
+    console.log({contactUser: contactUser})
 
-    this.setState({
-      messageValue: ""
-    });
-  };
+
+      socket.emit("chat", {
+        messages: messageValue,
+        username: contactUser.username,
+        user_id: currentUser.id,
+        threadID: thread.id,
+        sender_id: currentUser.id,
+        receiver_id: contactUser.id,
+        language: contactUser.language
+      });
+
+      socket.emit("notify", {
+        action: 'incoming-msg',
+        username: currentUser.username,
+      });
+
+      this.setState({
+        messageValue: ""
+      });
+   
+    }
+
+
+  
 
   storeMessages = () => {
     const { Conversation } = this.props;
+   
 
     socket.on("chat", data => {
-      console.log('This is fired?', data)
+      console.log("This is fired?", data);
       axios
         .post("/messages", {
           thread_id: data.threadID,
@@ -69,16 +84,15 @@ class ChatRoom extends Component {
     });
   };
 
-  componentDidMount() {
-    this.storeMessages()
+  componentWillMount() {
+    this.storeMessages();
   }
 
   render() {
     const { messageValue, dataOutput, id } = this.state;
-    const { threadMessages, thread, Conversation, currentUser} = this.props;
-  
+    const { threadMessages, thread, Conversation, currentUser, contactUser } = this.props;
+
     var size = Object.keys(thread).length;
-    
 
     if (size) {
       return (
@@ -86,14 +100,12 @@ class ChatRoom extends Component {
           <div className="username-container">
             <span id="username-header">
               <p>
-                {currentUser.username === thread.username
-                  ? currentUser.username
-                  : thread.username}
+                {contactUser.username}
               </p>
             </span>
 
             <span id="username-header">
-             {thread.username ? <p>Online</p> : <p>Offline</p> } 
+              {thread.username ? <p>Online</p> : <p>Offline</p>}
             </span>
 
             <div className="video-call-setting-container">
@@ -103,7 +115,11 @@ class ChatRoom extends Component {
             </div>
           </div>
           <div className="message-container">
-            <SingleMessage currentUser={currentUser}  threadMessages={threadMessages} contact={thread} />
+            <SingleMessage
+              currentUser={currentUser}
+              threadMessages={threadMessages}
+              contact={contactUser}
+            />
           </div>
           <div className="message-form">
             <input
@@ -127,4 +143,3 @@ class ChatRoom extends Component {
 }
 
 export default ChatRoom;
-
