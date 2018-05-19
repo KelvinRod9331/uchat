@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Grid, Row, Col, } from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
+import Modal from "react-responsive-modal";
 import { Redirect } from "react-router";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
@@ -12,7 +13,7 @@ import Contacts from "./Contacts";
 import Chats from "./Chats";
 import Search from "./Search";
 import Notifications from "./Notifications";
-import ModalPages from "./ModalPages"
+import ModalPages from "./ModalPages";
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -21,13 +22,13 @@ var loggedIn = false;
 export default class DashboardUpdate extends Component {
   constructor() {
     super();
-    this.trigger = false
     this.state = {
       selected: "chats",
       currentUser: {},
       threads: [],
       recentMsg: [],
-      allUsers: []
+      allUsers: [],
+      open: false
     };
   }
 
@@ -84,15 +85,22 @@ export default class DashboardUpdate extends Component {
   };
 
   handleSelection = e => {
-    this.setState({ selected: e.target.id });
+    this.setState({ selected: e.target.id, open: true });
   };
 
   displayWindow = () => {
-    const { selected, currentUser, threads, recentMsg, allUsers } = this.state;
+    const {
+      selected,
+      currentUser,
+      threads,
+      recentMsg,
+      allUsers,
+      open
+    } = this.state;
 
     switch (selected) {
       case "notifications":
-      this.trigger = true
+        return <ModalPages trigger={true} />;
       case "chats":
         return (
           <Chats
@@ -109,21 +117,12 @@ export default class DashboardUpdate extends Component {
             allUsers={allUsers}
             search={"contacts"}
           />
-        );
+        ); //Future Installment
+
+      /*
       case "feed":
         return;
-      case "add-friend":
-        return (
-          <div className="add-friend-container">
-            <Search
-              allUsers={allUsers}
-              currentUser={currentUser}
-              search={"users"}
-            />
-          </div>
-        );
-
-      default:
+    */ default:
         return (
           <Chats
             usersThreads={threads}
@@ -150,6 +149,19 @@ export default class DashboardUpdate extends Component {
       return (
         <Grid bsClass="dashboard-container">
           <Notifications />
+          <Modal
+            open={this.state.open}
+            onClose={() => this.setState({ open: false })}
+            center
+          >
+            <div className="add-friend-container">
+              <Search
+                allUsers={this.state.allUsers}
+                currentUser={this.state.currentUser}
+                search={"users"}
+              />
+            </div>
+          </Modal>
           <Row bsClass="leftside-navbar">
             <Col>
               <div className="user-profile-img-container">
@@ -159,19 +171,7 @@ export default class DashboardUpdate extends Component {
                 />
               </div>
             </Col>
-            <Col>
-              <div
-                className="component-box"
-                id="notifications"
-                onClick={handleSelection}
-              >
-                <img
-                  id="notifications"
-                  src="/images/notifications-icon.png"
-                  width="60px"
-                />
-              </div>
-            </Col>
+
             <Col>
               <div
                 className="component-box"
@@ -198,6 +198,7 @@ export default class DashboardUpdate extends Component {
                 />
               </div>
             </Col>
+            {/*
 
             <Col>
               <div
@@ -208,6 +209,7 @@ export default class DashboardUpdate extends Component {
                 <img id="feed" src="/images/world-feed.png" width="50px" />
               </div>
             </Col>
+               */}
             <Col>
               <div
                 className="component-box"

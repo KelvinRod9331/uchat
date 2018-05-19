@@ -78,10 +78,10 @@ export default class Contacts extends Component {
           />
         {contactList.map(c => (
           <div
-            // className="contacts-container"
+            className="contacts-container"
             id={c.contact_id}
             onClick={this.createChatRoom}
-            class={`flag-background flag-${c.country.toLowerCase()}`}
+           
           >
             <div
             className="contact-profile-pic-container"
@@ -98,12 +98,15 @@ export default class Contacts extends Component {
             className='contact-info-container'
             id={c.contact_id}
             >
-            <span id={c.contact_id}> {c.username}</span>{" "}
-            <span id={c.contact_id} ></span>
+            <span className='contact-username' id={c.contact_id}> {c.username}</span>{" "}<br/>
+            <span id={c.contact_id} >{'Hey There! I Am Using UChat'}</span>
             </div>
+            <div className={`flag-background flag-${c.country.toLowerCase()}`}/>
+            
           </div>
         ))}
       </div>
     );
   }
 }
+

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Animation from "../Animations/LetterOpen"
 import socketIOClient from "socket.io-client";
 const socket = socketIOClient("http://localhost:3100");
 

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { form, FormControl } from "react-bootstrap";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import SingleMessage from "./SingleMessage";
-
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -11,14 +11,9 @@ class ChatRoom extends Component {
     super();
     this.state = {
       messageValue: "",
-      dataOutput: [],
-      errMessage: "",
-      id: "",
-     
+      dataOutput: []
     };
   }
-
-  
 
   handleInput = e => {
     this.setState({
@@ -27,14 +22,15 @@ class ChatRoom extends Component {
   };
 
   // method for emitting a socket.io event
-  sendMessages = () => {
+  sendMessages = e => {
+    e.preventDefault()
     const { messageValue } = this.state;
-  
+
     const { thread, currentUser, contactUser } = this.props;
 
-    console.log({contactUser: contactUser})
+    console.log({ contactUser: contactUser });
 
-
+    if(messageValue){
       socket.emit("chat", {
         messages: messageValue,
         username: contactUser.username,
@@ -44,24 +40,21 @@ class ChatRoom extends Component {
         receiver_id: contactUser.id,
         language: contactUser.language
       });
-
+    
       socket.emit("notify", {
-        action: 'incoming-msg',
-        username: currentUser.username,
+        action: "incoming-msg",
+        username: currentUser.username
       });
-
-      this.setState({
-        messageValue: ""
-      });
-   
     }
 
 
-  
+    this.setState({
+      messageValue: ""
+    });
+  };
 
   storeMessages = () => {
     const { Conversation } = this.props;
-   
 
     socket.on("chat", data => {
       console.log("This is fired?", data);
@@ -83,29 +76,35 @@ class ChatRoom extends Component {
         });
     });
   };
-
+  
   componentWillMount() {
     this.storeMessages();
   }
-
+  
   render() {
     const { messageValue, dataOutput, id } = this.state;
-    const { threadMessages, thread, Conversation, currentUser, contactUser } = this.props;
-
+    const {
+      threadMessages,
+      thread,
+      Conversation,
+      currentUser,
+      contactUser
+    } = this.props;
+    
+   
     var size = Object.keys(thread).length;
+
 
     if (size) {
       return (
         <div className="chatroom-container">
           <div className="username-container">
             <span id="username-header">
-              <p>
-                {contactUser.username}
-              </p>
+              <p>{contactUser.username}</p>
             </span>
 
             <span id="username-header">
-              {thread.username ? <p>Online</p> : <p>Offline</p>}
+              {contactUser.username ? <p>Online</p> : <p>Offline</p>}
             </span>
 
             <div className="video-call-setting-container">
@@ -122,17 +121,19 @@ class ChatRoom extends Component {
             />
           </div>
           <div className="message-form">
-            <input
-              type="text"
-              className="input-message"
-              value={messageValue}
-              name={"messageValue"}
-              onChange={this.handleInput}
-              placeholder="Type your message here..."
+          <form
+          onSubmit={this.sendMessages}
+          >
+            <FormControl
+             type="text"
+             className="input-message"
+             value={messageValue}
+             name={"messageValue"}
+             onChange={this.handleInput}
+             placeholder="Type your message here..."
             />
-            <button onClick={this.sendMessages} className="send-btn">
-              <i class="fas fa-arrow-circle-right" />
-            </button>
+            <img src='/images/microphone-icon.png' className='microphone' ></img>
+          </form>
           </div>
         </div>
       );

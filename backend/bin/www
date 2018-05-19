@@ -60,16 +60,7 @@ io.on("connection", socket => {
       err,
       translation
     ) {
-      socket.broadcast.emit("chat", {
-        threadID: data.threadID,
-        sender_id: data.sender_id,
-        receiver_id: data.receiver_id,
-        username: data.username,
-        translatedMessage: translation.translatedText,
-        originalMessage: translation.originalText
-      });
-
-      // socket.emit("chat", {
+      // socket.broadcast.emit("chat", {
       //   threadID: data.threadID,
       //   sender_id: data.sender_id,
       //   receiver_id: data.receiver_id,
@@ -77,6 +68,15 @@ io.on("connection", socket => {
       //   translatedMessage: translation.translatedText,
       //   originalMessage: translation.originalText
       // });
+
+      socket.emit("chat", {
+        threadID: data.threadID,
+        sender_id: data.sender_id,
+        receiver_id: data.receiver_id,
+        username: data.username,
+        translatedMessage: translation.translatedText,
+        originalMessage: translation.originalText
+      });
     });
   });
 

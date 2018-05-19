@@ -9,9 +9,9 @@ import './App.css';
 import Login from './Home/Login'
 import Home from './Home/Home'
 import Register from "./Register/Register"
-import Dashboard from "./Chat/Dashboard"
+import Dashboard from "./Chat/Dashboard-outdated"
 import Notifications from "./Chat/Notifications"
-import Animation from "./Animations/LetterOpen"
+
 
 class App extends Component {
   render() {
@@ -22,7 +22,6 @@ class App extends Component {
         <Route exact path = '/dashboard' component={Dashboard}/>
         <Route exact path = '/register' component={Register}/>
         <Route exact path = '/login' component={Login}/>
-        <Route exact path = '/a' component={Animation}/>
       </Switch>
       </div>
     );

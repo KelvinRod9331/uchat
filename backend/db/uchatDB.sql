@@ -11,7 +11,8 @@ CREATE TABLE users (
   full_name VARCHAR,
   language VARCHAR,
   country VARCHAR,
-  profile_pic VARCHAR DEFAULT '/images/default-profile.png'
+  profile_pic VARCHAR DEFAULT '/images/default-profile.png',
+  about VARCHAR DEFAULT 'Hey There!, I am using UChat!'
 );
 
 
