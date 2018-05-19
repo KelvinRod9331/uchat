@@ -9,7 +9,7 @@ import './App.css';
 import Login from './Home/Login'
 import Home from './Home/Home'
 import Register from "./Register/Register"
-import Dashboard from "./Chat/Dashboard-outdated"
+import Dashboard from "./Chat/Dashboard"
 import Notifications from "./Chat/Notifications"
 
 
