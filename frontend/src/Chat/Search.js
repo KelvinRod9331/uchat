@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import socketIOClient from "socket.io-client";
+const socket = socketIOClient("http://localhost:3100");
 
 export default class Search extends Component {
   constructor() {
@@ -15,9 +17,6 @@ export default class Search extends Component {
     const { search } = this.props;
 
     switch (search) {
-      case "users":
-        return this.fetchUsers();
-
       case "contacts":
         return this.getUsersContacts();
 
@@ -26,16 +25,7 @@ export default class Search extends Component {
     }
   };
 
-  fetchUsers = () => {
-    axios
-      .get("/allUsers")
-      .then(res => {
-        this.setState({
-          results: res.data.allUsers
-        });
-      })
-      .catch(err => console.log("Error", err));
-  };
+ 
 
   getUsersContacts = () => {
     axios
@@ -61,7 +51,7 @@ export default class Search extends Component {
 
   searchEngine = () => {
     const { inputValue, results } = this.state;
-    const { search, createChatRoom, openChatRoom } = this.props;
+    const { search, createChatRoom, openChatRoom, allUsers } = this.props;
 
     console.log("Search Comp", results);
 
@@ -98,7 +88,7 @@ export default class Search extends Component {
         });
 
       case "users":
-        return results.map(user => {
+        return allUsers.map(user => {
           if (
             user.username.toLowerCase().includes(inputValue.toLowerCase()) &&
             inputValue
@@ -133,7 +123,7 @@ export default class Search extends Component {
       case "conversation":
         return results.map(thread => {
           if (
-            thread.username.toLowerCase().includes(inputValue.toLowerCase()) &&
+            thread.user_two_name.toLowerCase().includes(inputValue.toLowerCase()) &&
             inputValue
           ) {
             return (
@@ -151,7 +141,7 @@ export default class Search extends Component {
                     width="50px"
                   />
                 </span>{" "}
-                <span id={thread.id}>Username: {thread.username}</span>{" "}
+                <span id={thread.id}>Username: {thread.user_two_name}</span>{" "}
                 <span id={thread.id}>Language: {thread.language}</span>{" "}
               </div>
             );
@@ -161,18 +151,19 @@ export default class Search extends Component {
   };
 
   addToContactList = e => {
-    const { userID } = this.props;
+    const { currentUser } = this.props;
     let id = e.target.id;
 
-    if (userID !== e.target.id) {
+    if (currentUser.id !== e.target.id) {
       axios
         .post("/addContact", {
-          userID: userID,
+          userID: currentUser.id,
           contactID: id
         })
         .then(() => {
-          this.setState({
-            message: "Sent A Friend Request"
+          socket.emit("notify", {
+            action: 'friend-request',
+            username: currentUser.username,
           });
         })
         .catch(err => {
@@ -202,7 +193,7 @@ export default class Search extends Component {
     
     return (
       <div className="search-placeholder">
-        <form>
+        <form className='search-form'>
           <span id="search-icon">
             <i class="fas fa-search" />
           </span>

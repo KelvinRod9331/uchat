@@ -11,7 +11,8 @@ CREATE TABLE users (
   full_name VARCHAR,
   language VARCHAR,
   country VARCHAR,
-  profile_pic VARCHAR DEFAULT '/images/default-profile.png'
+  profile_pic VARCHAR DEFAULT '/images/default-profile.png',
+  about VARCHAR DEFAULT 'Hey There!, I am using UChat!'
 );
 
 
@@ -23,7 +24,9 @@ CREATE TABLE contacts (
 CREATE TABLE threads (
     ID SERIAL PRIMARY KEY,
     user_one INTEGER REFERENCES users,
-    user_two INTEGER REFERENCES users
+    user_two INTEGER REFERENCES users,
+    user_one_name VARCHAR,
+    user_two_name VARCHAR
 );
 
 CREATE TABLE messages (
@@ -36,6 +39,15 @@ CREATE TABLE messages (
     date_sent VARCHAR,
     isread BOOLEAN
 );
+
+CREATE TABLE notifications (
+    ID SERIAL PRIMARY KEY,
+    receiver_ID INTEGER REFERENCES users,
+    sender_id INTEGER REFERENCES users,
+    type_notification VARCHAR,
+    date_sent VARCHAR,
+    read BOOLEAN DEFAULT false
+)
 
 CREATE TABLE languages (
     ID SERIAL PRIMARY KEY,

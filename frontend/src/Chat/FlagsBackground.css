@@ -1,20 +1,18 @@
 .flag-background {
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  width: 42vh;
-  height: 11vh;
+  width: 5vh;
+  height: 42%;
   cursor: pointer;
   border: 1px solid black;
   margin-bottom: 5%;
-  margin-left: 6%;
+  margin-left: 90%;
 }
 
 .flag-background:before {
   content: "\00a0";
+ 
 }
 
 .flag-ad {

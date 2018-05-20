@@ -1,10 +1,12 @@
 /* Dashboard Elements and Components */
 
+
 .dashboard-container {
   border: 2px solid black;
   width: 167vh;
   height: 90vh;
   margin: 2% 0 0 2.5%;
+  background-color: #E9EBEE;
 }
 
 .user-profile-img {
@@ -22,7 +24,7 @@
 
 .contact-profile-pic-container {
   position: absolute;
-  margin: 2.5% 0 0 3.5%;
+  margin: -4.5% 0 0 4.5%;
 }
 
 .contact-info-container {
@@ -61,6 +63,7 @@
   position: absolute;
 }
 
+
 .threads-container {
   position: absolute;
   height: 86vh;
@@ -83,7 +86,7 @@
 
 .chatroom-container {
   width: 95vh;
-  margin: 1% 0 0 38%;
+  margin: 1% 0 0 40%;
   height: 86%;
   position: absolute;
   background-color: beige;
@@ -195,8 +198,8 @@
 
 .add-friend-container {
   width: 50vh;
-  margin: 0.5% 0 0 41%;
-  height: 30%;
+  margin: 0.5% 0 0 25%;
+  height: 31%;
   overflow: auto;
 }
 
@@ -228,4 +231,28 @@
   color: whitesmoke;
 }
 
+.dashboard-modal {
+  /* max-width: 800px; */
+  width: 800px;
+  position: relative;
+  padding: 1.2rem;
+  height: 400px;
+  background: #ffffff;
+  background-clip: padding-box;
+  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.25);
+}
 
+.transition-enter {
+  transform: scale(0);
+}
+.transition-enter-active {
+  transform: scale(1);
+  transition: transform 1000ms ease;
+}
+.transition-exit {
+  transform: scale(1);
+}
+.transition-exit-active {
+  transform: scale(0);
+  transition: transform 1000ms ease;
+}

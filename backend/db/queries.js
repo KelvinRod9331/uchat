@@ -66,7 +66,7 @@ const uploadPhoto = (req, res, next) => {
 
 function getSingleUser(req, res, next) {
   db
-    .any("select * from users where username=${username}", req.user)
+    .any("select * from users where id=${id}", req.user)
     .then(function(data) {
       res.status(200).json({
         status: "success",
@@ -94,6 +94,26 @@ function getAllUsers(req, res, next) {
       });
     })
     .catch(err => next(err));
+}
+
+
+const getUserByID = (req,res,next) => {
+  db
+  .any("select id, username, email, full_name, language, country, profile_pic from users where id=${id}", req.params)
+  .then(function(data) {
+    res.status(200).json({
+      status: "success",
+      user: data,
+      message: "Retrieved single users"
+    });
+  })
+  .catch(err => {
+    res.status(500).json({
+      status: "unsuccessful",
+      message: "User Must Be Loged In",
+      error: err
+    });
+  });
 }
 
 const updateUserInfo = (userInfo, callback) => {
@@ -178,7 +198,7 @@ const getUsersContacts = (req, res, next) => {
 const createThread = (req, res, next) => {
   db
     .one(
-      "INSERT INTO threads (user_one, user_two) VALUES (${user_id}, ${contact_id}) RETURNING ID",
+      "INSERT INTO threads (user_one, user_two, user_one_name, user_two_name) VALUES (${user_id}, ${contact_id}, ${user_one_name}, ${user_two_name}) RETURNING ID",
       req.body
     )
     .then(data => {
@@ -189,13 +209,14 @@ const createThread = (req, res, next) => {
       });
     })
     .catch(function(err) {
+      console.log("Error Inserting Into threads", err)
       return next(err);
     });
 };
 
 const fetchedThreads = (req, res, next) => {
 db
-.any('SELECT threads.id, user_one, user_two, username,full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id} or user_two=${id}', req.user)
+.any('SELECT threads.id, user_one, user_two, user_one_name, user_two_name, full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id} or user_two=${id}', req.user)
 .then(data => {
   res.status(200).json({
     status: "Success",
@@ -269,6 +290,7 @@ db
 module.exports = {
   registerUser,
   getSingleUser,
+  getUserByID,
   loginUser,
   logoutUser,
   getAllUsers,

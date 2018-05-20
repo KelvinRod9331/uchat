@@ -56,23 +56,11 @@ io.on("connection", socket => {
   socket.on("chat", data => {
     console.log("Chat Data", data);
 
-    let user = clients.find(u => u.userId === data.receiver_id);
-    console.log("User Receiving Message", user);
-    googleTranslate.translate(data.messages, user.language, function(
+    googleTranslate.translate(data.messages, data.language, function(
       err,
       translation
     ) {
-      
-      socket.broadcast.emit("chat", {
-        threadID: data.threadID,
-        sender_id: data.sender_id,
-        receiver_id: data.receiver_id,
-        username: data.username,
-        translatedMessage: translation.translatedText,
-        originalMessage: translation.originalText
-      });
-
-      // socket.emit("chat", {
+      // socket.broadcast.emit("chat", {
       //   threadID: data.threadID,
       //   sender_id: data.sender_id,
       //   receiver_id: data.receiver_id,
@@ -81,6 +69,28 @@ io.on("connection", socket => {
       //   originalMessage: translation.originalText
       // });
 
+      socket.emit("chat", {
+        threadID: data.threadID,
+        sender_id: data.sender_id,
+        receiver_id: data.receiver_id,
+        username: data.username,
+        translatedMessage: translation.translatedText,
+        originalMessage: translation.originalText
+      });
+    });
+  });
+
+  socket.on("notify", data => {
+    googleTranslate.translate(data.messages, data.language, function(
+      err,
+      translation
+    ) {
+      socket.broadcast.emit("notify", {
+        type: data.action,
+        username: data.username,
+        image: data.image,
+        message: translation.translatedText
+      });
     });
   });
 
