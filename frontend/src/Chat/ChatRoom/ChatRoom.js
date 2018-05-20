@@ -23,14 +23,14 @@ class ChatRoom extends Component {
 
   // method for emitting a socket.io event
   sendMessages = e => {
-    e.preventDefault()
+    e.preventDefault();
     const { messageValue } = this.state;
 
     const { thread, currentUser, contactUser } = this.props;
 
     console.log({ contactUser: contactUser });
 
-    if(messageValue){
+    if (messageValue) {
       socket.emit("chat", {
         messages: messageValue,
         username: contactUser.username,
@@ -40,13 +40,15 @@ class ChatRoom extends Component {
         receiver_id: contactUser.id,
         language: contactUser.language
       });
-    
+
       socket.emit("notify", {
         action: "incoming-msg",
-        username: currentUser.username
+        username: currentUser.username,
+        image: contactUser.profile_pic,
+        messages: messageValue,
+        language: contactUser.language,
       });
     }
-
 
     this.setState({
       messageValue: ""
@@ -76,11 +78,11 @@ class ChatRoom extends Component {
         });
     });
   };
-  
+
   componentWillMount() {
     this.storeMessages();
   }
-  
+
   render() {
     const { messageValue, dataOutput, id } = this.state;
     const {
@@ -90,23 +92,28 @@ class ChatRoom extends Component {
       currentUser,
       contactUser
     } = this.props;
-    
-   
-    var size = Object.keys(thread).length;
 
+    var size = Object.keys(thread).length;
 
     if (size) {
       return (
         <div className="chatroom-container">
           <div className="username-container">
-            <span id="username-header">
-              <p>{contactUser.username}</p>
-            </span>
+            <div className="contact-profile-pic-container">
+              <img
+                className="contact-profile-pic "
+                src={contactUser.profile_pic}
+              />
+            </div>
+            <div className="contact-info-header">
+              <span id="username-header">
+                <p>{contactUser.username}</p>
+              </span>
 
-            <span id="username-header">
-              {contactUser.username ? <p>Online</p> : <p>Offline</p>}
-            </span>
-
+              <span id="username-status">
+                {contactUser.username ? <p>Online</p> : <p>Offline</p>}
+              </span>
+            </div>
             <div className="video-call-setting-container">
               <i class="fas fa-phone" />
               <i class="fas fa-video" />
@@ -121,19 +128,17 @@ class ChatRoom extends Component {
             />
           </div>
           <div className="message-form">
-          <form
-          onSubmit={this.sendMessages}
-          >
-            <FormControl
-             type="text"
-             className="input-message"
-             value={messageValue}
-             name={"messageValue"}
-             onChange={this.handleInput}
-             placeholder="Type your message here..."
-            />
-            <img src='/images/microphone-icon.png' className='microphone' ></img>
-          </form>
+            <form onSubmit={this.sendMessages}>
+              <FormControl
+                type="text"
+                className="input-message"
+                value={messageValue}
+                name={"messageValue"}
+                onChange={this.handleInput}
+                placeholder="Type your message here..."
+              />
+              <img src="/images/microphone-icon.png" className="microphone" />
+            </form>
           </div>
         </div>
       );

@@ -81,14 +81,18 @@ io.on("connection", socket => {
   });
 
   socket.on("notify", data => {
-    console.log("notify fired and received data", data);
-    socket.broadcast.emit("notify", {
-      type: data.action,
-      username: data.username
+    googleTranslate.translate(data.messages, data.language, function(
+      err,
+      translation
+    ) {
+      socket.broadcast.emit("notify", {
+        type: data.action,
+        username: data.username,
+        image: data.image,
+        message: translation.translatedText
+      });
     });
   });
-
- 
 
   socket.on("disconnect", () => {
     for (var i = 0, len = clients.length; i < len; ++i) {

@@ -193,7 +193,7 @@ export default class Search extends Component {
     
     return (
       <div className="search-placeholder">
-        <form>
+        <form className='search-form'>
           <span id="search-icon">
             <i class="fas fa-search" />
           </span>

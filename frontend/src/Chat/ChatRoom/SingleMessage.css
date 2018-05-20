@@ -8,11 +8,11 @@
 }
 
 .currentUserMessage > .message-body-container {
-    border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+    /* border-top-right-radius: 55px;
+    border-bottom-right-radius: 55px; */
     margin: 5px;
     padding: 15px 30px 15px 30px;
-    background-color: #595959;
+    background-color: #326CFB;
     color: #fff;
     border-radius: 15px;
     max-width: 65%;
@@ -32,7 +32,7 @@
 .otherUserMessage > .message-body-container {
     margin: 5px;
     padding: 15px 30px 15px 30px;
-    background-color: #f46524;
+    background-color: #F4F4F4;
     border-radius: 15px;
     max-width: 65%;
     display: flex;

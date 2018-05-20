@@ -86,7 +86,7 @@ export default class DashboardUpdate extends Component {
   };
 
   handleSelection = e => {
-    this.setState({ selected: e.target.id});
+    this.setState({ selected: e.target.id });
   };
 
   openChatRoom = e => {
@@ -231,7 +231,12 @@ export default class DashboardUpdate extends Component {
                 />
               </div>
               <div className="contact-info-container">
-                <span> {currentUser.username}</span>{" "}
+                <span className="contact-username">
+                  {" "}
+                  {currentUser.username}
+                </span>{" "}
+                <br />
+                <span>{"Hey There! I Am Using UChat"}</span>
               </div>
               <div className="component-box" onClick={handleSelection}>
                 <div className="notification-indicator" />
@@ -253,29 +258,24 @@ export default class DashboardUpdate extends Component {
                   id="chats"
                   onClick={handleSelection}
                 >
-                  <img
-                    id="chats"
-                    src="/images/speech-bubble-square.png"
-                    width="50px"
-                  />
+                  <img id="chats" src="/images/speech-bubble-square.png" />
+                  <p id="chats">Messages</p>
                 </Col>
                 <Col
                   className="inner-component-box"
                   id="contacts"
                   onClick={handleSelection}
                 >
-                  <img
-                    id="contacts"
-                    src="/images/contacts-icon.png"
-                    width="50px"
-                  />
+                  <img id="contacts" src="/images/contacts-icon.png" />
+                  <p id="contacts">Contacts</p>
                 </Col>
                 <Col
                   className="inner-component-box"
-                  id="feed"
+                  id="discovery"
                   onClick={handleSelection}
                 >
-                  <img id="feed" src="/images/world-feed.png" width="50px" />
+                  <img id="discovery" src="/images/world-discovery.png" />
+                  <p id="discovery">Discovery</p>
                 </Col>
               </div>
             </Row>

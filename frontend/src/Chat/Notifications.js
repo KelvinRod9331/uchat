@@ -8,7 +8,7 @@ export default class Notifications extends Component {
       alert("This browser does not support system notifications");
     } else if (Notification.permission === "granted") {
       socket.on("notify", data => {
-        this.notify(data.type, data.username);
+        this.notify(data.type, data);
       });
     } else if (Notification.permission !== "denied") {
       Notification.requestPermission().then(result => {
@@ -24,9 +24,9 @@ export default class Notifications extends Component {
 
     switch (action) {
       case "incoming-msg":
-        notification = new Notification(`${data} Sent You A Message`, {
-        icon: `/images/mail-icon.png `,
-        body: `${data} Sent You A Message`
+        notification = new Notification(`${data.username} Sent You A Message`, {
+        icon: data.image,
+        body: data.message
         })
         break;
       case "granted":

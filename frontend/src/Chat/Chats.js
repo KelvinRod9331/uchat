@@ -19,7 +19,6 @@ export default class Chats extends Component {
 
     return (
       <Grid>
-        <div className="threads-container">
           <div className="search-placeholder">
             <Search
               userID={currentUser.id}
@@ -28,6 +27,7 @@ export default class Chats extends Component {
               openChatRoom={openChatRoom}
             />
           </div>
+        <div className="threads-container">
           {usersThreads.map(thread => {
             let recentArr = recentMsg.filter(msg => {
               if (msg.thread_id === thread.id) {
