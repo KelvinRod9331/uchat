@@ -1,8 +1,13 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import { form, FormControl } from "react-bootstrap";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import SingleMessage from "./SingleMessage";
+import UChatAPI from "../../UChatAPI";
+
+var APIKey = require("../config");
+var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -11,9 +16,18 @@ class ChatRoom extends Component {
     super();
     this.state = {
       messageValue: "",
-      dataOutput: []
+      dataOutput: [],
+      quote: {},
+      randomImg: {}
     };
   }
+
+  randomImageGenerator = () => {
+    var ranNum = Math.floor(Math.random() * Math.floor(15));
+    var imgURL = `/images/RandomIMG/${ranNum}.png`;
+    var element = ReactDOM.findDOMNode(this.refs.placeholder);
+    element.setAttribute("src", imgURL);
+  };
 
   handleInput = e => {
     this.setState({
@@ -26,65 +40,66 @@ class ChatRoom extends Component {
     e.preventDefault();
     const { messageValue } = this.state;
 
-    const { thread, currentUser, contactUser } = this.props;
+    const { thread, currentUser, contactUser, Conversation } = this.props;
 
     console.log({ contactUser: contactUser });
 
     if (messageValue) {
-      socket.emit("chat", {
-        messages: messageValue,
-        username: contactUser.username,
-        user_id: currentUser.id,
-        threadID: thread.id,
-        sender_id: currentUser.id,
-        receiver_id: contactUser.id,
-        language: contactUser.language
-      });
+      googleTranslate.translate(messageValue, contactUser.language, function(
+        err,
+        translation
+      ) {
+        axios
+          .post("/messages", {
+            thread_id: thread.id,
+            sender_id: currentUser.id,
+            receiver_id: contactUser.id,
+            sender_message: messageValue,
+            receiver_message: translation.translatedText,
+            date_sent: "no time",
+            isread: "false"
+          })
+          .then(() => {
+            Conversation(thread.id);
+            socket.emit("chat", {
+              threadID: thread.id
+            });
 
-      socket.emit("notify", {
-        action: "incoming-msg",
-        username: currentUser.username,
-        image: contactUser.profile_pic,
-        messages: messageValue,
-        language: contactUser.language,
+            socket.emit("notify", {
+              action: "incoming-msg",
+              username: currentUser.username,
+              image: contactUser.profile_pic,
+              messages: translation.translatedText,
+              language: contactUser.language
+            });
+          })
+          .catch(err => {
+           this.setState({errMessage: "Could Not Send Message", messageValue: ''}) 
+          });
+      });
+      this.setState({
+        messageValue: ""
       });
     }
-
-    this.setState({
-      messageValue: ""
-    });
   };
 
-  storeMessages = () => {
+  retrieveSendersMsg = () => {
     const { Conversation } = this.props;
-
     socket.on("chat", data => {
-      console.log("This is fired?", data);
-      axios
-        .post("/messages", {
-          thread_id: data.threadID,
-          sender_id: data.sender_id,
-          receiver_id: data.receiver_id,
-          sender_message: data.originalMessage,
-          receiver_message: data.translatedMessage,
-          date_sent: "no time",
-          isread: "false"
-        })
-        .then(() => {
-          Conversation(data.threadID);
-        })
-        .catch(err => {
-          errMessage: "Could Not Send Message";
-        });
+      Conversation(data.threadID);
     });
   };
 
   componentWillMount() {
-    this.storeMessages();
+    this.retrieveSendersMsg();
+    // this.randomImageGenerator()
+    UChatAPI.randomQuotesGenerator().then(res =>
+      this.setState({ quote: res.data })
+    );
   }
 
   render() {
-    const { messageValue, dataOutput, id } = this.state;
+    const { messageValue, dataOutput, quote } = this.state;
     const {
       threadMessages,
       thread,
@@ -143,7 +158,22 @@ class ChatRoom extends Component {
         </div>
       );
     } else {
-      return <div className="chatroom-container">Placeholder For Now</div>;
+      return (
+        <div className="chatroom-container  placeholder" ref="placeholder">
+          <div id="welcome">
+            <h1>WELCOME TO UNIFIED CHAT "UCHAT" </h1>
+            <h3>
+              WHERE BRIDGES ARE BUILD NOT BARRIERS, WHERE DIFFERENCE IN LANGUAGE
+              SHOULDN'T STOP YOU FROM UNDERSTANDING AND KNOWING THE WORLD
+            </h3>
+            <p>START A NEW CHAT OR CONTINUE YOU'RE RECENT CHATS</p>
+          </div>
+          <div className="quotes-container">
+            <h3>{quote.quote}</h3>
+            <h3>- {quote.author}</h3>
+          </div>
+        </div>
+      );
     }
   }
 }
