@@ -92,7 +92,7 @@ html {
   font-size: 14px;
   margin-top: -1%;
   margin-left: 10%;
-  /* visibility: hidden; */
+  visibility: hidden;
 }
 
 .inner-component-box:hover {
@@ -107,14 +107,17 @@ html {
 /* Contacts Containers and Elements */
 
 .contacts-container {
-  height: 8vh;
+  height: 10vh;
   cursor: pointer;
-  border: 1px solid black;
   line-height: 20px;
   font-size: 14px;
+  border: none;
   margin-bottom: 2%;
 }
 
+.contacts-container:hover{
+background-color: whitesmoke;
+}
 .contact-profile-pic-container {
   position: absolute;
   margin-left: 4%;
@@ -172,11 +175,11 @@ html {
 }
 
 .borderBottom {
-  position: absolute;
-  border-bottom: 1px solid black;
-  width: 80%;
-  bottom: 0;
-  margin-left: 18%;
+    position: absolute;
+    border-bottom: 1px solid black;
+    width: 80%;
+    margin-top: 18%;
+    margin-left: 18%;
 }
 
 .individual-thread:hover {
@@ -195,7 +198,6 @@ html {
 }
 
 .placeholder {
-  background-image: url("/images/RandomIMG/14.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

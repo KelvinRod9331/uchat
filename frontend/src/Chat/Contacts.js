@@ -107,9 +107,13 @@ export default class Contacts extends Component {
               </div>
               <div
                 className={`flag-background flag-${c.country.toLowerCase()}`}
-              />
+              ></div>
+
+              <div className="borderBottom"></div>
             </div>
+            
           ))}
+
         </div>
       </Grid>
     );

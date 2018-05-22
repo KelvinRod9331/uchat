@@ -5,6 +5,7 @@ import socketIOClient from "socket.io-client";
 import axios from "axios";
 import SingleMessage from "./SingleMessage";
 import UChatAPI from "../../UChatAPI";
+import ImagesAPI from '../../Images/ImagesAPI'
 
 var APIKey = require("../config");
 var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
@@ -22,12 +23,15 @@ class ChatRoom extends Component {
     };
   }
 
-  randomImageGenerator = () => {
-    var ranNum = Math.floor(Math.random() * Math.floor(15));
-    var imgURL = `/images/RandomIMG/${ranNum}.png`;
-    var element = ReactDOM.findDOMNode(this.refs.placeholder);
-    element.setAttribute("src", imgURL);
-  };
+  getRandomImg = () => {
+    var ranNum = Math.floor(Math.random() * Math.floor(14));
+    var imgUrl = ImagesAPI.imgArr[ranNum]
+
+    console.log(imgUrl)
+    this.setState({
+      randomImg: imgUrl
+    })
+  }
 
   handleInput = e => {
     this.setState({
@@ -42,7 +46,6 @@ class ChatRoom extends Component {
 
     const { thread, currentUser, contactUser, Conversation } = this.props;
 
-    console.log({ contactUser: contactUser });
 
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(
@@ -92,7 +95,7 @@ class ChatRoom extends Component {
 
   componentWillMount() {
     this.retrieveSendersMsg();
-    // this.randomImageGenerator()
+    this.getRandomImg()
     UChatAPI.randomQuotesGenerator().then(res =>
       this.setState({ quote: res.data })
     );
@@ -109,6 +112,7 @@ class ChatRoom extends Component {
     } = this.props;
 
     var size = Object.keys(thread).length;
+
 
     if (size) {
       return (
@@ -159,9 +163,9 @@ class ChatRoom extends Component {
       );
     } else {
       return (
-        <div className="chatroom-container  placeholder" ref="placeholder">
+        <div className="chatroom-container  placeholder" style={{backgroundImage: `url(${this.state.randomImg})`}} >
           <div id="welcome">
-            <h1>WELCOME TO UNIFIED CHAT "UCHAT" </h1>
+            <strong><h1>WELCOME TO UNIFIED CHAT "UCHAT" </h1></strong>
             <h3>
               WHERE BRIDGES ARE BUILD NOT BARRIERS, WHERE DIFFERENCE IN LANGUAGE
               SHOULDN'T STOP YOU FROM UNDERSTANDING AND KNOWING THE WORLD

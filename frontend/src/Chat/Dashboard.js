@@ -169,6 +169,7 @@ export default class DashboardUpdate extends Component {
             threadSelected={threadSelected}
             contactUser={contactUser}
             openChatRoom={this.openChatRoom}
+            fetchRecentMessage={this.fetchRecentMessage}
           />
         );
       case "contacts":

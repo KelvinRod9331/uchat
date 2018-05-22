@@ -1,10 +1,15 @@
 import React, { Component } from "react";
 import axios from "axios";
+import socketIOClient from "socket.io-client";
 import { Grid, Row, Col } from "react-bootstrap";
-// import ChatRoom from "./ChatRoom/ChatRoom";
 import Search from "./Search";
 
+const socket = socketIOClient("http://localhost:3100");
+
 export default class Chats extends Component {
+  componentDidMount(){
+    socket.on("chat", () => this.props.fetchRecentMessage())
+  }
   render() {
     const {
       usersThreads,
@@ -14,8 +19,10 @@ export default class Chats extends Component {
       threadMessages,
       threadSelected,
       contactUser,
-      openChatRoom
+      openChatRoom,
+      
     } = this.props;
+
 
     return (
       <Grid>
