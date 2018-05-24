@@ -168,7 +168,7 @@ background-color: whitesmoke;
 }
 
 .threads-container {
-  height: 81vh;
+  height: 74vh;
   overflow: auto;
 }
 
@@ -297,6 +297,20 @@ background-color: whitesmoke;
   width: 100%;
   position: absolute;
   overflow-y: auto;
+}
+
+.recent-msg{
+    left: 0;
+    position: absolute;
+    width: 160px;
+    display: flex;
+}
+
+.time-stamp-chats{
+   margin-left: 310%;
+   position: absolute;
+   margin-right: 0;
+   padding: 0
 }
 
 .column-components {

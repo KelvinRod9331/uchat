@@ -179,6 +179,7 @@ export default class DashboardUpdate extends Component {
             currentUser={currentUser}
             allUsers={allUsers}
             search={"contacts"}
+            usersThreads={usersThreads}
           />
         );
 
@@ -242,7 +243,7 @@ export default class DashboardUpdate extends Component {
                 <span>{"Hey There! I Am Using UChat"}</span>
               </div>
               <div className="component-box" onClick={handleSelection}>
-                <div className="notification-indicator" />
+                
                 <img
                   id="add-friend"
                   src="/images/request-notification-icon.png"

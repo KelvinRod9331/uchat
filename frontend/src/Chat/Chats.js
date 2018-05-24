@@ -36,19 +36,17 @@ export default class Chats extends Component {
           </div>
         <div className="threads-container">
           {usersThreads.map(thread => {
-            let recentArr = recentMsg.filter(msg => {
+            let recentObj = recentMsg.find(msg => {
               if (msg.thread_id === thread.id) {
                 return msg;
               }
             });
 
-            let recentObj = recentArr[recentArr.length - 1];
-            if(recentObj){
-              if(recentObj.receiver_message.split(' ').length > 5){
+              if(recentObj && recentObj.receiver_message.split(' ').length > 5){
                 let shortMsg = recentObj.receiver_message.split(' ').slice(0, 5).join(' ') + "..."
                 recentObj.receiver_message = shortMsg
               }
-            }
+
             if (currentUser.username === thread.user_one_name) {
               return (
                 <div
@@ -72,8 +70,12 @@ export default class Chats extends Component {
                       {thread.user_two_name}
                     </span>
                     <br />
-                    <span id={thread.id}>
+                    <span id={thread.id} className='recent-msg'>
                       {recentObj ? recentObj.receiver_message : ""}
+                    </span>
+
+                     <span id={thread.id} className='time-stamp-chats'>
+                      {recentObj && recentObj.date_sent !== 'no time' ? recentObj.date_sent : ""}
                     </span>
                   </div>
 

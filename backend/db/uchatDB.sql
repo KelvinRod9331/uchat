@@ -44,9 +44,9 @@ CREATE TABLE notifications (
     ID SERIAL PRIMARY KEY,
     receiver_ID INTEGER REFERENCES users,
     sender_id INTEGER REFERENCES users,
-    type_notification VARCHAR,
+    type VARCHAR,
     date_sent VARCHAR,
-    read BOOLEAN DEFAULT false
+    opened BOOLEAN DEFAULT FALSE
 )
 
 CREATE TABLE languages (

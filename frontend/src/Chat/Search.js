@@ -53,7 +53,7 @@ export default class Search extends Component {
     const { inputValue, results } = this.state;
     const { search, createChatRoom, openChatRoom, allUsers } = this.props;
 
-    console.log("Search Comp", results);
+  
 
     switch (search) {
       case "contacts":

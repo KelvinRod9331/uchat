@@ -26,14 +26,23 @@ export default class Contacts extends Component {
   };
 
   createChatRoom = e => {
-    const { currentUser, allUsers } = this.props;
+    const { currentUser, allUsers, usersThreads } = this.props;
 
+    
+    let created = false
     let contactSelected = e.target.id;
 
     let contact = allUsers.find(u => {
       return u.id === Number(contactSelected);
     });
 
+    usersThreads.forEach(thread => {
+      if(thread.user_two === contact.id){
+        created = true
+      }
+    });
+
+  if(!created){
     axios
       .post("/newThread", {
         user_id: currentUser.id,
@@ -48,11 +57,9 @@ export default class Contacts extends Component {
         });
       })
       .catch(err => console.log("Could not create Thread"));
+  }
 
-    console.log({
-      contact: contact.username,
-      contactSelected: contactSelected
-    });
+ 
   };
 
   componentWillMount() {

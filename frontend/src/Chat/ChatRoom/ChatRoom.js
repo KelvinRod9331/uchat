@@ -27,7 +27,6 @@ class ChatRoom extends Component {
     var ranNum = Math.floor(Math.random() * Math.floor(14));
     var imgUrl = ImagesAPI.imgArr[ranNum]
 
-    console.log(imgUrl)
     this.setState({
       randomImg: imgUrl
     })
@@ -43,10 +42,20 @@ class ChatRoom extends Component {
   sendMessages = e => {
     e.preventDefault();
     const { messageValue } = this.state;
-
     const { thread, currentUser, contactUser, Conversation } = this.props;
 
+    var date = new Date()
 
+    var time=''
+    var hours = date.getHours();
+    if (hours > 12) {
+      hours -= 12;
+      time = `${hours}:${date.getMinutes()}pm`
+    } else if (hours === 0) {
+       hours = 12;
+       time = `${hours}:${date.getMinutes()}am`
+    }
+    
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(
         err,
@@ -59,8 +68,8 @@ class ChatRoom extends Component {
             receiver_id: contactUser.id,
             sender_message: messageValue,
             receiver_message: translation.translatedText,
-            date_sent: "no time",
-            isread: "false"
+            date_sent: time,
+            isread: false
           })
           .then(() => {
             Conversation(thread.id);

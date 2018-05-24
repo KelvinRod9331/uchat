@@ -46,7 +46,6 @@ class Menu extends React.Component {
 
   menuAction = () => {
     const { action } = this.state;
-    console.log(action);
     switch (action) {
       case "profile":
         return (
