@@ -1,8 +1,6 @@
-import ReactDOM from "react-dom";
 import React from "react";
-import {Redirect} from 'react-router'
-import { Modal, Popover, Button } from "antd";
-import LogOut from '../UChatAPI'
+import { Modal, Popover, Button, Icon } from "antd";
+import LogOut from '../Home/Logout'
 
 class Menu extends React.Component {
   state = {
@@ -84,7 +82,7 @@ class Menu extends React.Component {
 
            
         case "logout":
-        return LogOut.logOut().then(this.setState({logged: false}))
+        return <LogOut />
 
     default:
     return ''
@@ -93,26 +91,25 @@ class Menu extends React.Component {
 
   content = () => {
     return (
-      <div>
+      <div
+      className='settings-options'
+      >
         <div
-          style={{ cursor: "pointer" }}
-          id={"profile"}
+          id="profile"
           type='primary'
           onClick={this.showModal}
         >
           Profile
         </div>
         <div
-          style={{ cursor: "pointer" }}
-          id={"settings"}
+          id="settings"
           type='primary'
           onClick={this.showModal}
         >
          settings
         </div>
         <div
-          style={{ cursor: "pointer" }}
-          id={"logout"}
+          id="logout"
           type='primary'
           onClick={this.showModal}
         >
@@ -125,10 +122,8 @@ class Menu extends React.Component {
 
     const{logged} = this.state
 
-    if(!logged){
-        <Redirect to ='/' />
-    }
-    
+   
+
     return (
       <div>
         <Popover
@@ -138,9 +133,7 @@ class Menu extends React.Component {
           onVisibleChange={this.handleVisibleChange}
           overlayStyle={{height: 100}}
         >
-          <Button type="primary">
-            <i  class="fas fa-ellipsis-v" />
-          </Button>
+        <Icon type="ellipsis" style={{ transform: "rotate(90deg)", fontSize: '170%'}}  />
         </Popover>
         {this.menuAction()}
       </div>

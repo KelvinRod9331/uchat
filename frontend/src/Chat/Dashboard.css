@@ -52,13 +52,13 @@ html {
   margin-left: 70%;
   margin-top: 5%;
   position: absolute;
-  width: 28px;
+  width: 29px;
 }
 
 #menu {
   position: absolute;
   margin-left: 90%;
-  margin-top: 5%;
+  margin-top: 6%;
 }
 
 /* Row Two All Elements */
@@ -106,12 +106,10 @@ html {
 
 
 .settings-options{
-    position: absolute;
-    width: 100px;
-    height: 200px;
-    z-index: 3;
-    background-color: white;
+  cursor: pointer;
 }
+
+
 
 /* Contacts Containers and Elements */
 
