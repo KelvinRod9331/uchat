@@ -180,7 +180,7 @@ const getAllCountries = (req, res, next) => {
 const getUsersContacts = (req, res, next) => {
   db
     .any(
-      "SELECT contact_id, username, language, profile_pic, full_name, country FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id}",
+      "SELECT contact_id, username, language, profile_pic, full_name, country FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id} OR contact_id=${id} ",
       req.user
     )
     .then(data => {

@@ -8,8 +8,7 @@ var app = require("../app");
 var debug = require("debug")("backend:server");
 var http = require("http");
 var socket = require("socket.io");
-var APIKey = require("../config");
-var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
+
 
 /**
  * Get port from environment and store in Express.
@@ -56,42 +55,20 @@ io.on("connection", socket => {
   socket.on("chat", data => {
     console.log("Chat Data", data);
 
-    googleTranslate.translate(data.messages, data.language, function(
-      err,
-      translation
-    ) {
-      // socket.broadcast.emit("chat", {
-      //   threadID: data.threadID,
-      //   sender_id: data.sender_id,
-      //   receiver_id: data.receiver_id,
-      //   username: data.username,
-      //   translatedMessage: translation.translatedText,
-      //   originalMessage: translation.originalText
-      // });
-
-      socket.emit("chat", {
-        threadID: data.threadID,
-        sender_id: data.sender_id,
-        receiver_id: data.receiver_id,
-        username: data.username,
-        translatedMessage: translation.translatedText,
-        originalMessage: translation.originalText
+     io.sockets.emit("chat", {
+        threadID: data.threadID
       });
-    });
+
   });
 
   socket.on("notify", data => {
-    googleTranslate.translate(data.messages, data.language, function(
-      err,
-      translation
-    ) {
+ 
       socket.broadcast.emit("notify", {
         type: data.action,
         username: data.username,
         image: data.image,
-        message: translation.translatedText
+        message: data.messages
       });
-    });
   });
 
   socket.on("disconnect", () => {

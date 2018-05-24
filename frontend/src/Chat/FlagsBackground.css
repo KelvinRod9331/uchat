@@ -2,12 +2,12 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  position: absolute;
   width: 5vh;
-  height: 42%;
   cursor: pointer;
   border: 1px solid black;
-  margin-bottom: 5%;
-  margin-left: 90%;
+  margin-top: 3.5%;
+  margin-left: 86%;
 }
 
 .flag-background:before {

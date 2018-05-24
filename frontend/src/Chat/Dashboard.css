@@ -1,12 +1,11 @@
-html{
-    overflow: hidden;
+html {
+  overflow: hidden;
 }
 /* Dashboard Elements and Components */
 
 .dashboard-container {
   width: 100%;
   height: 100vh;
-  
 }
 
 .left-display {
@@ -24,15 +23,14 @@ html{
   float: right;
 }
 
-
 /* Row ONE All Elements */
-.user-header-row{
-    height: 8%; 
-    background-color: #F5F5F5;
+.user-header-row {
+  height: 8%;
+  background-color: #f5f5f5;
 }
 
-.user-profile-img-container{
-    position: absolute;
+.user-profile-img-container {
+  position: absolute;
 }
 
 .user-profile-img {
@@ -43,85 +41,95 @@ html{
   padding-top: 2px;
 }
 
-.notification-indicator{
-    width: 5px;
-    height: 5px;
-    position: absolute;
-    margin-left: 86%;
-    margin-top: 5%
+.notification-indicator {
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  margin-left: 86%;
+  margin-top: 5%;
 }
-#add-friend{
-    margin-left: 70%;
-    margin-top: 5%;
-    position: absolute;
-    width: 28px
+#add-friend {
+  margin-left: 70%;
+  margin-top: 5%;
+  position: absolute;
+  width: 28px;
 }
 
-#settings{
-    position: absolute;  
-    margin-left: 82%;
-    margin-top: 7%;
+#menu {
+  position: absolute;
+  margin-left: 90%;
+  margin-top: 5%;
 }
 
 /* Row Two All Elements */
 
-.component-row{height: 10%; }
+.component-row {
+  height: 10%;
+}
 
-.components-container{
-    height: 10%;
-    width: 100%;
+.components-container {
+  height: 10%;
+  width: 100%;
+  position: absolute;
+}
+
+.inner-component-box {
+  display: inline-block;
+  height: 100%;
+  width: 33.3%;
+  cursor: pointer;
+  border-top: 0.5px solid #e0e0e0;
+  border-bottom: 0.5px solid #e0e0e0;
+}
+
+.inner-component-box > img {
+  padding-top: 14px;
+  width: 40px;
+}
+
+.inner-component-box > p {
+  position: absolute;
+  font-size: 14px;
+  margin-top: -1%;
+  margin-left: 10%;
+  visibility: hidden;
+}
+
+.inner-component-box:hover {
+  background-color: #59a1f2;
+}
+
+.inner-component-box:hover p {
+  visibility: visible;
+  opacity: 0.6;
+}
+
+
+.settings-options{
     position: absolute;
- 
-   
-}
-
-.inner-component-box{
-    display: inline-block;
-    height: 100%;
-    width: 33.3%;
-    cursor: pointer;
-    border-top: 0.5px solid #E0E0E0;
-    border-bottom:0.5px solid #E0E0E0;
-}
-
-
-.inner-component-box > img{
-    padding-top: 14px;
-    width: 40px
-}
-
-.inner-component-box > p{
-    position: absolute;
-    font-size: 14px;
-    margin-top: -6px;
-    margin-left: 37px;
-    visibility: hidden;
-}
-
-.inner-component-box:hover{
-    background-color: #59a1f2;
-}
-
-
-.inner-component-box:hover  p{
-    visibility: visible;
-    opacity: 0.6;
+    width: 100px;
+    height: 200px;
+    z-index: 3;
+    background-color: white;
 }
 
 /* Contacts Containers and Elements */
 
-.contacts-container{
-    height: 8vh;
-    cursor: pointer;
-    border: 1px solid black;
-    line-height: 20px;
-    font-size: 14px;
-    margin-bottom: 2%;
+.contacts-container {
+  height: 10vh;
+  cursor: pointer;
+  line-height: 20px;
+  font-size: 14px;
+  border: none;
+  margin-bottom: 2%;
 }
 
+.contacts-container:hover{
+background-color: whitesmoke;
+}
 .contact-profile-pic-container {
-    position: absolute;
-    margin-left: 4%;
+  position: absolute;
+  margin-left: 4%;
 }
 .contact-profile-pic {
   width: 50px;
@@ -135,16 +143,11 @@ html{
   font-size: 14px;
 }
 
-.contact-username{
-    float: left;
+.contact-username {
+  float: left;
 }
 
-
-
 /* Dashboard Elements and Components */
-
-
-
 
 .component-box {
   width: 12.5vh;
@@ -172,35 +175,65 @@ html{
 }
 
 .individual-thread {
-    position: relative;
-    height: 8vh;
-    cursor: pointer;
-    border-top: 1px solid black;
-    line-height: 20px;
-    font-size: 14px;
+  position: relative;
+  height: 10vh;
+  cursor: pointer;
+  border: none;
+  line-height: 20px;
+  font-size: 14px;
+}
+
+.borderBottom {
+    position: absolute;
+    border-bottom: 1px solid black;
+    width: 80%;
+    margin-top: 18%;
+    margin-left: 18%;
+}
+
+.individual-thread:hover {
+  background-color: whitesmoke;
 }
 
 /*ChatRoom Containers*/
 /*---------------------------------*/
 
 .chatroom-container {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-color: whitesmoke;
-    border-left: 0.5px solid #E0E0E0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: whitesmoke;
+  border-left: 0.5px solid #e0e0e0;
 }
 
-.username-container {height: 8vh;}
+.placeholder {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#welcome{
+    margin-top: 25%; 
+    color: white;
+}
+
+.quotes-container{
+    color: white;
+}
+
+.username-container {
+  height: 8vh;
+}
 
 #username-status {
-    font-size: 12px
+  font-size: 12px;
 }
 
 .contact-info-header {
   float: left;
   position: absolute;
   margin-left: 13%;
+  margin-top: 1%;
   line-height: 6px;
 }
 
@@ -215,33 +248,32 @@ html{
 }
 
 .message-container {
-    height: 84vh;
-    overflow-y: auto;
-    background-color: #E5DDD6
+  height: 84vh;
+  overflow-y: auto;
+  background-color: #e5ddd6;
 }
 
 .message-form {
-    width: 100%;
-    height: 8vh;
-    position: absolute;
-    bottom: 0px;
-    background-color: #F5F1EE;
+  width: 100%;
+  height: 8vh;
+  position: absolute;
+  bottom: 0px;
+  background-color: #f5f1ee;
 }
 
 .input-message {
-    width: 83%;
-    height: 4vh;
-    margin-top: 1%;
-    border-radius: 5px;      
+  width: 83%;
+  height: 4vh;
+  margin-top: 1%;
+  border-radius: 5px;
 }
-.microphone{
-    width: 28px;
-    margin-left: 2%;
-    margin-top: 1.5%;
-    position: absolute;
-    cursor: pointer;
-    opacity: 0.4;
-
+.microphone {
+  width: 28px;
+  margin-left: 2%;
+  margin-top: 1.5%;
+  position: absolute;
+  cursor: pointer;
+  opacity: 0.4;
 }
 
 .receiver-individual-messages {
@@ -256,7 +288,6 @@ html{
   -webkit-border-radius: 50px;
 }
 
-
 .fa-arrow-circle-right {
   font-size: 1.73em;
   cursor: pointer;
@@ -270,25 +301,28 @@ html{
   overflow-y: auto;
 }
 
-
-
 .column-components {
   position: absolute;
 }
 
 /*Search Components and Elements*/
 
-#search-icon {padding-left:4% }
+#search-icon {
+  padding-left: 4%;
+}
 
-.search-placeholder {height: 8vh; background-color: #FBFBFB}
+.search-placeholder {
+  height: 8vh;
+  background-color: #fbfbfb;
+}
 
-.search-form{
-    border-radius: 15px;
-    width: 89%;
-    margin-left: 18px;
-    margin-top: 2.5%;
-    position: absolute;
-    background-color: whitesmoke;
+.search-form {
+  border-radius: 15px;
+  width: 89%;
+  margin-left: 18px;
+  margin-top: 2.5%;
+  position: absolute;
+  background-color: whitesmoke;
 }
 
 .search-inputbox {
@@ -352,7 +386,3 @@ html{
   background-clip: padding-box;
   box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.25);
 }
-
-
-
-

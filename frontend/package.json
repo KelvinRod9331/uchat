@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "all-countries": "^2.0.2",
+    "antd": "^3.5.3",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.0",
     "flag-icon-css": "^3.0.0",
