@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Row, Col } from "react-bootstrap";
+import { Grid, Row, Col,  } from "react-bootstrap";
 import { Redirect } from "react-router";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
@@ -13,6 +13,7 @@ import Chats from "./Chats";
 import Search from "./Search";
 import Notifications from "./Notifications";
 import ModalPages from "./ModalPages";
+import Menu from "./Menu"
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -197,6 +198,7 @@ export default class DashboardUpdate extends Component {
     }
   };
 
+
   componentWillMount() {
     this.userLoggedIn();
     this.fetchUsers();
@@ -245,11 +247,12 @@ export default class DashboardUpdate extends Component {
                   id="add-friend"
                   src="/images/request-notification-icon.png"
                 />
-                <i
-                  id="settings"
-                  onClick={handleSelection}
-                  class="fas fa-ellipsis-v"
-                />
+                <div
+                  id="menu"
+                >
+                <Menu />
+                </div>
+                
               </div>
             </Row>
             <Row className="component-row">

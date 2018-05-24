@@ -55,10 +55,10 @@ html {
   width: 28px;
 }
 
-#settings {
+#menu {
   position: absolute;
-  margin-left: 82%;
-  margin-top: 7%;
+  margin-left: 90%;
+  margin-top: 5%;
 }
 
 /* Row Two All Elements */
@@ -102,6 +102,15 @@ html {
 .inner-component-box:hover p {
   visibility: visible;
   opacity: 0.6;
+}
+
+
+.settings-options{
+    position: absolute;
+    width: 100px;
+    height: 200px;
+    z-index: 3;
+    background-color: white;
 }
 
 /* Contacts Containers and Elements */
@@ -224,6 +233,7 @@ background-color: whitesmoke;
   float: left;
   position: absolute;
   margin-left: 13%;
+  margin-top: 1%;
   line-height: 6px;
 }
 

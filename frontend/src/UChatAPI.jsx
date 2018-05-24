@@ -119,8 +119,10 @@ import axios from 'axios'
 
   const randomImageGenerator = () => axios.get('https://source.unsplash.com/random')
   const randomQuotesGenerator = () => axios.get("https://talaikis.com/api/quotes/random/")
+  const logOut = () => axios.get('/logout')
 
   export default{
     randomImageGenerator,
-    randomQuotesGenerator
+    randomQuotesGenerator,
+    logOut,
   }
