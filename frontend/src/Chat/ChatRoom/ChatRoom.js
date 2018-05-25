@@ -6,6 +6,7 @@ import axios from "axios";
 import SingleMessage from "./SingleMessage";
 import UChatAPI from "../../UChatAPI";
 import ImagesAPI from '../../Images/ImagesAPI'
+import dateFormat from 'dateformat';
 
 var APIKey = require("../config");
 var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
@@ -46,15 +47,7 @@ class ChatRoom extends Component {
 
     var date = new Date()
 
-    var time=''
-    var hours = date.getHours();
-    if (hours > 12) {
-      hours -= 12;
-      time = `${hours}:${date.getMinutes()}pm`
-    } else if (hours === 0) {
-       hours = 12;
-       time = `${hours}:${date.getMinutes()}am`
-    }
+    var time = dateFormat(date, "h:MMtt")
     
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(
@@ -174,12 +167,12 @@ class ChatRoom extends Component {
       return (
         <div className="chatroom-container  placeholder" style={{backgroundImage: `url(${this.state.randomImg})`}} >
           <div id="welcome">
-            <strong><h1>WELCOME TO UNIFIED CHAT "UCHAT" </h1></strong>
+            <h1>WELCOME TO UNIFIED CHAT "UCHAT" </h1>
             <h3>
               WHERE BRIDGES ARE BUILD NOT BARRIERS, WHERE DIFFERENCE IN LANGUAGE
               SHOULDN'T STOP YOU FROM UNDERSTANDING AND KNOWING THE WORLD
             </h3>
-            <p>START A NEW CHAT OR CONTINUE YOU'RE RECENT CHATS</p>
+            <p>START A NEW CHAT OR CONTINUE YOUR RECENT CHATS</p>
           </div>
           <div className="quotes-container">
             <h3>{quote.quote}</h3>

@@ -7,8 +7,9 @@ import Search from "./Search";
 const socket = socketIOClient("http://localhost:3100");
 
 export default class Chats extends Component {
-  componentDidMount(){
-    socket.on("chat", () => this.props.fetchRecentMessage())
+  componentWillMount() {
+    const { fetchRecentMessage } = this.props;
+    socket.on("chat", () => fetchRecentMessage());
   }
   render() {
     const {
@@ -19,21 +20,19 @@ export default class Chats extends Component {
       threadMessages,
       threadSelected,
       contactUser,
-      openChatRoom,
-      
+      openChatRoom
     } = this.props;
-
 
     return (
       <Grid>
-          <div className="search-placeholder">
-            <Search
-              userID={currentUser.id}
-              search={search}
-              usersThreads={usersThreads}
-              openChatRoom={openChatRoom}
-            />
-          </div>
+        <div className="search-placeholder">
+          <Search
+            userID={currentUser.id}
+            search={search}
+            usersThreads={usersThreads}
+            openChatRoom={openChatRoom}
+          />
+        </div>
         <div className="threads-container">
           {usersThreads.map(thread => {
             let recentObj = recentMsg.find(msg => {
@@ -42,12 +41,17 @@ export default class Chats extends Component {
               }
             });
 
-              if(recentObj && recentObj.receiver_message.split(' ').length > 5){
-                let shortMsg = recentObj.receiver_message.split(' ').slice(0, 5).join(' ') + "..."
-                recentObj.receiver_message = shortMsg
-              }
+            if (recentObj && recentObj.receiver_message.split(" ").length > 5) {
+              let shortMsg =
+                recentObj.receiver_message
+                  .split(" ")
+                  .slice(0, 2)
+                  .join(" ") + "...";
 
-            if (currentUser.username === thread.user_one_name) {
+              recentObj.receiver_message = shortMsg;
+            }
+
+            if (currentUser.id === thread.user_one) {
               return (
                 <div
                   className="individual-thread"
@@ -70,19 +74,19 @@ export default class Chats extends Component {
                       {thread.user_two_name}
                     </span>
                     <br />
-                    <span id={thread.id} className='recent-msg'>
+                    <div id={thread.id} className="recent-msg">
                       {recentObj ? recentObj.receiver_message : ""}
-                    </span>
+                    </div>
 
-                     <span id={thread.id} className='time-stamp-chats'>
-                      {recentObj && recentObj.date_sent !== 'no time' ? recentObj.date_sent : ""}
+                    <span id={thread.id} className="time-stamp-chats">
+                      {recentObj ? recentObj.date_sent : ""}
                     </span>
                   </div>
 
-                  <div className="borderBottom"></div>
+                  <div className="borderBottom" />
                 </div>
               );
-            } else if (currentUser.username === thread.user_two_name) {
+            } else if (currentUser.id === thread.user_two) {
               return (
                 <div
                   className="individual-thread"
@@ -105,11 +109,15 @@ export default class Chats extends Component {
                       {thread.user_one_name}
                     </span>
                     <br />
-                    <span id={thread.id}>
+                    <span id={thread.id} className="recent-msg">
                       {recentObj ? recentObj.receiver_message : ""}
                     </span>
+
+                    <span id={thread.id} className="time-stamp-chats">
+                      {recentObj ? recentObj.date_sent : ""}
+                    </span>
                   </div>
-                  <div className="borderBottom"></div>
+                  <div className="borderBottom" />
                 </div>
               );
             }
@@ -119,6 +127,3 @@ export default class Chats extends Component {
     );
   }
 }
-
-
-  

@@ -28,6 +28,7 @@ router.post("/postNotification", db.postNotification)
 //Patch Requests
 router.patch("/updateUserInfo", loginRequired, db.updateUserInfo)
 router.patch("/changeProfilePic", loginRequired, db.changeProfilePic);
+router.patch("/deleteProfilePic", loginRequired, db.deleteProfilePic);
 router.patch("/updateUser", loginRequired, db.updateUserInfo);
 router.patch("/notificationRead", loginRequired, db.notificationRead)
 

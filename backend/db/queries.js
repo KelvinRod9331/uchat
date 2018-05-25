@@ -122,7 +122,6 @@ const getUserByID = (req, res, next) => {
 
 const updateUserInfo = (req, res, next) => {
 
-  console.log({user:req.user, action: req.body.type})
   switch (req.body.type) {
     case "user-info":
       return db
@@ -179,7 +178,7 @@ const changeProfilePic = (req, res, next) => {
   db
     .none(
       "UPDATE users SET profile_pic = ${newProfilePic} WHERE id = ${id}",
-      req.body
+      {id:req.user.id, newProfilePic: req.body.url }
     )
     .then(function(data) {
       res
@@ -194,6 +193,30 @@ const changeProfilePic = (req, res, next) => {
         });
     });
 };
+
+const deleteProfilePic = (req, res, next) => {
+
+  var defaultImg = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
+ 
+  db
+  .none(
+    "UPDATE users SET profile_pic = ${default} WHERE id = ${id}",
+    {default: defaultImg, id: req.user.id}
+  )
+  .then(function(data) {
+    res
+      .status(200)
+      .json({
+        status: "success",
+        data: data,
+        message: "Removed profile_pic"
+      })
+      .catch(function(err) {
+        console.log("Error Deleting Photo", err)
+        return next(err);
+      });
+  });
+}
 
 const getLanguages = (req, res, next) => {
   db
@@ -415,6 +438,7 @@ module.exports = {
   logoutUser,
   getAllUsers,
   updateUserInfo,
+  deleteProfilePic,
   changeProfilePic,
   getLanguages,
   getAllCountries,

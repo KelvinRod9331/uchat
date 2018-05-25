@@ -17,6 +17,7 @@ import Menu from "./Menu"
 
 const socket = socketIOClient("http://localhost:3100");
 
+
 var loggedIn = false;
 
 export default class DashboardUpdate extends Component {
@@ -179,7 +180,7 @@ export default class DashboardUpdate extends Component {
             currentUser={currentUser}
             allUsers={allUsers}
             search={"contacts"}
-            usersThreads={usersThreads}
+            usersThreads={usersThreads}  
           />
         );
 
@@ -230,7 +231,7 @@ export default class DashboardUpdate extends Component {
             <Row className="user-header-row">
               <div className="user-profile-img-container">
                 <img
-                  src={`https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/30821925_204356536843208_2842258653858203098_o.jpg?_nc_cat=0&oh=54b74a965018171b01d5101e362b5c85&oe=5B8A54A1`}
+                  src={currentUser.profile_pic}
                   className="user-profile-img"
                 />
               </div>
@@ -251,7 +252,7 @@ export default class DashboardUpdate extends Component {
                 <div
                   id="menu"
                 >
-                <Menu currentUser={currentUser} />
+                <Menu currentUser={currentUser} userLoggedIn={this.userLoggedIn} />
                 </div>
                 
               </div>

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import dateFormat from 'dateformat';
 import "./SingleMessage.css";
 
 const SingleMessage = ({ threadMessages, currentUser, contact, sendingMessages, receivingMessages }) => {

@@ -5,11 +5,11 @@ CREATE DATABASE uchat;
 
 CREATE TABLE users (
   ID SERIAL PRIMARY KEY,
-  username VARCHAR,
-  password_digest VARCHAR,
-  email VARCHAR,
-  full_name VARCHAR,
-  language VARCHAR,
+  username VARCHAR UNIQUE NOT NULl,
+  password_digest VARCHAR NOT NULl,
+  email VARCHAR NOT NULl,
+  full_name VARCHAR NOT NULl,
+  language VARCHAR NOT NULl,
   country VARCHAR,
   profile_pic VARCHAR DEFAULT '/images/default-profile.png',
   about VARCHAR DEFAULT 'Hey There!, I am using UChat!'
@@ -25,8 +25,8 @@ CREATE TABLE threads (
     ID SERIAL PRIMARY KEY,
     user_one INTEGER REFERENCES users,
     user_two INTEGER REFERENCES users,
-    user_one_name VARCHAR,
-    user_two_name VARCHAR
+    user_one_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE,
+    user_two_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE
 );
 
 CREATE TABLE messages (
@@ -36,7 +36,7 @@ CREATE TABLE messages (
     receiver_id INTEGER REFERENCES users,
     sender_message VARCHAR,
     receiver_message VARCHAR,
-    date_sent VARCHAR,
+    date_sent TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     isread BOOLEAN
 );
 
@@ -70,9 +70,9 @@ CREATE TABLE posts (
 );
 
 
-INSERT INTO users (ID, username, password_digest, email, full_name, language, country)
+INSERT INTO users (ID, username, password_digest, email, full_name, language, country, profile_pic)
 VALUES 
-('1','Kelstar809','$2a$10$7SjEsO0VqISPHt2ybQtyiebW0UOQSN/Z8aCsOk7rVt3ZpdFbxGGSK', 'kelstar809@instant.five', 'Kel Star', 'en', 'us'),
+('1','Kelstar809','$2a$10$7SjEsO0VqISPHt2ybQtyiebW0UOQSN/Z8aCsOk7rVt3ZpdFbxGGSK', 'kelstar809@instant.five', 'Kel Star', 'en', 'us', 'https://scontent-lga3-1.xx.fbcdn.net/v/t31.0-8/30821925_204356536843208_2842258653858203098_o.jpg?_nc_cat=0&oh=54b74a965018171b01d5101e362b5c85&oe=5B8A54A1'),
 ('2','lala809','$2a$10$7SjEsO0VqISPHt2ybQtyiebW0UOQSN/Z8aCsOk7rVt3ZpdFbxGGSK', 'lala809@instant.five', 'Lala Land','es', 'do'),
 ('3','eioncont','$2a$10$7SjEsO0VqISPHt2ybQtyiebW0UOQSN/Z8aCsOk7rVt3ZpdFbxGGSK', '', '', 'en', 'us'),
 ('4','lev','$2a$10$7SjEsO0VqISPHt2ybQtyiebW0UOQSN/Z8aCsOk7rVt3ZpdFbxGGSK', '', '', 'ru', 'ru'),
