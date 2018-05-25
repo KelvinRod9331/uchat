@@ -26,7 +26,7 @@ router.post("/addContact", loginRequired, db.addToContacts);
 router.post("/postNotification", db.postNotification)
 
 //Patch Requests
-router.patch('updateUserInfo', loginRequired, db.updateUserInfo)
+router.patch("/updateUserInfo", loginRequired, db.updateUserInfo)
 router.patch("/changeProfilePic", loginRequired, db.changeProfilePic);
 router.patch("/updateUser", loginRequired, db.updateUserInfo);
 router.patch("/notificationRead", loginRequired, db.notificationRead)

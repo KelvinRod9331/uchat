@@ -120,15 +120,59 @@ const getUserByID = (req, res, next) => {
     });
 };
 
-const updateUserInfo = (req,res,err,callback) => {
-  db
-    .none(
-      "UPDATE users SET username=${username},fullname=${fullname}," +
-        "email=${email} WHERE id=${id}",
-      req.body
-    )
-    .then(() => callback(null))
-    .catch(err => callback(err));
+const updateUserInfo = (req, res, next) => {
+
+  console.log({user:req.user, action: req.body.type})
+  switch (req.body.type) {
+    case "user-info":
+      return db
+        .one(
+          "UPDATE users SET username=${username},full_name=${full_name}," +
+            "email=${email}, about=${about} WHERE id=${id} RETURNING users.*",
+          req.body
+        )
+        .then((user) => {
+          if (user) {
+            req.logIn(user, function(err) {
+              if (err) {
+                console.log("error");
+                res.status(500).send("error");
+              } else {
+                console.log("now");
+                res.status(200).send(req.user)
+              }
+            });
+          }
+        })
+        .catch(function(err) {
+          return next(err);
+        });
+
+    case "user-password":
+      return authHelpers
+        .updateUserPassword(req)
+        .then(response => {
+          passport.authenticate("local", (err, user, info) => {
+            if (user) {
+              req.logIn(user, function(err) {
+                if (err) {
+                  console.log("error");
+                  res.status(500).send("error");
+                } else {
+                  console.log("now");
+                  res.status(200).send(req.user)
+                }
+              });
+            }
+          })(req, res, next);
+        })
+        .catch(err => {
+          res.status(500).json({
+            status: "error updating password",
+            error: err
+          });
+        });
+  }
 };
 
 const changeProfilePic = (req, res, next) => {
@@ -269,25 +313,26 @@ const fetchAllMessages = (req, res, next) => {
     });
 };
 
-
 const messageRead = (req, res, next) => {
   db
-  .none( "UPDATE messages SET isread={true} WHERE id={id}")
-  .then(() => {
-    res.status(200).json({
-      status: "User Read Message"
+    .none("UPDATE messages SET isread={true} WHERE id={id}")
+    .then(() => {
+      res.status(200).json({
+        status: "User Read Message"
+      });
+    })
+    .catch(function(err) {
+      console.log("Error Updating Message", err);
+      return next(err);
     });
-  })
-  .catch(function(err) {
-    console.log("Error Updating Message", err);
-    return next(err);
-  });
-}
-
+};
 
 const fetchRecentMessages = (req, res, next) => {
   db
-    .any("SELECT DISTINCT ON (thread_id) * FROM messages WHERE sender_id = ${id} OR receiver_id = ${id} ORDER BY thread_id, id DESC", req.user)
+    .any(
+      "SELECT DISTINCT ON (thread_id) * FROM messages WHERE sender_id = ${id} OR receiver_id = ${id} ORDER BY thread_id, id DESC",
+      req.user
+    )
     .then(data => {
       res.status(200).json({
         recentMsg: data
@@ -316,10 +361,12 @@ const addToContacts = (req, res, next) => {
     });
 };
 
-
 const postNotification = (req, res, next) => {
   db
-    .none("INSERT INTO notifications (receiver_id, sender_id, type, date_send) VALUES (${receiver_id}, ${sender_id}, ${type}, ${date_send})", req.body)
+    .none(
+      "INSERT INTO notifications (receiver_id, sender_id, type, date_send) VALUES (${receiver_id}, ${sender_id}, ${type}, ${date_send})",
+      req.body
+    )
     .then(() => {
       res.status(200).json({
         status: "Successful On Posting To Notification"
@@ -329,39 +376,36 @@ const postNotification = (req, res, next) => {
       console.log("Error Posting To Notification", err);
       return next(err);
     });
-}
+};
 
 const retrieveNotifications = (req, res, next) => {
   db
-  .any('SELECT * FROM notifications WHERE receiver_id = ${id}', req.user)
-  .then((data) => {
-    res.status(200).json({
-      status: "Successful On Retrieving Users' Notification",
-      notifications: data
+    .any("SELECT * FROM notifications WHERE receiver_id = ${id}", req.user)
+    .then(data => {
+      res.status(200).json({
+        status: "Successful On Retrieving Users' Notification",
+        notifications: data
+      });
+    })
+    .catch(function(err) {
+      console.log("Error Retrieving Users' Notification", err);
+      return next(err);
     });
-  })
-  .catch(function(err) {
-    console.log("Error Retrieving Users' Notification", err);
-    return next(err);
-  });
-}
-
+};
 
 const notificationRead = (req, res, next) => {
-
   db
-  .none("UPDATE notifications SET read={true} WHERE id={id}", req.body)
-  .then(() => {
-    res.status(200).json({
-      status: "User Read Notification"
+    .none("UPDATE notifications SET read={true} WHERE id={id}", req.body)
+    .then(() => {
+      res.status(200).json({
+        status: "User Read Notification"
+      });
+    })
+    .catch(function(err) {
+      console.log("Error Updating User Notifications", err);
+      return next(err);
     });
-  })
-  .catch(function(err) {
-    console.log("Error Updating User Notifications", err);
-    return next(err);
-  });
-
-}
+};
 
 module.exports = {
   registerUser,

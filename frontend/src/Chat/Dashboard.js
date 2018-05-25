@@ -240,7 +240,7 @@ export default class DashboardUpdate extends Component {
                   {currentUser.username}
                 </span>{" "}
                 <br />
-                <span>{"Hey There! I Am Using UChat"}</span>
+                <span>{currentUser.about}</span>
               </div>
               <div className="component-box" onClick={handleSelection}>
                 
@@ -251,7 +251,7 @@ export default class DashboardUpdate extends Component {
                 <div
                   id="menu"
                 >
-                <Menu />
+                <Menu currentUser={currentUser} />
                 </div>
                 
               </div>

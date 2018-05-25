@@ -46,8 +46,8 @@ CREATE TABLE notifications (
     sender_id INTEGER REFERENCES users,
     type VARCHAR,
     date_sent VARCHAR,
-    opened BOOLEAN DEFAULT FALSE
-)
+    opened BOOLEAN 
+);
 
 CREATE TABLE languages (
     ID SERIAL PRIMARY KEY,
@@ -89,7 +89,7 @@ VALUES
 ('6','3');
 
 
-INSERT INTO languages(abbreviation, name)
+INSERT INTO languages (abbreviation, name)
 VALUES
     ('af', 'Afrikaans'),
     ('sq', 'Albanian'),
