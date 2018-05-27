@@ -172,6 +172,7 @@ export default class DashboardUpdate extends Component {
             contactUser={contactUser}
             openChatRoom={this.openChatRoom}
             fetchRecentMessage={this.fetchRecentMessage}
+            fetchUserThreads={this.fetchUserThreads}
           />
         );
       case "contacts":
@@ -183,6 +184,17 @@ export default class DashboardUpdate extends Component {
             usersThreads={usersThreads}  
           />
         );
+
+        case "discovery":
+        return (
+          <Search
+          currentUser={currentUser}
+          search={"discovery"}
+          allUsers={allUsers}
+         
+        />
+        )
+    
 
       default:
         return (

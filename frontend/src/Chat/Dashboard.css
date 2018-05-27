@@ -116,8 +116,9 @@ html {
   line-height: 20px;
   font-size: 14px;
   border: none;
-  margin-bottom: 2%;
 }
+
+.contacts-container > .contact-profile-pic-container {margin-top: 2%;}
 
 .contacts-container:hover {
   background-color: whitesmoke;
@@ -126,6 +127,7 @@ html {
   position: absolute;
   margin-left: 4%;
 }
+
 .contact-profile-pic {
   width: 50px;
   -moz-border-radius: 50px;
@@ -176,6 +178,10 @@ html {
   border: none;
   line-height: 20px;
   font-size: 14px;
+}
+
+.individual-thread > .contact-profile-pic-container {
+  margin-top: 3%;
 }
 
 .borderBottom {
@@ -258,14 +264,14 @@ html {
 
 .input-message {
   width: 83%;
-  height: 4vh;
-  margin-top: 1%;
+  height: 6vh;
+  margin-top: 0.8%;
   border-radius: 5px;
 }
 .microphone {
   width: 28px;
   margin-left: 2%;
-  margin-top: 1.5%;
+  margin-top: 1.8%;
   position: absolute;
   cursor: pointer;
   opacity: 0.4;
@@ -293,7 +299,8 @@ html {
 .contactlist-container {
   width: 100%;
   position: absolute;
-  overflow-y: auto;
+  max-height: 74%;
+  overflow-y: scroll;
 }
 
 .recent-msg {
@@ -331,6 +338,15 @@ html {
   position: absolute;
   background-color: whitesmoke;
 }
+
+/* .search-results{
+  border: 2px solid;
+  width: 100%;
+  margin-top: 15%;
+  
+  
+  background-color: #59a1f2
+} */
 
 .search-inputbox {
   width: 42vh;
@@ -414,11 +430,15 @@ html {
   margin: 8% 0 0 5%;
 }
 
-#welcome > *{
-  color: white
+#welcome > * {
+  color: white;
 }
 
-.quotes-container > *{
+.quotes-container > * {
   width: 100%;
-  color: white
+  color: white;
+}
+
+*:focus {
+  outline: none;
 }

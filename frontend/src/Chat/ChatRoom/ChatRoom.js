@@ -79,7 +79,7 @@ class ChatRoom extends Component {
             });
           })
           .catch(err => {
-           this.setState({errMessage: "Could Not Send Message", messageValue: ''}) 
+          //  this.setState({errMessage: "Could Not Send Message", messageValue: ''}) 
           });
       });
       this.setState({
@@ -167,7 +167,7 @@ class ChatRoom extends Component {
       return (
         <div className="chatroom-container  placeholder" style={{backgroundImage: `url(${this.state.randomImg})`}} >
           <div id="welcome">
-            <h1>WELCOME TO UNIFIED CHAT "UCHAT" </h1>
+            <h1>WELCOME TO UNIVERSAL CHAT "UniChat" </h1>
             <h3>
               WHERE BRIDGES ARE BUILD NOT BARRIERS, WHERE DIFFERENCE IN LANGUAGE
               SHOULDN'T STOP YOU FROM UNDERSTANDING AND KNOWING THE WORLD

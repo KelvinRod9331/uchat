@@ -36,7 +36,7 @@ export default class Notifications extends Component {
         break;
       case "friend-request":
         notification = new Notification(`${data} Sent You A Friend Request`, {
-          body: `${data} Sent You A Friend Request`
+          body: `${data.username} Sent You A Friend Request`
         })
         break;
     }

@@ -25,8 +25,6 @@ export default class Search extends Component {
     }
   };
 
- 
-
   getUsersContacts = () => {
     axios
       .get("/contacts")
@@ -51,9 +49,15 @@ export default class Search extends Component {
 
   searchEngine = () => {
     const { inputValue, results } = this.state;
-    const { search, createChatRoom, openChatRoom, allUsers } = this.props;
-
-  
+    const {
+      search,
+      createChatRoom,
+      openChatRoom,
+      allUsers,
+      usersThreads,
+      currentUser,
+      recentMsg
+    } = this.props;
 
     switch (search) {
       case "contacts":
@@ -64,87 +68,196 @@ export default class Search extends Component {
           ) {
             return (
               <div
-                // className="contacts-container"
+                className="contacts-container"
                 id={contact.contact_id}
                 onClick={e =>
                   this.setState({ inputValue: "" }, createChatRoom(e))
                 }
-                class={`flag-background flag-${contact.country.toLowerCase()}`}
               >
-                <div className="contact-profile-pic-container">
+                <div
+                  className="contact-profile-pic-container"
+                  id={contact.contact_id}
+                  onClick={e =>
+                    this.setState({ inputValue: "" }, createChatRoom(e))
+                  }
+                >
                   <img
                     className="contact-profile-pic "
                     id={contact.contact_id}
                     src={contact.profile_pic}
                   />
                 </div>
-                <div className="contact-info-container">
-                  <span id={contact.contact_id}> {contact.username}</span>{" "}
-                  <span id={contact.contact_id} />
+                <div className="contact-info-container" id={contact.contact_id}>
+                  <span className="contact-username" id={contact.contact_id}>
+                    {" "}
+                    {contact.username}
+                  </span>{" "}
+                  <br />
+                  <span id={contact.contact_id}>
+                    {"Hey There! I Am Using UChat"}
+                  </span>
                 </div>
+                <div
+                  className={`flag-background flag-${contact.country.toLowerCase()}`}
+                />
+
+                <div className="borderBottom" />
               </div>
             );
           }
         });
 
-      case "users":
+      case "discovery":
         return allUsers.map(user => {
           if (
             user.username.toLowerCase().includes(inputValue.toLowerCase()) &&
             inputValue
           ) {
             return (
-              
-            <div
-              // className="contacts-container"
-              id={user.contact_id}
-              class={`flag-background flag-${user.country.toLowerCase()}`}
-            >
-              <div className="contact-profile-pic-container">
-                <img
-                  className="contact-profile-pic "
+              <div
+                className="contacts-container"
+                id={user.contact_id}
+                onClick={() =>
+                  console.log("This will Be to open their profile ")
+                }
+              >
+                <div
+                  className="contact-profile-pic-container"
                   id={user.contact_id}
-                  src={user.profile_pic}
+                  onClick={() =>
+                    console.log("This will Be to open their profile ")
+                  }
+                >
+                  <img
+                    className="contact-profile-pic "
+                    id={user.contact_id}
+                    src={user.profile_pic}
+                  />
+                </div>
+                <div className="contact-info-container" id={user.contact_id}>
+                  <span className="contact-username" id={user.contact_id}>
+                    {" "}
+                    {user.username}
+                  </span>{" "}
+                  <br />
+                  <span id={user.contact_id}>
+                    {"Hey There! I Am Using UChat"}
+                  </span>
+                </div>
+                <div
+                  className={`flag-background flag-${user.country.toLowerCase()}`}
                 />
-              </div>
-              <div className="contact-info-container">
-                <span id={user.contact_id}> {user.username}</span>{" "}
-                <span id={user.contact_id} />
-                <button id={user.id} onClick={this.addToContactList}>
+                {/* <button id={user.id} className='friend-request-btn' onClick={this.addToContactList}>
                   Friend Request
-                </button>
-              </div>
-            </div>
-            );
+                </button> */}
 
+                <div className="borderBottom" />
+              </div>
+            );
           }
         });
 
       case "conversation":
-        return results.map(thread => {
-          if (
-            thread.user_two_name.toLowerCase().includes(inputValue.toLowerCase()) &&
-            inputValue
-          ) {
-            return (
-              <div
-                className="contacts-container"
-                id={thread.id}
-                onClick={e =>
-                  this.setState({ inputValue: "" }, openChatRoom(e))
-                }
-              >
-                <span id={thread.id}>
-                  <img
-                    className="contact-profile-pic"
-                    src={thread.profile_pic}
-                    width="50px"
-                  />
-                </span>{" "}
-                <span id={thread.id}>Username: {thread.user_two_name}</span>{" "}
-                <span id={thread.id}>Language: {thread.language}</span>{" "}
-              </div>
-            );
+        return usersThreads.map(thread => {
+          let recentObj = recentMsg.find(msg => {
+            if (msg.thread_id === thread.id) {
+              return msg;
+            }
+          });
+
+          if (recentObj && recentObj.receiver_message.split(" ").length > 5) {
+            let shortMsg =
+              recentObj.receiver_message
+                .split(" ")
+                .slice(0, 2)
+                .join(" ") + "...";
+
+            recentObj.receiver_message = shortMsg;
+          }
+
+          if (currentUser.id === thread.user_one) {
+            if (
+              thread.user_two_name
+                .toLowerCase()
+                .includes(inputValue.toLowerCase()) &&
+              inputValue
+            ) {
+              return (
+                <div
+                  className="individual-thread"
+                  id={thread.id}
+                  onClick={e => openChatRoom(e)}
+                >
+                  <div
+                    className="contact-profile-pic-container"
+                    id={thread.id}
+                    onClick={e => openChatRoom(e)}
+                  >
+                    <img
+                      className="contact-profile-pic "
+                      id={thread.id}
+                      src={thread.profile_pic}
+                    />
+                  </div>
+                  <div className="contact-info-container" id={thread.id}>
+                    <span className="contact-username" id={thread.id}>
+                      {thread.user_two_name}
+                    </span>
+                    <br />
+                    <div id={thread.id} className="recent-msg">
+                      {recentObj ? recentObj.receiver_message : ""}
+                    </div>
+
+                    <span id={thread.id} className="time-stamp-chats">
+                      {recentObj ? recentObj.date_sent : ""}
+                    </span>
+                  </div>
+
+                  <div className="borderBottom" />
+                </div>
+              );
+            }
+          } else if (currentUser.id === thread.user_two) {
+            if (
+              thread.user_one_name
+                .toLowerCase()
+                .includes(inputValue.toLowerCase()) &&
+              inputValue
+            ) {
+              return (
+                <div
+                  className="individual-thread"
+                  id={thread.id}
+                  onClick={e => openChatRoom(e)}
+                >
+                  <div
+                    className="contact-profile-pic-container"
+                    id={thread.id}
+                    //onClick={/*This will be used To View Users profile*/}
+                  >
+                    <img
+                      className="contact-profile-pic "
+                      id={thread.id}
+                      src={thread.profile_pic}
+                    />
+                  </div>
+                  <div className="contact-info-container" id={thread.id}>
+                    <span className="contact-username" id={thread.id}>
+                      {thread.user_one_name}
+                    </span>
+                    <br />
+                    <span id={thread.id} className="recent-msg">
+                      {recentObj ? recentObj.receiver_message : ""}
+                    </span>
+
+                    <span id={thread.id} className="time-stamp-chats">
+                      {recentObj ? recentObj.date_sent : ""}
+                    </span>
+                  </div>
+                  <div className="borderBottom" />
+                </div>
+              );
+            }
           }
         });
     }
@@ -154,6 +267,7 @@ export default class Search extends Component {
     const { currentUser } = this.props;
     let id = e.target.id;
 
+    console.log(id);
     if (currentUser.id !== e.target.id) {
       axios
         .post("/addContact", {
@@ -161,9 +275,12 @@ export default class Search extends Component {
           contactID: id
         })
         .then(() => {
+          console.log("CurrentUser Username", currentUser.username, {
+            currentUser: currentUser
+          });
           socket.emit("notify", {
-            action: 'friend-request',
-            username: currentUser.username,
+            action: "friend-request",
+            username: currentUser.username
           });
         })
         .catch(err => {
@@ -178,22 +295,21 @@ export default class Search extends Component {
 
   render() {
     const { inputValue } = this.state;
-    let style = {}
-    if(inputValue){
-        style = {
-            paddingTop: "10%",
-            backgroundColor: "white",
-            zIndex: "3",
-            position: "absolute",
-            height: "97%",
-            width: "47vh"
-          }
+    let style = {};
+    if (inputValue) {
+      style = {
+        position: "absolute",
+        zIndex: 3,
+        marginTop: "14.9%",
+        width: "100%",
+        height: "74%",
+        backgroundColor: "white"
+      };
     }
 
-    
     return (
       <div className="search-placeholder">
-        <form className='search-form'>
+        <form className="search-form">
           <span id="search-icon">
             <i class="fas fa-search" />
           </span>
@@ -207,10 +323,9 @@ export default class Search extends Component {
             />
           </span>
         </form>
-        <div 
-        className='search-results'
-        style={style}
-        >{this.searchEngine()}</div>
+        <div className="search-results" style={style}>
+          {this.searchEngine()}
+        </div>
       </div>
     );
   }
