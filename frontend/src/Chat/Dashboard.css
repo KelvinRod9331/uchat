@@ -52,13 +52,13 @@ html {
   margin-left: 70%;
   margin-top: 5%;
   position: absolute;
-  width: 28px;
+  width: 29px;
 }
 
 #menu {
   position: absolute;
   margin-left: 90%;
-  margin-top: 5%;
+  margin-top: 6%;
 }
 
 /* Row Two All Elements */
@@ -104,13 +104,8 @@ html {
   opacity: 0.6;
 }
 
-
-.settings-options{
-    position: absolute;
-    width: 100px;
-    height: 200px;
-    z-index: 3;
-    background-color: white;
+.settings-options {
+  cursor: pointer;
 }
 
 /* Contacts Containers and Elements */
@@ -121,16 +116,18 @@ html {
   line-height: 20px;
   font-size: 14px;
   border: none;
-  margin-bottom: 2%;
 }
 
-.contacts-container:hover{
-background-color: whitesmoke;
+.contacts-container > .contact-profile-pic-container {margin-top: 2%;}
+
+.contacts-container:hover {
+  background-color: whitesmoke;
 }
 .contact-profile-pic-container {
   position: absolute;
   margin-left: 4%;
 }
+
 .contact-profile-pic {
   width: 50px;
   -moz-border-radius: 50px;
@@ -170,7 +167,7 @@ background-color: whitesmoke;
 }
 
 .threads-container {
-  height: 81vh;
+  height: 74vh;
   overflow: auto;
 }
 
@@ -183,12 +180,16 @@ background-color: whitesmoke;
   font-size: 14px;
 }
 
+.individual-thread > .contact-profile-pic-container {
+  margin-top: 3%;
+}
+
 .borderBottom {
-    position: absolute;
-    border-bottom: 1px solid black;
-    width: 80%;
-    margin-top: 18%;
-    margin-left: 18%;
+  position: absolute;
+  border-bottom: 1px solid black;
+  width: 80%;
+  margin-top: 18%;
+  margin-left: 18%;
 }
 
 .individual-thread:hover {
@@ -212,13 +213,13 @@ background-color: whitesmoke;
   background-position: center;
 }
 
-#welcome{
-    margin-top: 25%; 
-    color: white;
+#welcome {
+  margin-top: 25%;
+  color: white;
 }
 
-.quotes-container{
-    color: white;
+.quotes-container {
+  color: white;
 }
 
 .username-container {
@@ -233,7 +234,7 @@ background-color: whitesmoke;
   float: left;
   position: absolute;
   margin-left: 13%;
-  margin-top: 1%;
+  margin-top: 2%;
   line-height: 6px;
 }
 
@@ -263,14 +264,14 @@ background-color: whitesmoke;
 
 .input-message {
   width: 83%;
-  height: 4vh;
-  margin-top: 1%;
+  height: 6vh;
+  margin-top: 0.8%;
   border-radius: 5px;
 }
 .microphone {
   width: 28px;
   margin-left: 2%;
-  margin-top: 1.5%;
+  margin-top: 1.8%;
   position: absolute;
   cursor: pointer;
   opacity: 0.4;
@@ -298,7 +299,20 @@ background-color: whitesmoke;
 .contactlist-container {
   width: 100%;
   position: absolute;
-  overflow-y: auto;
+  max-height: 74%;
+  overflow-y: scroll;
+}
+
+.recent-msg {
+  left: 0;
+  width: 180px;
+  display: flex;
+}
+
+.time-stamp-chats {
+  margin-left: 85%;
+  margin-top: -13%;
+  position: absolute;
 }
 
 .column-components {
@@ -324,6 +338,15 @@ background-color: whitesmoke;
   position: absolute;
   background-color: whitesmoke;
 }
+
+/* .search-results{
+  border: 2px solid;
+  width: 100%;
+  margin-top: 15%;
+  
+  
+  background-color: #59a1f2
+} */
 
 .search-inputbox {
   width: 42vh;
@@ -385,4 +408,37 @@ background-color: whitesmoke;
   background: #ffffff;
   background-clip: padding-box;
   box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.25);
+}
+
+.img-update {
+  margin-left: 30%;
+  cursor: pointer;
+  width: 200px;
+  -moz-border-radius: 100px;
+  -webkit-border-radius: 100px;
+}
+
+.user-img-update {
+  width: 200px;
+  -moz-border-radius: 100px;
+  -webkit-border-radius: 100px;
+}
+
+.fullscreen-photo-view {
+  width: 500px;
+  height: 500px;
+  margin: 8% 0 0 5%;
+}
+
+#welcome > * {
+  color: white;
+}
+
+.quotes-container > * {
+  width: 100%;
+  color: white;
+}
+
+*:focus {
+  outline: none;
 }

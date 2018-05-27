@@ -15,6 +15,7 @@ router.get("/logout", db.logoutUser);
 router.get("/messages/:threadId", loginRequired, db.fetchAllMessages);
 router.get("/threads", loginRequired, db.fetchedThreads);
 router.get("/recentMsg", loginRequired, db.fetchRecentMessages);
+router.get("/notifications", loginRequired, db.retrieveNotifications)
 
 //Post Requests
 router.post("/register", db.registerUser);
@@ -22,8 +23,13 @@ router.post("/login", db.loginUser);
 router.post("/newThread", loginRequired, db.createThread);
 router.post("/messages",  db.storeMessages);
 router.post("/addContact", loginRequired, db.addToContacts);
+router.post("/postNotification", db.postNotification)
 
+//Patch Requests
+router.patch("/updateUserInfo", loginRequired, db.updateUserInfo)
 router.patch("/changeProfilePic", loginRequired, db.changeProfilePic);
+router.patch("/deleteProfilePic", loginRequired, db.deleteProfilePic);
 router.patch("/updateUser", loginRequired, db.updateUserInfo);
+router.patch("/notificationRead", loginRequired, db.notificationRead)
 
 module.exports = router;

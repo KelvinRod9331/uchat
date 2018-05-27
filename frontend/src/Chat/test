@@ -1,44 +1,6 @@
-import React, { Component } from "react";
-import axios from "axios";
-import socketIOClient from "socket.io-client";
-import { Grid, Row, Col } from "react-bootstrap";
-import Search from "./Search";
+usersThreads.map(thread => {
 
-const socket = socketIOClient("http://localhost:3100");
-
-export default class Chats extends Component {
-  componentWillMount() {
-    const { fetchRecentMessage, fetchUserThreads } = this.props;
-    socket.on("chat", () => fetchRecentMessage());
-    socket.on("chat", () => fetchUserThreads());
-  }
-  render() {
-    const {
-      usersThreads,
-      currentUser,
-      search,
-      recentMsg,
-      threadMessages,
-      threadSelected,
-      contactUser,
-      openChatRoom
-    } = this.props;
-
-    return (
-      <Grid>
-        <div className="search-placeholder">
-          <Search
-            search={search}
-            currentUser={currentUser}
-            usersThreads={usersThreads}
-            openChatRoom={openChatRoom}
-            recentMsg={recentMsg}
-          />
-        </div>
-        <div className="threads-container">
-          {usersThreads.map(thread => {
-
-            console.log(thread)
+  
             let recentObj = recentMsg.find(msg => {
               if (msg.thread_id === thread.id) {
                 return msg;
@@ -56,6 +18,11 @@ export default class Chats extends Component {
             }
 
             if (currentUser.id === thread.user_one) {
+
+        if (
+            thread.user_two_name.toLowerCase().includes(inputValue.toLowerCase()) &&
+            inputValue
+          ) {
               return (
                 <div
                   className="individual-thread"
@@ -89,8 +56,12 @@ export default class Chats extends Component {
 
                   <div className="borderBottom" />
                 </div>
-              );
+              )};
             } else if (currentUser.id === thread.user_two) {
+        if (
+            thread.user_one_name.toLowerCase().includes(inputValue.toLowerCase()) &&
+            inputValue
+          ) {
               return (
                 <div
                   className="individual-thread"
@@ -123,11 +94,6 @@ export default class Chats extends Component {
                   </div>
                   <div className="borderBottom" />
                 </div>
-              );
+              )};
             }
-          })}
-        </div>
-      </Grid>
-    );
-  }
-}
+          })

@@ -14,6 +14,15 @@ function createUser(req) {
   );
 }
 
+function updateUserPassword(req){
+  const salt = bcrypt.genSaltSync();
+  const hash = bcrypt.hashSync(req.body.password, salt);
+  return db.none(
+    "UPDATE users SET password_digest=${password}",
+    {password: hash}
+  );
+}
+
 function loginRequired(req, res, next) {
   if (!req.user) {
     return res.status(401).json({ status: "Please log in" });
@@ -24,5 +33,6 @@ function loginRequired(req, res, next) {
 module.exports = {
   comparePass,
   createUser,
-  loginRequired
+  loginRequired,
+  updateUserPassword
 };

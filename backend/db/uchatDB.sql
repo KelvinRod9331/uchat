@@ -5,11 +5,11 @@ CREATE DATABASE uchat;
 
 CREATE TABLE users (
   ID SERIAL PRIMARY KEY,
-  username VARCHAR,
-  password_digest VARCHAR,
-  email VARCHAR,
-  full_name VARCHAR,
-  language VARCHAR,
+  username VARCHAR UNIQUE NOT NULl,
+  password_digest VARCHAR NOT NULl,
+  email VARCHAR NOT NULl,
+  full_name VARCHAR NOT NULl,
+  language VARCHAR NOT NULl,
   country VARCHAR,
   profile_pic VARCHAR DEFAULT '/images/default-profile.png',
   about VARCHAR DEFAULT 'Hey There!, I am using UChat!'
@@ -25,8 +25,8 @@ CREATE TABLE threads (
     ID SERIAL PRIMARY KEY,
     user_one INTEGER REFERENCES users,
     user_two INTEGER REFERENCES users,
-    user_one_name VARCHAR,
-    user_two_name VARCHAR
+    user_one_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE,
+    user_two_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE
 );
 
 CREATE TABLE messages (
@@ -36,7 +36,7 @@ CREATE TABLE messages (
     receiver_id INTEGER REFERENCES users,
     sender_message VARCHAR,
     receiver_message VARCHAR,
-    date_sent VARCHAR,
+    date_sent VARCHAR DEFAULT CURRENT_TIMESTAMP NOT NULL,
     isread BOOLEAN
 );
 
@@ -44,10 +44,10 @@ CREATE TABLE notifications (
     ID SERIAL PRIMARY KEY,
     receiver_ID INTEGER REFERENCES users,
     sender_id INTEGER REFERENCES users,
-    type_notification VARCHAR,
+    type VARCHAR,
     date_sent VARCHAR,
-    read BOOLEAN DEFAULT false
-)
+    opened BOOLEAN 
+);
 
 CREATE TABLE languages (
     ID SERIAL PRIMARY KEY,
@@ -89,7 +89,7 @@ VALUES
 ('6','3');
 
 
-INSERT INTO languages(abbreviation, name)
+INSERT INTO languages (abbreviation, name)
 VALUES
     ('af', 'Afrikaans'),
     ('sq', 'Albanian'),

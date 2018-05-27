@@ -6,6 +6,7 @@ import axios from "axios";
 import SingleMessage from "./SingleMessage";
 import UChatAPI from "../../UChatAPI";
 import ImagesAPI from '../../Images/ImagesAPI'
+import dateFormat from 'dateformat';
 
 var APIKey = require("../config");
 var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
@@ -27,7 +28,6 @@ class ChatRoom extends Component {
     var ranNum = Math.floor(Math.random() * Math.floor(14));
     var imgUrl = ImagesAPI.imgArr[ranNum]
 
-    console.log(imgUrl)
     this.setState({
       randomImg: imgUrl
     })
@@ -43,10 +43,12 @@ class ChatRoom extends Component {
   sendMessages = e => {
     e.preventDefault();
     const { messageValue } = this.state;
-
     const { thread, currentUser, contactUser, Conversation } = this.props;
 
+    var date = new Date()
 
+    var time = dateFormat(date, "h:MMtt")
+    
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(
         err,
@@ -59,8 +61,8 @@ class ChatRoom extends Component {
             receiver_id: contactUser.id,
             sender_message: messageValue,
             receiver_message: translation.translatedText,
-            date_sent: "no time",
-            isread: "false"
+            date_sent: time,
+            isread: false
           })
           .then(() => {
             Conversation(thread.id);
@@ -77,7 +79,7 @@ class ChatRoom extends Component {
             });
           })
           .catch(err => {
-           this.setState({errMessage: "Could Not Send Message", messageValue: ''}) 
+          //  this.setState({errMessage: "Could Not Send Message", messageValue: ''}) 
           });
       });
       this.setState({
@@ -165,12 +167,12 @@ class ChatRoom extends Component {
       return (
         <div className="chatroom-container  placeholder" style={{backgroundImage: `url(${this.state.randomImg})`}} >
           <div id="welcome">
-            <strong><h1>WELCOME TO UNIFIED CHAT "UCHAT" </h1></strong>
+            <h1>WELCOME TO UNIVERSAL CHAT "UniChat" </h1>
             <h3>
               WHERE BRIDGES ARE BUILD NOT BARRIERS, WHERE DIFFERENCE IN LANGUAGE
               SHOULDN'T STOP YOU FROM UNDERSTANDING AND KNOWING THE WORLD
             </h3>
-            <p>START A NEW CHAT OR CONTINUE YOU'RE RECENT CHATS</p>
+            <p>START A NEW CHAT OR CONTINUE YOUR RECENT CHATS</p>
           </div>
           <div className="quotes-container">
             <h3>{quote.quote}</h3>

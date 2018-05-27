@@ -40,20 +40,15 @@
     align-items: flex-start;
 }
 
-.message-header {
-    display: flex;
-    flex-direction: row;
+.message-header{
+    margin-right: 2%;
 }
 
-.otherUserMessage > .message-header {
-    display: flex;
-    flex-direction: row-reverse;
+.otherUserMessage > .message-header > .message-sender {
+    margin-left: 15%;
 }
 
-.message-date {
-    margin: 0 15px 0 15px;
+.message-date{
+    font-size: 12px;
 }
 
-.message-sender {
-    margin: 0 15px 0 15px;
-}

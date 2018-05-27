@@ -1,3 +1,4 @@
+import React from 'react'
 import axios from 'axios'
 
 
@@ -120,9 +121,13 @@ import axios from 'axios'
   const randomImageGenerator = () => axios.get('https://source.unsplash.com/random')
   const randomQuotesGenerator = () => axios.get("https://talaikis.com/api/quotes/random/")
   const logOut = () => axios.get('/logout')
+  const updateUserInfo = (userInfo) => axios.patch('/updateUserInfo', userInfo)
+  const uploadImgUrl = (url) => axios.patch('/changeProfilePic', url)
 
   export default{
     randomImageGenerator,
     randomQuotesGenerator,
     logOut,
+    updateUserInfo,
+    uploadImgUrl,
   }
