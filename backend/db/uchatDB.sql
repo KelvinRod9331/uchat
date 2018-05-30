@@ -26,7 +26,8 @@ CREATE TABLE threads (
     user_one INTEGER REFERENCES users,
     user_two INTEGER REFERENCES users,
     user_one_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE,
-    user_two_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE
+    user_two_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE,
+    created BOOLEAN 
 );
 
 CREATE TABLE messages (
@@ -83,10 +84,15 @@ VALUES
 INSERT INTO contacts (user_ID, contact_ID)
 VALUES
 ('6','2'),
-('6','5'),
+('2','6'),
 ('6','1'),
+('1','6'),
+('6','2'),
+('2','6'),
+('6','3'),
+('3','6'),
 ('6','4'),
-('6','3');
+('4','6');
 
 
 INSERT INTO languages (abbreviation, name)

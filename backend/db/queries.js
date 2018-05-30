@@ -251,7 +251,7 @@ const getAllCountries = (req, res, next) => {
 const getUsersContacts = (req, res, next) => {
   db
     .any(
-      "SELECT contact_id, username, language, profile_pic, full_name, country FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id} OR contact_id=${id} ",
+      "SELECT contact_id, username, language, profile_pic, full_name, country FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id}",
       req.user
     )
     .then(data => {
@@ -269,7 +269,7 @@ const getUsersContacts = (req, res, next) => {
 const createThread = (req, res, next) => {
   db
     .one(
-      "INSERT INTO threads (user_one, user_two, user_one_name, user_two_name) VALUES (${user_id}, ${contact_id}, ${user_one_name}, ${user_two_name}) RETURNING ID",
+      "INSERT INTO threads (user_one, user_two, user_one_name, user_two_name, created) VALUES (${user_id}, ${contact_id}, ${user_one_name}, ${user_two_name}, ${created}) RETURNING id, user_one, user_two, user_one_name, user_two_name, created",
       req.body
     )
     .then(data => {
@@ -288,7 +288,7 @@ const createThread = (req, res, next) => {
 const fetchedThreads = (req, res, next) => {
   db
     .any(
-      "SELECT threads.id, user_one, user_two, user_one_name, user_two_name, full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id} or user_two=${id}",
+      "SELECT threads.id, user_one, user_two, user_one_name, user_two_name, created, full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id} or user_two=${id}",
       req.user
     )
     .then(data => {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from "react";
 import axios from "axios";
 import socketIOClient from "socket.io-client";
@@ -60,12 +61,12 @@ export default class Chats extends Component {
                 <div
                   className="individual-thread"
                   id={thread.id}
-                  onClick={e => openChatRoom(e)}
+                  onClick={e => openChatRoom(e, 'chats')}
                 >
                   <div
                     className="contact-profile-pic-container"
                     id={thread.id}
-                    onClick={e => openChatRoom(e)}
+                    onClick={e => openChatRoom(e, 'chats')}
                   >
                     <img
                       className="contact-profile-pic "
@@ -95,7 +96,7 @@ export default class Chats extends Component {
                 <div
                   className="individual-thread"
                   id={thread.id}
-                  onClick={e => openChatRoom(e)}
+                  onClick={e => openChatRoom(e, 'chats')}
                 >
                   <div
                     className="contact-profile-pic-container"

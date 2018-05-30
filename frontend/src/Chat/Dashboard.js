@@ -1,5 +1,6 @@
+/* eslint-disable */
 import React, { Component } from "react";
-import { Grid, Row, Col,  } from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
 import { Redirect } from "react-router";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
@@ -13,10 +14,9 @@ import Chats from "./Chats";
 import Search from "./Search";
 import Notifications from "./Notifications";
 import ModalPages from "./ModalPages";
-import Menu from "./Menu"
+import Menu from "./Menu";
 
 const socket = socketIOClient("http://localhost:3100");
-
 
 var loggedIn = false;
 
@@ -91,17 +91,23 @@ export default class DashboardUpdate extends Component {
     this.setState({ selected: e.target.id });
   };
 
-  openChatRoom = e => {
+  openChatRoom = (e, source) => {
     const { usersThreads } = this.state;
-    let threadSelected = usersThreads.find(thread => {
-      if (thread.id === Number(e.target.id)) {
-        return thread;
-      }
-    });
 
-    this.setState({ threadSelected: threadSelected }, () =>
-      this.getUserByID(threadSelected)
-    );
+    if (source === "chats") {
+      let thread = usersThreads.find(
+        thread => thread.id === Number(e.target.id)
+      );
+      this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
+    } else if (source === "contacts") {
+      let thread = e;
+      this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
+    } else if (source === "search") {
+      let thread = usersThreads.find(
+        thread => thread.id === Number(e.target.id)
+      );
+      this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
+    }
   };
 
   getUserByID = thread => {
@@ -181,20 +187,20 @@ export default class DashboardUpdate extends Component {
             currentUser={currentUser}
             allUsers={allUsers}
             search={"contacts"}
-            usersThreads={usersThreads}  
+            usersThreads={usersThreads}
+            openChatRoom={this.openChatRoom}
+            fetchUserThreads={this.fetchUserThreads}
           />
         );
 
-        case "discovery":
+      case "discovery":
         return (
           <Search
-          currentUser={currentUser}
-          search={"discovery"}
-          allUsers={allUsers}
-         
-        />
-        )
-    
+            currentUser={currentUser}
+            search={"discovery"}
+            allUsers={allUsers}
+          />
+        );
 
       default:
         return (
@@ -211,7 +217,6 @@ export default class DashboardUpdate extends Component {
         );
     }
   };
-
 
   componentWillMount() {
     this.userLoggedIn();
@@ -256,17 +261,16 @@ export default class DashboardUpdate extends Component {
                 <span>{currentUser.about}</span>
               </div>
               <div className="component-box" onClick={handleSelection}>
-                
                 <img
                   id="add-friend"
                   src="/images/request-notification-icon.png"
                 />
-                <div
-                  id="menu"
-                >
-                <Menu currentUser={currentUser} userLoggedIn={this.userLoggedIn} />
+                <div id="menu">
+                  <Menu
+                    currentUser={currentUser}
+                    userLoggedIn={this.userLoggedIn}
+                  />
                 </div>
-                
               </div>
             </Row>
             <Row className="component-row">

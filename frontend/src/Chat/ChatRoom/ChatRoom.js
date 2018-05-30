@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { form, FormControl } from "react-bootstrap";
@@ -71,6 +72,7 @@ class ChatRoom extends Component {
             });
 
             socket.emit("notify", {
+              receiver_id: contactUser.id,
               action: "incoming-msg",
               username: currentUser.username,
               image: contactUser.profile_pic,
@@ -112,9 +114,9 @@ class ChatRoom extends Component {
       currentUser,
       contactUser
     } = this.props;
+    console.log('chatroom', thread)
 
     var size = Object.keys(thread).length;
-
 
     if (size) {
       return (

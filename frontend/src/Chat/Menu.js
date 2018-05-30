@@ -162,6 +162,7 @@ class Menu extends React.Component {
               <img
                 src={currentUser.profile_pic}
                 className="fullscreen-photo-view"
+                alt=''
               />
             </Modal>
           </div>
@@ -187,6 +188,9 @@ class Menu extends React.Component {
         );
       case "delete-photo":
         return;
+
+      default:
+      break
     }
   };
 
@@ -265,6 +269,7 @@ class Menu extends React.Component {
                   <img
                     src={currentUser.profile_pic}
                     className="user-img-update"
+                    alt=''
                   />
                 </Popover>
               </div>
@@ -364,8 +369,6 @@ class Menu extends React.Component {
     );
   };
   render() {
-    const { logged } = this.state;
-
     return (
       <div>
         <Popover

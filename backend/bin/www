@@ -28,6 +28,7 @@ var server = http.createServer(app);
  */
 var io = socket(server);
 var clients = [];
+var clientsObj = {}
 
 io.on("connection", socket => {
   console.log("User connected", socket.id);
@@ -48,20 +49,25 @@ io.on("connection", socket => {
       connectionId: socket.id,
       language: data.language
     };
+
+    clientsObj[data.userId] = clientInfo
     clients.push(clientInfo);
-    console.log(clients);
+    console.log(clientsObj);
   });
 
   socket.on("chat", data => {
-    console.log("Chat Data", data);
-
-     io.sockets.emit("chat", {
-        threadID: data.threadID
-      });
+  
+    io.sockets.emit("chat", {
+          threadID: data.threadID
+        });
 
   });
 
   socket.on("notify", data => {
+
+    // io.to(clientsObj[data.receiver_id].connectionId).emit("chat", {
+    //   threadID: data.threadID
+    // });
  
       socket.broadcast.emit("notify", {
         type: data.action,

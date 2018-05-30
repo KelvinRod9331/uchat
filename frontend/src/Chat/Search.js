@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from "react";
 import axios from "axios";
 import socketIOClient from "socket.io-client";
@@ -22,6 +23,10 @@ export default class Search extends Component {
 
       case "conversation":
         return this.fetchUserThreads();
+
+      case "discovery":
+        return this.getUsersContacts();
+      default:
     }
   };
 
@@ -85,6 +90,7 @@ export default class Search extends Component {
                     className="contact-profile-pic "
                     id={contact.contact_id}
                     src={contact.profile_pic}
+                    alt=""
                   />
                 </div>
                 <div className="contact-info-container" id={contact.contact_id}>
@@ -107,57 +113,8 @@ export default class Search extends Component {
           }
         });
 
-      case "discovery":
-        return allUsers.map(user => {
-          if (
-            user.username.toLowerCase().includes(inputValue.toLowerCase()) &&
-            inputValue
-          ) {
-            return (
-              <div
-                className="contacts-container"
-                id={user.contact_id}
-                onClick={() =>
-                  console.log("This will Be to open their profile ")
-                }
-              >
-                <div
-                  className="contact-profile-pic-container"
-                  id={user.contact_id}
-                  onClick={() =>
-                    console.log("This will Be to open their profile ")
-                  }
-                >
-                  <img
-                    className="contact-profile-pic "
-                    id={user.contact_id}
-                    src={user.profile_pic}
-                  />
-                </div>
-                <div className="contact-info-container" id={user.contact_id}>
-                  <span className="contact-username" id={user.contact_id}>
-                    {" "}
-                    {user.username}
-                  </span>{" "}
-                  <br />
-                  <span id={user.contact_id}>
-                    {"Hey There! I Am Using UChat"}
-                  </span>
-                </div>
-                <div
-                  className={`flag-background flag-${user.country.toLowerCase()}`}
-                />
-                {/* <button id={user.id} className='friend-request-btn' onClick={this.addToContactList}>
-                  Friend Request
-                </button> */}
-
-                <div className="borderBottom" />
-              </div>
-            );
-          }
-        });
-
       case "conversation":
+        // eslint-disable-next-line
         return usersThreads.map(thread => {
           let recentObj = recentMsg.find(msg => {
             if (msg.thread_id === thread.id) {
@@ -186,17 +143,18 @@ export default class Search extends Component {
                 <div
                   className="individual-thread"
                   id={thread.id}
-                  onClick={e => openChatRoom(e)}
+                  onClick={e => openChatRoom(e, 'search')}
                 >
                   <div
                     className="contact-profile-pic-container"
                     id={thread.id}
-                    onClick={e => openChatRoom(e)}
+                    onClick={e => openChatRoom(e, 'search')}
                   >
                     <img
                       className="contact-profile-pic "
                       id={thread.id}
                       src={thread.profile_pic}
+                      alt=""
                     />
                   </div>
                   <div className="contact-info-container" id={thread.id}>
@@ -228,7 +186,7 @@ export default class Search extends Component {
                 <div
                   className="individual-thread"
                   id={thread.id}
-                  onClick={e => openChatRoom(e)}
+                  onClick={e => openChatRoom(e, 'search')}
                 >
                   <div
                     className="contact-profile-pic-container"
@@ -239,6 +197,7 @@ export default class Search extends Component {
                       className="contact-profile-pic "
                       id={thread.id}
                       src={thread.profile_pic}
+                      alt=""
                     />
                   </div>
                   <div className="contact-info-container" id={thread.id}>
@@ -260,28 +219,95 @@ export default class Search extends Component {
             }
           }
         });
+
+      case "discovery":
+        return allUsers.map(user => {
+          if (
+            user.username.toLowerCase().includes(inputValue.toLowerCase()) &&
+            inputValue
+          ) {
+            return (
+              <div
+                className="contacts-container"
+                id={user.contact_id}
+                // eslint-disable-next-line
+                onClick={() =>
+                  console.log("This will Be to open their profile ")
+                }
+              >
+                <div
+                  className="contact-profile-pic-container"
+                  id={user.contact_id}
+                  // eslint-disable-next-line
+                  onClick={() =>
+                    console.log("This will Be to open their profile ")
+                  }
+                >
+                  <img
+                    className="contact-profile-pic "
+                    id={user.contact_id}
+                    src={user.profile_pic}
+                    alt=""
+                  />
+                </div>
+                <div className="contact-info-container" id={user.contact_id}>
+                  <span className="contact-username" id={user.contact_id}>
+                    {" "}
+                    {user.username}
+                  </span>{" "}
+                  <br />
+                  <span id={user.contact_id}>
+                    {"Hey There! I Am Using UChat"}
+                  </span>
+                </div>
+                <div
+                  className={`flag-background flag-${user.country.toLowerCase()}`}
+                />
+                <button
+                  id={user.id}
+                  className="friend-request-btn"
+                  onClick={this.addToContactList}
+                >
+                  Friend Request
+                </button>
+
+                <div className="borderBottom" />
+              </div>
+            );
+          }
+        });
+
+      default:
     }
   };
 
   addToContactList = e => {
     const { currentUser } = this.props;
+    const { results } = this.state;
     let id = e.target.id;
+    let exists = results.find(contact => contact.contact_id === Number(id));
+    console.log({ results: results, id: id, exists: exists });
 
-    console.log(id);
-    if (currentUser.id !== e.target.id) {
+    if (currentUser.id !== id && !Boolean(exists)) {
       axios
         .post("/addContact", {
           userID: currentUser.id,
           contactID: id
         })
         .then(() => {
-          console.log("CurrentUser Username", currentUser.username, {
-            currentUser: currentUser
-          });
           socket.emit("notify", {
             action: "friend-request",
             username: currentUser.username
           });
+        })
+        .catch(err => {
+          console.log("Error Adding Contact To List", err);
+        });
+
+      axios
+        .post("/addContact", {
+          userID: id,
+          contactID: currentUser.id
         })
         .catch(err => {
           console.log("Error Adding Contact To List", err);
