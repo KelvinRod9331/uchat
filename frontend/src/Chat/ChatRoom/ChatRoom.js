@@ -124,6 +124,13 @@ class ChatRoom extends Component {
     });
   };
 
+  handleEmojiOuput = e => {
+    let emoji = e.target
+    this.setState({
+      messageValue: emoji
+    })
+  }
+
   emojiDisplay = () => {
     const { emojis, emojiValue } = this.state;
 
@@ -141,8 +148,8 @@ class ChatRoom extends Component {
           {emojis.map(el => {
             if (el[0].includes(emojiValue)) {
               return (
-                <span>
-                  <img src={el[1]} width="30px" />
+                <span id={el[1]} onClick={this.handleEmojiOuput}>
+                  <img id={el[1]} src={el[1]} width="30px" />
                 </span>
               );
             }
