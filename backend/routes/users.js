@@ -32,4 +32,8 @@ router.patch("/deleteProfilePic", loginRequired, db.deleteProfilePic);
 router.patch("/updateUser", loginRequired, db.updateUserInfo);
 router.patch("/notificationRead", loginRequired, db.notificationRead)
 
+//Delete Requests
+
+router.delete("/deleteNotification", loginRequired, db.deleteNotification)
+
 module.exports = router;

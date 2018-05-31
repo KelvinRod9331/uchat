@@ -43,8 +43,11 @@ CREATE TABLE messages (
 
 CREATE TABLE notifications (
     ID SERIAL PRIMARY KEY,
-    receiver_ID INTEGER REFERENCES users,
+    receiver_id INTEGER REFERENCES users,
     sender_id INTEGER REFERENCES users,
+    sender_username  VARCHAR REFERENCES users(username),
+    sender_profile_pic VARCHAR,
+    sender_country VARCHAR,
     type VARCHAR,
     date_sent VARCHAR,
     opened BOOLEAN 

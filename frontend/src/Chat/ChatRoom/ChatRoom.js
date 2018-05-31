@@ -6,8 +6,9 @@ import socketIOClient from "socket.io-client";
 import axios from "axios";
 import SingleMessage from "./SingleMessage";
 import UChatAPI from "../../UChatAPI";
-import ImagesAPI from '../../Images/ImagesAPI'
-import dateFormat from 'dateformat';
+import ImagesAPI from "../../Images/ImagesAPI";
+import dateFormat from "dateformat";
+import { animateScroll } from "react-scroll";
 
 var APIKey = require("../config");
 var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
@@ -27,12 +28,12 @@ class ChatRoom extends Component {
 
   getRandomImg = () => {
     var ranNum = Math.floor(Math.random() * Math.floor(14));
-    var imgUrl = ImagesAPI.imgArr[ranNum]
+    var imgUrl = ImagesAPI.imgArr[ranNum];
 
     this.setState({
       randomImg: imgUrl
-    })
-  }
+    });
+  };
 
   handleInput = e => {
     this.setState({
@@ -46,10 +47,10 @@ class ChatRoom extends Component {
     const { messageValue } = this.state;
     const { thread, currentUser, contactUser, Conversation } = this.props;
 
-    var date = new Date()
+    var date = new Date();
 
-    var time = dateFormat(date, "h:MMtt")
-    
+    var time = dateFormat(date, "h:MMtt");
+
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(
         err,
@@ -81,7 +82,7 @@ class ChatRoom extends Component {
             });
           })
           .catch(err => {
-          //  this.setState({errMessage: "Could Not Send Message", messageValue: ''}) 
+            //  this.setState({errMessage: "Could Not Send Message", messageValue: ''})
           });
       });
       this.setState({
@@ -97,12 +98,22 @@ class ChatRoom extends Component {
     });
   };
 
+  scrollToBottom() {
+    animateScroll.scrollToBottom({
+      containerId: "message-container"
+    });
+  }
+
   componentWillMount() {
     this.retrieveSendersMsg();
-    this.getRandomImg()
+    this.getRandomImg();
     UChatAPI.randomQuotesGenerator().then(res =>
       this.setState({ quote: res.data })
     );
+  }
+
+  componentDidUpdate(){
+    this.scrollToBottom()
   }
 
   render() {
@@ -114,7 +125,7 @@ class ChatRoom extends Component {
       currentUser,
       contactUser
     } = this.props;
-    console.log('chatroom', thread)
+    console.log("chatroom", thread);
 
     var size = Object.keys(thread).length;
 
@@ -143,7 +154,7 @@ class ChatRoom extends Component {
               <i class="fas fa-ellipsis-v" />
             </div>
           </div>
-          <div className="message-container">
+          <div className="message-container" id='message-container'>
             <SingleMessage
               currentUser={currentUser}
               threadMessages={threadMessages}
@@ -167,7 +178,10 @@ class ChatRoom extends Component {
       );
     } else {
       return (
-        <div className="chatroom-container  placeholder" style={{backgroundImage: `url(${this.state.randomImg})`}} >
+        <div
+          className="chatroom-container  placeholder"
+          style={{ backgroundImage: `url(${this.state.randomImg})` }}
+        >
           <div id="welcome">
             <h1>WELCOME TO UNIVERSAL CHAT "UniChat" </h1>
             <h3>

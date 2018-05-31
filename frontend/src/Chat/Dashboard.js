@@ -12,9 +12,10 @@ import ChatRoom from "./ChatRoom/ChatRoom";
 import Contacts from "./Contacts";
 import Chats from "./Chats";
 import Search from "./Search";
-import Notifications from "./Notifications";
+import Notify from "./Notify";
 import ModalPages from "./ModalPages";
 import Menu from "./Menu";
+import Notifications from './Notifications'
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -164,8 +165,6 @@ export default class DashboardUpdate extends Component {
     } = this.state;
 
     switch (selected) {
-      case "notifications":
-        return <ModalPages trigger={true} />;
       case "chats":
         return (
           <Chats
@@ -205,14 +204,16 @@ export default class DashboardUpdate extends Component {
       default:
         return (
           <Chats
-            usersThreads={usersThreads}
-            currentUser={currentUser}
-            recentMsg={recentMsg}
-            search={"conversation"}
-            threadMessages={threadMessages}
-            threadSelected={threadSelected}
-            contactUser={contactUser}
-            openChatRoom={this.openChatRoom}
+          usersThreads={usersThreads}
+          currentUser={currentUser}
+          recentMsg={recentMsg}
+          search={"conversation"}
+          threadMessages={threadMessages}
+          threadSelected={threadSelected}
+          contactUser={contactUser}
+          openChatRoom={this.openChatRoom}
+          fetchRecentMessage={this.fetchRecentMessage}
+          fetchUserThreads={this.fetchUserThreads}
           />
         );
     }
@@ -243,7 +244,7 @@ export default class DashboardUpdate extends Component {
     if (loggedIn) {
       return (
         <Grid bsClass="dashboard-container">
-          <Notifications />
+          <Notify />
           <Col className="left-display">
             <Row className="user-header-row">
               <div className="user-profile-img-container">
@@ -260,11 +261,10 @@ export default class DashboardUpdate extends Component {
                 <br />
                 <span>{currentUser.about}</span>
               </div>
-              <div className="component-box" onClick={handleSelection}>
-                <img
-                  id="add-friend"
-                  src="/images/request-notification-icon.png"
-                />
+              <div className="component-box" >
+                <div id='add-friend'>
+                  <Notifications />
+                </div>
                 <div id="menu">
                   <Menu
                     currentUser={currentUser}

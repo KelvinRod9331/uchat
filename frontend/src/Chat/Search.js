@@ -1,7 +1,10 @@
 /* eslint-disable */
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import socketIOClient from "socket.io-client";
+import UChat from "../UChatAPI";
+import dateFormat from "dateformat";
 const socket = socketIOClient("http://localhost:3100");
 
 export default class Search extends Component {
@@ -10,7 +13,8 @@ export default class Search extends Component {
     this.state = {
       results: [],
       inputValue: "",
-      message: ""
+      message: "",
+      requests: []
     };
   }
 
@@ -52,8 +56,68 @@ export default class Search extends Component {
       .catch(err => console.log("Error:", err));
   };
 
+  sendRequest = e => {
+    const { currentUser } = this.props;
+    const { requests } = this.state;
+    let receiverID = e.target.id;
+
+    var date = new Date();
+    var time = dateFormat(date, "h:MMtt");
+    document.getElementById(receiverID).innerText = "Cancel";
+
+    UChat.postNotifications({
+      receiver_id: receiverID,
+      sender_id: currentUser.id,
+      sender_username: currentUser.username,
+      sender_profile_pic: currentUser.profile_pic,
+      sender_country: currentUser.country,
+      type: "friend-request",
+      date_sent: time,
+      opened: false
+    })
+      .then(() => {
+       
+        socket.emit("notify", {
+          action: "friend-request",
+          username: currentUser.username
+        });
+        this.setState({
+          requests: [...requests, receiverID]
+        });
+      })
+      .catch(err => console.log("Failed Posting Notification", err));
+  };
+
+  cancelRequest = e => {
+    const { requests } = this.state;
+    const { currentUser } = this.props;
+    let receiverID = e.target.id;
+
+    document.getElementById(receiverID).innerText = "Friend Request";
+
+    UChat.deleteNotification({
+      receiverID: Number(receiverID),
+      senderID: currentUser.id
+    })
+      .then(() => {
+        let modifiedArr = [];
+
+        for (var i = 0; i < requests.length; i++) {
+          if (requests[i] !== receiverID) {
+            modifiedArr.push(requests[i]);
+          }
+        }
+
+        console.log("HERE", modifiedArr);
+        this.setState({
+          requests: modifiedArr
+        });
+      })
+      .catch(err => console.log("Error Deleting Notification", err));
+  };
+
   searchEngine = () => {
-    const { inputValue, results } = this.state;
+    const { inputValue, results, requests } = this.state;
     const {
       search,
       createChatRoom,
@@ -99,9 +163,7 @@ export default class Search extends Component {
                     {contact.username}
                   </span>{" "}
                   <br />
-                  <span id={contact.contact_id}>
-                    {"Hey There! I Am Using UChat"}
-                  </span>
+                  <span id={contact.contact_id}>{contact.about}</span>
                 </div>
                 <div
                   className={`flag-background flag-${contact.country.toLowerCase()}`}
@@ -143,12 +205,12 @@ export default class Search extends Component {
                 <div
                   className="individual-thread"
                   id={thread.id}
-                  onClick={e => openChatRoom(e, 'search')}
+                  onClick={e => openChatRoom(e, "search")}
                 >
                   <div
                     className="contact-profile-pic-container"
                     id={thread.id}
-                    onClick={e => openChatRoom(e, 'search')}
+                    onClick={e => openChatRoom(e, "search")}
                   >
                     <img
                       className="contact-profile-pic "
@@ -186,7 +248,7 @@ export default class Search extends Component {
                 <div
                   className="individual-thread"
                   id={thread.id}
-                  onClick={e => openChatRoom(e, 'search')}
+                  onClick={e => openChatRoom(e, "search")}
                 >
                   <div
                     className="contact-profile-pic-container"
@@ -257,7 +319,7 @@ export default class Search extends Component {
                   </span>{" "}
                   <br />
                   <span id={user.contact_id}>
-                    {"Hey There! I Am Using UChat"}
+                    {`Language ${user.language}`}
                   </span>
                 </div>
                 <div
@@ -266,7 +328,13 @@ export default class Search extends Component {
                 <button
                   id={user.id}
                   className="friend-request-btn"
-                  onClick={this.addToContactList}
+                  onClick={e => {
+                    if (requests.includes(e.target.id)) {
+                      return this.cancelRequest(e);
+                    } else {
+                      return this.sendRequest(e);
+                    }
+                  }}
                 >
                   Friend Request
                 </button>
@@ -278,40 +346,6 @@ export default class Search extends Component {
         });
 
       default:
-    }
-  };
-
-  addToContactList = e => {
-    const { currentUser } = this.props;
-    const { results } = this.state;
-    let id = e.target.id;
-    let exists = results.find(contact => contact.contact_id === Number(id));
-    console.log({ results: results, id: id, exists: exists });
-
-    if (currentUser.id !== id && !Boolean(exists)) {
-      axios
-        .post("/addContact", {
-          userID: currentUser.id,
-          contactID: id
-        })
-        .then(() => {
-          socket.emit("notify", {
-            action: "friend-request",
-            username: currentUser.username
-          });
-        })
-        .catch(err => {
-          console.log("Error Adding Contact To List", err);
-        });
-
-      axios
-        .post("/addContact", {
-          userID: id,
-          contactID: currentUser.id
-        })
-        .catch(err => {
-          console.log("Error Adding Contact To List", err);
-        });
     }
   };
 

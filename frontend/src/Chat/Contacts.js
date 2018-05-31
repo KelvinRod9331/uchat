@@ -113,7 +113,7 @@ export default class Contacts extends Component {
                   {c.username}
                 </span>{" "}
                 <br />
-                <span id={c.contact_id}>{"Hey There! I Am Using UChat"}</span>
+                <span id={c.contact_id}>{c.about}</span>
               </div>
               <div
                 className={`flag-background flag-${c.country.toLowerCase()}`}

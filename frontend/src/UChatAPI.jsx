@@ -124,6 +124,9 @@ import axios from 'axios'
   const logOut = () => axios.get('/logout')
   const updateUserInfo = (userInfo) => axios.patch('/updateUserInfo', userInfo)
   const uploadImgUrl = (url) => axios.patch('/changeProfilePic', url)
+  const postNotifications = (data) => axios.post('/postNotification', data)
+  const getNotifications = () => axios.get('notifications')
+  const deleteNotification = (data) => axios.delete('/deleteNotification', {data: data})
 
   export default{
     randomImageGenerator,
@@ -131,4 +134,7 @@ import axios from 'axios'
     logOut,
     updateUserInfo,
     uploadImgUrl,
+    postNotifications,
+    getNotifications,
+    deleteNotification
   }

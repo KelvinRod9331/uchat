@@ -77,6 +77,19 @@ io.on("connection", socket => {
       });
   });
 
+  socket.on("notification", data => {
+
+    // io.to(clientsObj[data.receiver_id].connectionId).emit("chat", {
+    //   threadID: data.threadID
+    // });
+ 
+      socket.broadcast.emit("notification", {
+        type: data.type,
+        userData: data.userData,
+        message: data.messages
+      });
+  });
+
   socket.on("disconnect", () => {
     for (var i = 0, len = clients.length; i < len; ++i) {
       var c = clients[i];
