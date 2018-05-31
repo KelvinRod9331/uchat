@@ -120,6 +120,7 @@ const postNotifications = data => axios.post("/postNotification", data);
 const getNotifications = () => axios.get("notifications");
 const deleteNotification = data => axios.delete("/deleteNotification", { data: data });
 const addToContact = data => axios.post("/addContact", data);
+const emojiApi = () => axios.get('https://cors-anywhere.herokuapp.com/'+'https://s3.amazonaws.com/c4q/emojis.json')
 
 export default {
   randomImageGenerator,
@@ -130,5 +131,6 @@ export default {
   postNotifications,
   getNotifications,
   deleteNotification,
-  addToContact
+  addToContact,
+  emojiApi
 };

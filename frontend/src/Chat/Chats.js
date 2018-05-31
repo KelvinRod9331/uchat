@@ -101,7 +101,6 @@ export default class Chats extends Component {
                   <div
                     className="contact-profile-pic-container"
                     id={thread.id}
-                    //onClick={/*This will be used To View Users profile*/}
                   >
                     <img
                       className="contact-profile-pic "

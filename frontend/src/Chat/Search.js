@@ -107,8 +107,6 @@ export default class Search extends Component {
       </Tooltip>
     ];
 
-    // <Icon type="user-delete" />
-
     return (
       <Modal
         visible={showModal}
@@ -132,22 +130,6 @@ export default class Search extends Component {
         </Card>
       </Modal>
     );
-
-    /**
-     *  <button
-                  id={user.id}
-                  className="friend-request-btn"
-                  onClick={e => {
-                    if (requests.includes(e.target.id)) {
-                      return this.cancelRequest(e);
-                    } else {
-                      return this.sendRequest(e);
-                    }
-                  }}
-                >
-                  Friend Request
-                </button>
-     */
   };
 
   fetchUserThreads = () => {
@@ -208,8 +190,7 @@ export default class Search extends Component {
             modifiedArr.push(requests[i]);
           }
         }
-
-        console.log("HERE", modifiedArr);
+        
         this.setState({
           requests: modifiedArr,
           icon: <Icon type="user-add" style={{ fontSize: "180%" }} />

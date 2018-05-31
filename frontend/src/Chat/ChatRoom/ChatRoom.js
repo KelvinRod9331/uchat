@@ -2,10 +2,20 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { form, FormControl } from "react-bootstrap";
+import {
+  Modal,
+  Popover,
+  Button,
+  Input,
+  Icon,
+  Badge,
+  Card,
+  Tooltip
+} from "antd";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import SingleMessage from "./SingleMessage";
-import UChatAPI from "../../UChatAPI";
+import UChat from "../../UChatAPI";
 import ImagesAPI from "../../Images/ImagesAPI";
 import dateFormat from "dateformat";
 import { animateScroll } from "react-scroll";
@@ -22,7 +32,10 @@ class ChatRoom extends Component {
       messageValue: "",
       dataOutput: [],
       quote: {},
-      randomImg: {}
+      randomImg: {},
+      emojis: {},
+      emojiValue: "",
+      showEmoji: false
     };
   }
 
@@ -95,6 +108,7 @@ class ChatRoom extends Component {
     const { Conversation } = this.props;
     socket.on("chat", data => {
       Conversation(data.threadID);
+      this.scrollToBottom();
     });
   };
 
@@ -104,20 +118,59 @@ class ChatRoom extends Component {
     });
   }
 
+  handleEmojiInput = e => {
+    this.setState({
+      emojiValue: e.target.value
+    });
+  };
+
+  emojiDisplay = () => {
+    const { emojis, emojiValue } = this.state;
+
+    return (
+      <div>
+        <div className="emoji-search">
+          <Input
+            placeholder="Search Emoji"
+            id='emoji-input'
+            value={emojiValue}
+            onChange={this.handleEmojiInput}
+          />
+        </div>
+        <div className='emoji-content'>
+          {emojis.map(el => {
+            if (el[0].includes(emojiValue)) {
+              return (
+                <span>
+                  <img src={el[1]} width="30px" />
+                </span>
+              );
+            }
+          })}
+        </div>
+      </div>
+    );
+  };
+
   componentWillMount() {
     this.retrieveSendersMsg();
     this.getRandomImg();
-    UChatAPI.randomQuotesGenerator().then(res =>
+    UChat.randomQuotesGenerator().then(res =>
       this.setState({ quote: res.data })
     );
-  }
+    UChat.emojiApi().then(res => {
+      let emoji = res.data;
+      let emojiData = [];
+      for (var key in emoji) {
+        emojiData.push([key, emoji[key]]);
+      }
 
-  componentDidUpdate(){
-    this.scrollToBottom()
+      this.setState({ emojis: emojiData });
+    });
   }
 
   render() {
-    const { messageValue, dataOutput, quote } = this.state;
+    const { messageValue, dataOutput, quote, emojis } = this.state;
     const {
       threadMessages,
       thread,
@@ -125,7 +178,6 @@ class ChatRoom extends Component {
       currentUser,
       contactUser
     } = this.props;
-    console.log("chatroom", thread);
 
     var size = Object.keys(thread).length;
 
@@ -154,7 +206,7 @@ class ChatRoom extends Component {
               <i class="fas fa-ellipsis-v" />
             </div>
           </div>
-          <div className="message-container" id='message-container'>
+          <div className="message-container" id="message-container">
             <SingleMessage
               currentUser={currentUser}
               threadMessages={threadMessages}
@@ -162,6 +214,20 @@ class ChatRoom extends Component {
             />
           </div>
           <div className="message-form">
+            <Popover
+              content={this.emojiDisplay()}
+              overlayStyle={{
+                width: "60%",
+                maxHeight: "200px",
+                overflow: "scroll",
+                minHeight: "100px",
+                padding: "-100px 0 0 10%"
+              }}
+              trigger="click"
+              placement="topRight"
+            >
+              <div className="emoji-container" />
+            </Popover>
             <form onSubmit={this.sendMessages}>
               <FormControl
                 type="text"
@@ -169,7 +235,7 @@ class ChatRoom extends Component {
                 value={messageValue}
                 name={"messageValue"}
                 onChange={this.handleInput}
-                placeholder="Type your message here..."
+                placeholder=" Type your message here..."
               />
               <img src="/images/microphone-icon.png" className="microphone" />
             </form>
