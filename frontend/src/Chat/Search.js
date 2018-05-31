@@ -5,6 +5,19 @@ import axios from "axios";
 import socketIOClient from "socket.io-client";
 import UChat from "../UChatAPI";
 import dateFormat from "dateformat";
+import {
+  Modal,
+  Popover,
+  Button,
+  Input,
+  Icon,
+  Badge,
+  Card,
+  Avatar,
+  Tooltip
+} from "antd";
+
+const { Meta } = Card;
 const socket = socketIOClient("http://localhost:3100");
 
 export default class Search extends Component {
@@ -14,9 +27,31 @@ export default class Search extends Component {
       results: [],
       inputValue: "",
       message: "",
-      requests: []
+      requests: [],
+      showProfile: false,
+      showModal: false,
+      selectedUser: {},
+      icon: <Icon type="user-add" style={{ fontSize: "180%" }} />
     };
   }
+
+  handleVisibleChange = showProfile => {
+    this.setState({ showProfile });
+  };
+
+  showModal = selected => {
+    this.setState({
+      showModal: true,
+      showProfile: false,
+      selectedUser: selected
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      showModal: false
+    });
+  };
 
   determineAction = () => {
     const { search } = this.props;
@@ -45,6 +80,76 @@ export default class Search extends Component {
       .catch(err => console.log("Couldn't Fetch User's Contacts:", err));
   };
 
+  openUserProfileCard = () => {
+    const { selectedUser, showModal, requests, icon } = this.state;
+
+    let action = [
+      <Tooltip title="Add User">
+        <button
+          id={selectedUser.id}
+          className="friend-request-btn"
+          onClick={() => {
+            if (requests.includes(selectedUser.id)) {
+              return this.cancelRequest(selectedUser);
+            } else {
+              return this.sendRequest(selectedUser);
+            }
+          }}
+        >
+          {icon}
+        </button>
+      </Tooltip>,
+      <Tooltip title="Block User">
+        <Icon
+          type="dislike-o"
+          onClick={() => this.cancelRequest(selectedUser)}
+        />
+      </Tooltip>
+    ];
+
+    // <Icon type="user-delete" />
+
+    return (
+      <Modal
+        visible={showModal}
+        onCancel={this.handleCancel}
+        footer={null}
+        style={{ margin: "-5% 0 0 35%" }}
+        bodyStyle={{ height: "380px" }}
+        width={"500px"}
+      >
+        <Card
+          style={{ width: "510px", margin: "-5.5% 0 0 -5.5%" }}
+          cover={
+            <img alt="example" src={selectedUser.profile_pic} height="400px" />
+          }
+          actions={action}
+        >
+          <Meta
+            title={selectedUser.username}
+            description={selectedUser.about}
+          />
+        </Card>
+      </Modal>
+    );
+
+    /**
+     *  <button
+                  id={user.id}
+                  className="friend-request-btn"
+                  onClick={e => {
+                    if (requests.includes(e.target.id)) {
+                      return this.cancelRequest(e);
+                    } else {
+                      return this.sendRequest(e);
+                    }
+                  }}
+                >
+                  Friend Request
+                </button>
+     */
+  };
+
   fetchUserThreads = () => {
     axios
       .get("/threads")
@@ -56,17 +161,16 @@ export default class Search extends Component {
       .catch(err => console.log("Error:", err));
   };
 
-  sendRequest = e => {
+  sendRequest = user => {
     const { currentUser } = this.props;
     const { requests } = this.state;
-    let receiverID = e.target.id;
+   
 
     var date = new Date();
     var time = dateFormat(date, "h:MMtt");
-    document.getElementById(receiverID).innerText = "Cancel";
-
+  
     UChat.postNotifications({
-      receiver_id: receiverID,
+      receiver_id: user.id,
       sender_id: currentUser.id,
       sender_username: currentUser.username,
       sender_profile_pic: currentUser.profile_pic,
@@ -76,41 +180,39 @@ export default class Search extends Component {
       opened: false
     })
       .then(() => {
-       
         socket.emit("notify", {
           action: "friend-request",
           username: currentUser.username
         });
         this.setState({
-          requests: [...requests, receiverID]
+          requests: [...requests, user.id],
+          icon: <Icon type="user-delete" style={{ fontSize: "180%" }} />
         });
       })
       .catch(err => console.log("Failed Posting Notification", err));
   };
 
-  cancelRequest = e => {
+  cancelRequest = user => {
     const { requests } = this.state;
     const { currentUser } = this.props;
-    let receiverID = e.target.id;
-
-    document.getElementById(receiverID).innerText = "Friend Request";
 
     UChat.deleteNotification({
-      receiverID: Number(receiverID),
+      receiverID: Number(user.id),
       senderID: currentUser.id
     })
       .then(() => {
         let modifiedArr = [];
 
         for (var i = 0; i < requests.length; i++) {
-          if (requests[i] !== receiverID) {
+          if (requests[i] !== user.id) {
             modifiedArr.push(requests[i]);
           }
         }
 
         console.log("HERE", modifiedArr);
         this.setState({
-          requests: modifiedArr
+          requests: modifiedArr,
+          icon: <Icon type="user-add" style={{ fontSize: "180%" }} />
         });
       })
       .catch(err => console.log("Error Deleting Notification", err));
@@ -293,17 +395,13 @@ export default class Search extends Component {
                 className="contacts-container"
                 id={user.contact_id}
                 // eslint-disable-next-line
-                onClick={() =>
-                  console.log("This will Be to open their profile ")
-                }
+                onClick={() => this.showModal(user)}
               >
                 <div
                   className="contact-profile-pic-container"
                   id={user.contact_id}
                   // eslint-disable-next-line
-                  onClick={() =>
-                    console.log("This will Be to open their profile ")
-                  }
+                  onClick={() => this.showModal(user)}
                 >
                   <img
                     className="contact-profile-pic "
@@ -325,20 +423,6 @@ export default class Search extends Component {
                 <div
                   className={`flag-background flag-${user.country.toLowerCase()}`}
                 />
-                <button
-                  id={user.id}
-                  className="friend-request-btn"
-                  onClick={e => {
-                    if (requests.includes(e.target.id)) {
-                      return this.cancelRequest(e);
-                    } else {
-                      return this.sendRequest(e);
-                    }
-                  }}
-                >
-                  Friend Request
-                </button>
-
                 <div className="borderBottom" />
               </div>
             );
@@ -385,6 +469,7 @@ export default class Search extends Component {
         </form>
         <div className="search-results" style={style}>
           {this.searchEngine()}
+          {this.openUserProfileCard()}
         </div>
       </div>
     );

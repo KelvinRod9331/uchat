@@ -9,7 +9,8 @@ import {
   Icon,
   Badge,
   Card,
-  Avatar
+  Avatar,
+  Tooltip
 } from "antd";
 import UChat from "../UChatAPI";
 
@@ -28,7 +29,8 @@ class Notifications extends React.Component {
     this.setState({ showNotifications });
   };
 
-  showModal = (selected) => {
+  showModal = selected => {
+    console.log(selected);
     this.setState({
       showModal: true,
       showNotifications: false,
@@ -53,35 +55,36 @@ class Notifications extends React.Component {
   };
 
   openUserProfileCard = () => {
-      const {selectedNotification} = this.state 
+    const { selectedNotification } = this.state;
     return (
       <Modal
         visible={this.state.showModal}
         onCancel={this.handleCancel}
         footer={null}
-        style={{ margin: "-5% 0 0 30%" }}
+        style={{ margin: "-5% 0 0 35%" }}
         bodyStyle={{ height: "380px" }}
-        width= {'300px'}
+        width={"500px"}
       >
         <Card
-          style={{ width: "300px", margin: "-5% 0 0 -10%" }}
+          style={{ width: "510px", margin: "-5.5% 0 0 -5.5%" }}
           cover={
             <img
               alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+              src={selectedNotification.sender_profile_pic}
+              height="400px"
             />
           }
           actions={[
-            <Icon type="setting" />,
-            <Icon type="edit" />,
-            <Icon type="ellipsis" />
+            <Tooltip title="Accept">
+              <Icon type="like-o" onClick={() => this.addToContactList(selectedNotification)} />
+            </Tooltip>,
+            <Tooltip title="Ignore" >
+              <Icon type="dislike-o" onClick={() => this.cancelRequest(selectedNotification)} />
+            </Tooltip>
           ]}
         >
           <Meta
-            avatar={
-              <Avatar src={selectedNotification.sender_profile_pic} />
-            }
-            title="Card title"
+            title={selectedNotification.sender_username}
             description="This is the description"
           />
         </Card>
@@ -89,72 +92,91 @@ class Notifications extends React.Component {
     );
   };
 
-  addToContactList = e => {
+  addToContactList = data => {
     const { currentUser } = this.props;
-    const { results } = this.state;
-    let id = e.target.id;
-    let exists = results.find(contact => contact.contact_id === Number(id));
-    console.log({ results: results, id: id, exists: exists });
 
-    if (currentUser.id !== id && !Boolean(exists)) {
-      axios
-        .post("/addContact", {
-          userID: currentUser.id,
-          contactID: id
-        })
-        .then(() => {
-          socket.emit("notify", {
-            action: "accepted-request",
-            username: currentUser.username
-          });
-        })
-        .catch(err => {
-          console.log("Error Adding Contact To List", err);
+    UChat.addToContact({
+      userID: currentUser.id,
+      contactID: data.sender_id
+    })
+      .then(() => {
+        socket.emit("notify", {
+          action: "accepted-request",
+          username: currentUser.username
         });
+      })
+      .catch(err => {
+        console.log("Error Adding Contact To List", err);
+      });
 
-      axios
-        .post("/addContact", {
-          userID: id,
-          contactID: currentUser.id
-        })
-        .catch(err => {
-          console.log("Error Adding Contact To List", err);
-        });
-    }
+      UChat.addToContact({
+        userID: data.sender_id,
+        contactID: currentUser.id
+      })
+      .then(() => {
+
+          this.setState({
+            showModal: false
+          }, () => this.cancelRequest(data))
+      })
+      .catch(err => {
+        console.log("Error Adding Contact To List", err);
+      });
   };
+
+  cancelRequest = data => {
+    const { currentUser } = this.props;
+  
+    UChat.deleteNotification({
+      receiverID: currentUser.id,
+      senderID: Number(data.sender_id)
+    })
+    .then(() => {
+        this.setState({
+            showModal: false
+        }, () => this.usersNotifications())
+    })
+    .catch(err => console.log("Error Deleting Notification", err));
+  };
+
 
   notificationContent = () => {
     const { notificationData } = this.state;
-    return notificationData.map(data => {
-      return (
-        <div
-          className="notifications"
-          id={data.sender_id}
-          onClick={data => this.showModal(data)}
-        >
-          <div
-            className="notification-profile-pic-container"
-            id={data.sender_id}
-            onClick={data => this.showModal(data)}
-          >
-            <img
-              className="contact-profile-pic "
+
+    if(notificationData.length){
+        return notificationData.map(data => {
+          return (
+            <div
+              className="notifications"
               id={data.sender_id}
-              src={data.sender_profile_pic}
-            />
-          </div>
-          <div className="notification-info-container" id={data.sender_id}>
-            <span className="notification-username" id={data.sender_id}>
-              {`You Have A New Friend Request from ${data.sender_username}`}
-            </span>
-          </div>
-          <div
-            id="notification-users-flag"
-            className={`flag-background flag-${data.sender_country.toLowerCase()}`}
-          />
-        </div>
-      );
-    });
+              onClick={() => this.showModal(data)}
+            >
+              <div
+                className="notification-profile-pic-container"
+                id={data.sender_id}
+                onClick={() => this.showModal(data)}
+              >
+                <img
+                  className="contact-profile-pic "
+                  id={data.sender_id}
+                  src={data.sender_profile_pic}
+                />
+              </div>
+              <div className="notification-info-container" id={data.sender_id}>
+                <span className="notification-username" id={data.sender_id}>
+                  {`You Have A New Friend Request from ${data.sender_username}`}
+                </span>
+              </div>
+              <div
+                id="notification-users-flag"
+                className={`flag-background flag-${data.sender_country.toLowerCase()}`}
+              />
+            </div>
+          );
+        });
+    }else{
+        return <p>No Notifications</p>
+    }
   };
 
   componentDidMount() {

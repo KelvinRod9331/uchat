@@ -263,7 +263,7 @@ export default class DashboardUpdate extends Component {
               </div>
               <div className="component-box" >
                 <div id='add-friend'>
-                  <Notifications />
+                  <Notifications currentUser={currentUser}/>
                 </div>
                 <div id="menu">
                   <Menu
