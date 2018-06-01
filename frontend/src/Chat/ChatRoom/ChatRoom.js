@@ -415,11 +415,11 @@ class ChatRoom extends Component {
             <Popover
               content={this.emojiDisplay()}
               overlayStyle={{
-                width: "60%",
+                width: "69.45%",
                 maxHeight: "400px",
                 overflow: "scroll",
                 minHeight: "100px",
-                padding: "-100px 0 0 10%"
+                overflowX: "hidden"
               }}
               trigger="click"
               placement="topRight"
