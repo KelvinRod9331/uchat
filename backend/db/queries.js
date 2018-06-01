@@ -121,7 +121,6 @@ const getUserByID = (req, res, next) => {
 };
 
 const updateUserInfo = (req, res, next) => {
-
   switch (req.body.type) {
     case "user-info":
       return db
@@ -130,7 +129,7 @@ const updateUserInfo = (req, res, next) => {
             "email=${email}, about=${about} WHERE id=${id} RETURNING users.*",
           req.body
         )
-        .then((user) => {
+        .then(user => {
           if (user) {
             req.logIn(user, function(err) {
               if (err) {
@@ -138,7 +137,7 @@ const updateUserInfo = (req, res, next) => {
                 res.status(500).send("error");
               } else {
                 console.log("now");
-                res.status(200).send(req.user)
+                res.status(200).send(req.user);
               }
             });
           }
@@ -159,7 +158,7 @@ const updateUserInfo = (req, res, next) => {
                   res.status(500).send("error");
                 } else {
                   console.log("now");
-                  res.status(200).send(req.user)
+                  res.status(200).send(req.user);
                 }
               });
             }
@@ -176,10 +175,10 @@ const updateUserInfo = (req, res, next) => {
 
 const changeProfilePic = (req, res, next) => {
   db
-    .none(
-      "UPDATE users SET profile_pic = ${newProfilePic} WHERE id = ${id}",
-      {id:req.user.id, newProfilePic: req.body.url }
-    )
+    .none("UPDATE users SET profile_pic = ${newProfilePic} WHERE id = ${id}", {
+      id: req.user.id,
+      newProfilePic: req.body.url
+    })
     .then(function(data) {
       res
         .status(200)
@@ -195,28 +194,28 @@ const changeProfilePic = (req, res, next) => {
 };
 
 const deleteProfilePic = (req, res, next) => {
+  var defaultImg =
+    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
-  var defaultImg = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
- 
   db
-  .none(
-    "UPDATE users SET profile_pic = ${default} WHERE id = ${id}",
-    {default: defaultImg, id: req.user.id}
-  )
-  .then(function(data) {
-    res
-      .status(200)
-      .json({
-        status: "success",
-        data: data,
-        message: "Removed profile_pic"
-      })
-      .catch(function(err) {
-        console.log("Error Deleting Photo", err)
-        return next(err);
-      });
-  });
-}
+    .none("UPDATE users SET profile_pic = ${default} WHERE id = ${id}", {
+      default: defaultImg,
+      id: req.user.id
+    })
+    .then(function(data) {
+      res
+        .status(200)
+        .json({
+          status: "success",
+          data: data,
+          message: "Removed profile_pic"
+        })
+        .catch(function(err) {
+          console.log("Error Deleting Photo", err);
+          return next(err);
+        });
+    });
+};
 
 const getLanguages = (req, res, next) => {
   db
@@ -251,7 +250,7 @@ const getAllCountries = (req, res, next) => {
 const getUsersContacts = (req, res, next) => {
   db
     .any(
-      "SELECT contact_id, username, language, profile_pic, full_name, country FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id} OR contact_id=${id} ",
+      "SELECT contact_id, username, language, profile_pic, full_name, country, about FROM contacts JOIN users ON contact_id = users.id WHERE user_id=${id}",
       req.user
     )
     .then(data => {
@@ -269,7 +268,7 @@ const getUsersContacts = (req, res, next) => {
 const createThread = (req, res, next) => {
   db
     .one(
-      "INSERT INTO threads (user_one, user_two, user_one_name, user_two_name) VALUES (${user_id}, ${contact_id}, ${user_one_name}, ${user_two_name}) RETURNING ID",
+      "INSERT INTO threads (user_one, user_two, user_one_name, user_two_name, created) VALUES (${user_id}, ${contact_id}, ${user_one_name}, ${user_two_name}, ${created}) RETURNING id, user_one, user_two, user_one_name, user_two_name, created",
       req.body
     )
     .then(data => {
@@ -288,7 +287,7 @@ const createThread = (req, res, next) => {
 const fetchedThreads = (req, res, next) => {
   db
     .any(
-      "SELECT threads.id, user_one, user_two, user_one_name, user_two_name, full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id} or user_two=${id}",
+      "SELECT threads.id, user_one, user_two, user_one_name, user_two_name, created, full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id} or user_two=${id}",
       req.user
     )
     .then(data => {
@@ -387,7 +386,7 @@ const addToContacts = (req, res, next) => {
 const postNotification = (req, res, next) => {
   db
     .none(
-      "INSERT INTO notifications (receiver_id, sender_id, type, date_send) VALUES (${receiver_id}, ${sender_id}, ${type}, ${date_send})",
+      "INSERT INTO notifications (receiver_id, sender_id, sender_username, sender_profile_pic, sender_country, type, date_sent, opened) VALUES (${receiver_id}, ${sender_id}, ${sender_username}, ${sender_profile_pic }, ${sender_country}, ${type}, ${date_sent}, ${opened})",
       req.body
     )
     .then(() => {
@@ -411,7 +410,7 @@ const retrieveNotifications = (req, res, next) => {
       });
     })
     .catch(function(err) {
-      console.log("Error Retrieving Users' Notification", err);
+      console.log("Error Retrieving User's Notification", err);
       return next(err);
     });
 };
@@ -429,6 +428,20 @@ const notificationRead = (req, res, next) => {
       return next(err);
     });
 };
+
+const deleteNotification = (req, res, next) => {
+  db
+  .none("DELETE FROM notifications WHERE receiver_id = ${receiverID} AND sender_id = ${senderID}", req.body)
+  .then(() => {
+    res.status(200).json({
+      status: "Notification Successfully Deleted"
+    });
+  })
+  .catch(function(err) {
+    console.log("Error Deleting Notifications", err);
+    return next(err);
+  });
+}
 
 module.exports = {
   registerUser,
@@ -452,5 +465,6 @@ module.exports = {
   fetchedThreads,
   postNotification,
   retrieveNotifications,
-  notificationRead
+  notificationRead,
+  deleteNotification
 };

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component } from "react";
 // import "./Form.css";
 import { Link , Redirect } from "react-router-dom";

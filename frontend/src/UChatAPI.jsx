@@ -1,6 +1,6 @@
-import React from 'react'
-import axios from 'axios'
-
+/* eslint-disable */
+import React from "react";
+import axios from "axios";
 
 // const userLoggedIn = () => {
 //   axios
@@ -54,8 +54,6 @@ import axios from 'axios'
 //     .catch(err => console.log("Error Getting Recent Message", err));
 // };
 
-
-
 // const openChatRoom = e => {
 //     const { usersThreads } = this.props;
 //     let threadSelected = usersThreads.find(thread => {
@@ -102,9 +100,6 @@ import axios from 'axios'
 //     }
 //   };
 
-
-
-  
 //   const fetchConversation = id => {
 //     axios
 //       .get(`/messages/${id}`)
@@ -116,18 +111,26 @@ import axios from 'axios'
 //       .catch(err => console.log("err", err));
 //   };
 
+const randomImageGenerator = () => axios.get("https://source.unsplash.com/random");
+const randomQuotesGenerator = () => axios.get("https://talaikis.com/api/quotes/random/");
+const logOut = () => axios.get("/logout");
+const updateUserInfo = userInfo => axios.patch("/updateUserInfo", userInfo);
+const uploadImgUrl = url => axios.patch("/changeProfilePic", url);
+const postNotifications = data => axios.post("/postNotification", data);
+const getNotifications = () => axios.get("notifications");
+const deleteNotification = data => axios.delete("/deleteNotification", { data: data });
+const addToContact = data => axios.post("/addContact", data);
+const emojiApi = require('./Chat/ChatRoom/emoji.json')
 
-
-  const randomImageGenerator = () => axios.get('https://source.unsplash.com/random')
-  const randomQuotesGenerator = () => axios.get("https://talaikis.com/api/quotes/random/")
-  const logOut = () => axios.get('/logout')
-  const updateUserInfo = (userInfo) => axios.patch('/updateUserInfo', userInfo)
-  const uploadImgUrl = (url) => axios.patch('/changeProfilePic', url)
-
-  export default{
-    randomImageGenerator,
-    randomQuotesGenerator,
-    logOut,
-    updateUserInfo,
-    uploadImgUrl,
-  }
+export default {
+  randomImageGenerator,
+  randomQuotesGenerator,
+  logOut,
+  updateUserInfo,
+  uploadImgUrl,
+  postNotifications,
+  getNotifications,
+  deleteNotification,
+  addToContact,
+  emojiApi
+};

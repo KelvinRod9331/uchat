@@ -26,7 +26,8 @@ CREATE TABLE threads (
     user_one INTEGER REFERENCES users,
     user_two INTEGER REFERENCES users,
     user_one_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE,
-    user_two_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE
+    user_two_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE,
+    created BOOLEAN 
 );
 
 CREATE TABLE messages (
@@ -42,8 +43,11 @@ CREATE TABLE messages (
 
 CREATE TABLE notifications (
     ID SERIAL PRIMARY KEY,
-    receiver_ID INTEGER REFERENCES users,
+    receiver_id INTEGER REFERENCES users,
     sender_id INTEGER REFERENCES users,
+    sender_username  VARCHAR REFERENCES users(username),
+    sender_profile_pic VARCHAR,
+    sender_country VARCHAR,
     type VARCHAR,
     date_sent VARCHAR,
     opened BOOLEAN 
@@ -83,10 +87,15 @@ VALUES
 INSERT INTO contacts (user_ID, contact_ID)
 VALUES
 ('6','2'),
-('6','5'),
+('2','6'),
 ('6','1'),
+('1','6'),
+('6','2'),
+('2','6'),
+('6','3'),
+('3','6'),
 ('6','4'),
-('6','3');
+('4','6');
 
 
 INSERT INTO languages (abbreviation, name)

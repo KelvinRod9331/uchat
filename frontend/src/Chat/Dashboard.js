@@ -1,5 +1,6 @@
+/* eslint-disable */
 import React, { Component } from "react";
-import { Grid, Row, Col,  } from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
 import { Redirect } from "react-router";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
@@ -11,12 +12,12 @@ import ChatRoom from "./ChatRoom/ChatRoom";
 import Contacts from "./Contacts";
 import Chats from "./Chats";
 import Search from "./Search";
-import Notifications from "./Notifications";
+import Notify from "./Notify";
 import ModalPages from "./ModalPages";
-import Menu from "./Menu"
+import Menu from "./Menu";
+import Notifications from './Notifications'
 
 const socket = socketIOClient("http://localhost:3100");
-
 
 var loggedIn = false;
 
@@ -91,17 +92,23 @@ export default class DashboardUpdate extends Component {
     this.setState({ selected: e.target.id });
   };
 
-  openChatRoom = e => {
+  openChatRoom = (e, source) => {
     const { usersThreads } = this.state;
-    let threadSelected = usersThreads.find(thread => {
-      if (thread.id === Number(e.target.id)) {
-        return thread;
-      }
-    });
 
-    this.setState({ threadSelected: threadSelected }, () =>
-      this.getUserByID(threadSelected)
-    );
+    if (source === "chats") {
+      let thread = usersThreads.find(
+        thread => thread.id === Number(e.target.id)
+      );
+      this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
+    } else if (source === "contacts") {
+      let thread = e;
+      this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
+    } else if (source === "search") {
+      let thread = usersThreads.find(
+        thread => thread.id === Number(e.target.id)
+      );
+      this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
+    }
   };
 
   getUserByID = thread => {
@@ -158,8 +165,6 @@ export default class DashboardUpdate extends Component {
     } = this.state;
 
     switch (selected) {
-      case "notifications":
-        return <ModalPages trigger={true} />;
       case "chats":
         return (
           <Chats
@@ -181,37 +186,38 @@ export default class DashboardUpdate extends Component {
             currentUser={currentUser}
             allUsers={allUsers}
             search={"contacts"}
-            usersThreads={usersThreads}  
+            usersThreads={usersThreads}
+            openChatRoom={this.openChatRoom}
+            fetchUserThreads={this.fetchUserThreads}
           />
         );
 
-        case "discovery":
+      case "discovery":
         return (
           <Search
-          currentUser={currentUser}
-          search={"discovery"}
-          allUsers={allUsers}
-         
-        />
-        )
-    
+            currentUser={currentUser}
+            search={"discovery"}
+            allUsers={allUsers}
+          />
+        );
 
       default:
         return (
           <Chats
-            usersThreads={usersThreads}
-            currentUser={currentUser}
-            recentMsg={recentMsg}
-            search={"conversation"}
-            threadMessages={threadMessages}
-            threadSelected={threadSelected}
-            contactUser={contactUser}
-            openChatRoom={this.openChatRoom}
+          usersThreads={usersThreads}
+          currentUser={currentUser}
+          recentMsg={recentMsg}
+          search={"conversation"}
+          threadMessages={threadMessages}
+          threadSelected={threadSelected}
+          contactUser={contactUser}
+          openChatRoom={this.openChatRoom}
+          fetchRecentMessage={this.fetchRecentMessage}
+          fetchUserThreads={this.fetchUserThreads}
           />
         );
     }
   };
-
 
   componentWillMount() {
     this.userLoggedIn();
@@ -238,7 +244,7 @@ export default class DashboardUpdate extends Component {
     if (loggedIn) {
       return (
         <Grid bsClass="dashboard-container">
-          <Notifications />
+          <Notify />
           <Col className="left-display">
             <Row className="user-header-row">
               <div className="user-profile-img-container">
@@ -255,18 +261,16 @@ export default class DashboardUpdate extends Component {
                 <br />
                 <span>{currentUser.about}</span>
               </div>
-              <div className="component-box" onClick={handleSelection}>
-                
-                <img
-                  id="add-friend"
-                  src="/images/request-notification-icon.png"
-                />
-                <div
-                  id="menu"
-                >
-                <Menu currentUser={currentUser} userLoggedIn={this.userLoggedIn} />
+              <div className="component-box" >
+                <div id='add-friend'>
+                  <Notifications currentUser={currentUser}/>
                 </div>
-                
+                <div id="menu">
+                  <Menu
+                    currentUser={currentUser}
+                    userLoggedIn={this.userLoggedIn}
+                  />
+                </div>
               </div>
             </Row>
             <Row className="component-row">

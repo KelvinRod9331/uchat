@@ -1,12 +1,24 @@
+/* eslint-disable */
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { form, FormControl } from "react-bootstrap";
+import {
+  Modal,
+  Popover,
+  Button,
+  Input,
+  Icon,
+  Badge,
+  Card,
+  Tooltip
+} from "antd";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import SingleMessage from "./SingleMessage";
-import UChatAPI from "../../UChatAPI";
-import ImagesAPI from '../../Images/ImagesAPI'
-import dateFormat from 'dateformat';
+import UChat from "../../UChatAPI";
+import ImagesAPI from "../../Images/ImagesAPI";
+import dateFormat from "dateformat";
+import { animateScroll } from "react-scroll";
 
 var APIKey = require("../config");
 var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
@@ -20,18 +32,28 @@ class ChatRoom extends Component {
       messageValue: "",
       dataOutput: [],
       quote: {},
-      randomImg: {}
+      randomImg: {},
+      smileys_people: {},
+      animals_nature: {},
+      food_drinks: {},
+      activity: {},
+      travel_places: {},
+      objects: {},
+      symbols: {},
+      flags: {},
+      emojiValue: "",
+      showEmoji: false
     };
   }
 
   getRandomImg = () => {
     var ranNum = Math.floor(Math.random() * Math.floor(14));
-    var imgUrl = ImagesAPI.imgArr[ranNum]
+    var imgUrl = ImagesAPI.imgArr[ranNum];
 
     this.setState({
       randomImg: imgUrl
-    })
-  }
+    });
+  };
 
   handleInput = e => {
     this.setState({
@@ -45,10 +67,10 @@ class ChatRoom extends Component {
     const { messageValue } = this.state;
     const { thread, currentUser, contactUser, Conversation } = this.props;
 
-    var date = new Date()
+    var date = new Date();
 
-    var time = dateFormat(date, "h:MMtt")
-    
+    var time = dateFormat(date, "h:MMtt");
+
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(
         err,
@@ -71,6 +93,7 @@ class ChatRoom extends Component {
             });
 
             socket.emit("notify", {
+              receiver_id: contactUser.id,
               action: "incoming-msg",
               username: currentUser.username,
               image: contactUser.profile_pic,
@@ -79,7 +102,7 @@ class ChatRoom extends Component {
             });
           })
           .catch(err => {
-          //  this.setState({errMessage: "Could Not Send Message", messageValue: ''}) 
+            //  this.setState({errMessage: "Could Not Send Message", messageValue: ''})
           });
       });
       this.setState({
@@ -92,19 +115,260 @@ class ChatRoom extends Component {
     const { Conversation } = this.props;
     socket.on("chat", data => {
       Conversation(data.threadID);
+      this.scrollToBottom();
     });
+  };
+
+  scrollToBottom() {
+    animateScroll.scrollToBottom({
+      containerId: "message-container"
+    });
+  }
+
+  handleEmojiInput = e => {
+    this.setState({
+      emojiValue: e.target.value
+    });
+  };
+
+  handleEmojiOutput = e => {
+    const { messageValue } = this.state;
+    let emoji = e.target.id;
+    this.setState({
+      messageValue: messageValue + emoji
+    });
+  };
+
+  sortEmojis = () => {
+    let emoji = UChat.emojiApi;
+    let smileyData = [];
+    let flagsData = [];
+    let travelData = [];
+    let objectsData = [];
+    let foodData = [];
+    let animalsData = [];
+    let activityData = [];
+    let symbolsData = [];
+
+    for (var key in emoji) {
+      if (key === "smileys_people") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          smileyData.push([key, obj[key]]);
+        }
+      } else if (key === "animals_nature") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          animalsData.push([key, obj[key]]);
+        }
+      } else if (key === "food_drinks") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          foodData.push([key, obj[key]]);
+        }
+      } else if (key === "activity") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          activityData.push([key, obj[key]]);
+        }
+        
+      } else if (key === "travel_places") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          travelData.push([key, obj[key]]);
+        }
+      } else if (key === "objects") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          objectsData.push([key, obj[key]]);
+        }
+      } else if (key === "symbols") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          symbolsData.push([key, obj[key]]);
+        }
+      } else if (key === "flags") {
+        let obj = {};
+        obj = emoji[key];
+        for (var key in obj) {
+          flagsData.push([key, obj[key]]);
+        }
+      }
+    }
+
+    console.log(symbolsData);
+
+    this.setState({
+      smileys_people: smileyData,
+      animals_nature: animalsData,
+      food_drinks: foodData,
+      activity: activityData,
+      travel_places: travelData,
+      objects: objectsData,
+      symbols: symbolsData,
+      flags: flagsData
+    });
+  };
+
+  emojiDisplay = () => {
+    const {
+      smileys_people,
+      animals_nature,
+      food_drinks,
+      activity,
+      travel_places,
+      objects,
+      symbols,
+      flags,
+      emojiValue
+    } = this.state;
+
+    return (
+      <div>
+        <div className="emoji-search">
+          <Input
+            placeholder="Search Emoji"
+            id="emoji-input"
+            value={emojiValue}
+            onChange={this.handleEmojiInput}
+          />
+        </div>
+        <div className="emoji-content">
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Smiley's {"&"} People</h3>
+            </div>
+            {smileys_people.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]}
+                  </span>
+                );
+              }
+            })}
+          </div>
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Animals {"&"} Nature</h3>
+            </div>
+            {animals_nature.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]} 
+                  </span>
+                );
+              }
+            })}
+          </div>
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Food {"&"} Drinks</h3>
+            </div>
+            {food_drinks.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]}
+                  </span>
+                );
+              }
+            })}
+          </div>
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Activity</h3>
+            </div>
+            {activity.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]}
+                  </span>
+                );
+              }
+            })}
+          </div>
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Travel {"&"} Places</h3>
+            </div>
+            {travel_places.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]}
+                  </span>
+                );
+              }
+            })}
+          </div>
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Objects</h3>
+            </div>
+            {objects.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]}
+                  </span>
+                );
+              }
+            })}
+          </div>
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Symbols</h3>
+            </div>
+            {symbols.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]}
+                  </span>
+                );
+              }
+            })}
+          </div>
+          <div className="smiley_people">
+            <div className="title">
+              <h3>Flags</h3>
+            </div>
+            {flags.map((el, idx) => {
+              if (el[0].includes(emojiValue)) {
+                return (
+                  <span className='emoji-icon' key={idx} id={el[1]} onClick={this.handleEmojiOutput}>
+                    {el[1]}
+                  </span>
+                );
+              }
+            })}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   componentWillMount() {
     this.retrieveSendersMsg();
-    this.getRandomImg()
-    UChatAPI.randomQuotesGenerator().then(res =>
+    this.getRandomImg();
+    UChat.randomQuotesGenerator().then(res =>
       this.setState({ quote: res.data })
     );
+    this.sortEmojis();
   }
 
   render() {
-    const { messageValue, dataOutput, quote } = this.state;
+    const { messageValue, dataOutput, quote, smileys_people } = this.state;
     const {
       threadMessages,
       thread,
@@ -114,7 +378,6 @@ class ChatRoom extends Component {
     } = this.props;
 
     var size = Object.keys(thread).length;
-
 
     if (size) {
       return (
@@ -141,7 +404,7 @@ class ChatRoom extends Component {
               <i class="fas fa-ellipsis-v" />
             </div>
           </div>
-          <div className="message-container">
+          <div className="message-container" id="message-container">
             <SingleMessage
               currentUser={currentUser}
               threadMessages={threadMessages}
@@ -149,6 +412,20 @@ class ChatRoom extends Component {
             />
           </div>
           <div className="message-form">
+            <Popover
+              content={this.emojiDisplay()}
+              overlayStyle={{
+                width: "60%",
+                maxHeight: "400px",
+                overflow: "scroll",
+                minHeight: "100px",
+                padding: "-100px 0 0 10%"
+              }}
+              trigger="click"
+              placement="topRight"
+            >
+              <div className="emoji-container" />
+            </Popover>
             <form onSubmit={this.sendMessages}>
               <FormControl
                 type="text"
@@ -156,7 +433,7 @@ class ChatRoom extends Component {
                 value={messageValue}
                 name={"messageValue"}
                 onChange={this.handleInput}
-                placeholder="Type your message here..."
+                placeholder=" Type your message here..."
               />
               <img src="/images/microphone-icon.png" className="microphone" />
             </form>
@@ -165,7 +442,10 @@ class ChatRoom extends Component {
       );
     } else {
       return (
-        <div className="chatroom-container  placeholder" style={{backgroundImage: `url(${this.state.randomImg})`}} >
+        <div
+          className="chatroom-container  placeholder"
+          style={{ backgroundImage: `url(${this.state.randomImg})` }}
+        >
           <div id="welcome">
             <h1>WELCOME TO UNIVERSAL CHAT "UniChat" </h1>
             <h3>
