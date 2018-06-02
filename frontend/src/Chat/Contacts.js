@@ -4,7 +4,7 @@ import axios from "axios";
 import { Redirect } from "react-router";
 import { Grid } from "react-bootstrap";
 import Search from "./Search";
-import uuidv4 from "uuid/v4";
+
 export default class Contacts extends Component {
   constructor() {
     super();
@@ -35,8 +35,8 @@ export default class Contacts extends Component {
       fetchUserThreads
     } = this.props;
 
-    let uniqueID = uuidv4();
-    console.log(uniqueID);
+    console.log(usersThreads);
+
     let contactSelected = e.target.id;
 
     let contact = allUsers.find(u => {
@@ -50,11 +50,11 @@ export default class Contacts extends Component {
         return thread;
       }
     });
-
+    console.log("Over here", isChatRoomOpen, { contact: contact });
+    console.log(!Boolean(isChatRoomOpen));
     if (!Boolean(isChatRoomOpen)) {
       axios
         .post("/newThread", {
-          id: uniqueID,
           user_id: currentUser.id,
           contact_id: contactSelected,
           user_one_name: currentUser.username,
@@ -68,16 +68,6 @@ export default class Contacts extends Component {
           );
         })
         .catch(err => console.log("Could not create Thread", err));
-
-        axios
-        .post("/newThread", {
-          id: uniqueID,
-          user_id: contactSelected,
-          contact_id: currentUser.id,
-          user_one_name: contact.username,
-          user_two_name: currentUser.username,
-          created: true
-        }) .catch(err => console.log("Could not create Thread", err));
     } else {
       openChatRoom(isChatRoomOpen, "contacts");
     }

@@ -10,7 +10,7 @@ import "./FlagsBackground.css";
 import "react-notifications/lib/notifications.css";
 import ChatRoom from "./ChatRoom/ChatRoom";
 import Contacts from "./Contacts";
-import Chats from "./Chats-2.0";
+import Chats from "./Chats";
 import Search from "./Search";
 import Notify from "./Notify";
 import ModalPages from "./ModalPages";
@@ -97,7 +97,7 @@ export default class DashboardUpdate extends Component {
 
     if (source === "chats") {
       let thread = usersThreads.find(
-        thread => thread.id === e.target.id
+        thread => thread.id === Number(e.target.id)
       );
       this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
     } else if (source === "contacts") {
@@ -105,7 +105,7 @@ export default class DashboardUpdate extends Component {
       this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
     } else if (source === "search") {
       let thread = usersThreads.find(
-        thread => thread.id === e.target.id
+        thread => thread.id === Number(e.target.id)
       );
       this.setState({ threadSelected: thread }, () => this.getUserByID(thread));
     }
@@ -113,6 +113,8 @@ export default class DashboardUpdate extends Component {
 
   getUserByID = thread => {
     const { currentUser } = this.state;
+
+    if (thread.user_one === currentUser.id) {
       axios
         .get(`/userByID/${thread.user_two}`)
         .then(res => {
@@ -124,6 +126,19 @@ export default class DashboardUpdate extends Component {
           );
         })
         .catch(err => console.log(err));
+    } else {
+      axios
+        .get(`/userByID/${thread.user_one}`)
+        .then(res => {
+          this.setState(
+            {
+              contactUser: res.data.user[0]
+            },
+            () => this.fetchConversation(thread.id)
+          );
+        })
+        .catch(err => console.log(err));
+    }
   };
 
   fetchConversation = id => {

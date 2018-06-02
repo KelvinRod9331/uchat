@@ -380,8 +380,6 @@ class ChatRoom extends Component {
 
     var size = Object.keys(thread).length;
 
-    console.log('thread', thread)
-
     if (size) {
       return (
         <div className="chatroom-container">

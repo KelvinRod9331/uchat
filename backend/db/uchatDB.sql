@@ -22,7 +22,7 @@ CREATE TABLE contacts (
 );
 
 CREATE TABLE threads (
-    ID VARCHAR,
+    ID SERIAL PRIMARY KEY,
     user_one INTEGER REFERENCES users,
     user_two INTEGER REFERENCES users,
     user_one_name VARCHAR REFERENCES users(username) ON UPDATE CASCADE,
@@ -32,7 +32,7 @@ CREATE TABLE threads (
 
 CREATE TABLE messages (
     ID SERIAL PRIMARY KEY,
-    thread_ID VARCHAR,
+    thread_ID INTEGER REFERENCES threads,
     sender_id INTEGER REFERENCES users,
     receiver_id INTEGER REFERENCES users,
     sender_message VARCHAR,

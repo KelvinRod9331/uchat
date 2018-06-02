@@ -5,7 +5,6 @@ import "./SingleMessage.css";
 const SingleMessage = ({ threadMessages, currentUser, contact, sendingMessages, receivingMessages }) => {
   
   return threadMessages.map(messenger => {
-    console.log("Messages", messenger)
     if (currentUser.id === messenger.sender_id) {
       return (
         <div className={"currentUserMessage"}>
