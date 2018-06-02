@@ -68,8 +68,8 @@ class ChatRoom extends Component {
     const { thread, currentUser, contactUser, Conversation } = this.props;
 
     var date = new Date();
-
     var time = dateFormat(date, "h:MMtt");
+    console.log(contactUser.id)
 
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(
@@ -89,7 +89,8 @@ class ChatRoom extends Component {
           .then(() => {
             Conversation(thread.id);
             socket.emit("chat", {
-              threadID: thread.id
+              threadID: thread.id,
+              receiver_id: contactUser.id
             });
 
             socket.emit("notify", {
@@ -102,12 +103,13 @@ class ChatRoom extends Component {
             });
           })
           .catch(err => {
-            //  this.setState({errMessage: "Could Not Send Message", messageValue: ''})
+            console.log('Couldnt Send Message', err)
+             this.setState({errMessage: "Could Not Send Message", messageValue: ''})
           });
       });
       this.setState({
         messageValue: ""
-      });
+      }, () => this.scrollToBottom());
     }
   };
 
@@ -115,7 +117,7 @@ class ChatRoom extends Component {
     const { Conversation } = this.props;
     socket.on("chat", data => {
       Conversation(data.threadID);
-      this.scrollToBottom();
+       this.scrollToBottom();
     });
   };
 
@@ -202,8 +204,6 @@ class ChatRoom extends Component {
         }
       }
     }
-
-    console.log(symbolsData);
 
     this.setState({
       smileys_people: smileyData,
@@ -367,6 +367,7 @@ class ChatRoom extends Component {
     this.sortEmojis();
   }
 
+
   render() {
     const { messageValue, dataOutput, quote, smileys_people } = this.state;
     const {
@@ -378,6 +379,8 @@ class ChatRoom extends Component {
     } = this.props;
 
     var size = Object.keys(thread).length;
+
+    console.log('thread', thread)
 
     if (size) {
       return (

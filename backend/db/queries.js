@@ -1,6 +1,7 @@
 const db = require("./index");
 const authHelpers = require("../auth/helpers");
 const passport = require("../auth/local");
+const uuidv4 = require('uuid/v4');
 
 function registerUser(req, res, next) {
   return authHelpers
@@ -266,9 +267,10 @@ const getUsersContacts = (req, res, next) => {
 };
 
 const createThread = (req, res, next) => {
+
   db
     .one(
-      "INSERT INTO threads (user_one, user_two, user_one_name, user_two_name, created) VALUES (${user_id}, ${contact_id}, ${user_one_name}, ${user_two_name}, ${created}) RETURNING id, user_one, user_two, user_one_name, user_two_name, created",
+      "INSERT INTO threads (id, user_one, user_two, user_one_name, user_two_name, created) VALUES (${id}, ${user_id}, ${contact_id}, ${user_one_name}, ${user_two_name}, ${created}) RETURNING id, user_one, user_two, user_one_name, user_two_name, created",
       req.body
     )
     .then(data => {
@@ -287,7 +289,7 @@ const createThread = (req, res, next) => {
 const fetchedThreads = (req, res, next) => {
   db
     .any(
-      "SELECT threads.id, user_one, user_two, user_one_name, user_two_name, created, full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id} or user_two=${id}",
+      "SELECT threads.id, user_one, user_two, user_one_name, user_two_name, created, full_name, language, profile_pic FROM threads JOIN users ON users.id = user_two WHERE  user_one=${id}",
       req.user
     )
     .then(data => {
