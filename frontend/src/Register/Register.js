@@ -1,301 +1,428 @@
 /* eslint-disable */
 import React, { Component } from "react";
-// import "./Form.css";
-import { Link , Redirect } from "react-router-dom";
-import axios from 'axios'
+import { Link, Redirect } from "react-router-dom";
+import axios from "axios";
 import {
-  FormGroup,
-  ControlLabel,
-  FormControl,
-  HelpBlock,
-  DropdownButton,
-  MenuItem
-} from "react-bootstrap";
+  Form,
+  Input,
+  Tooltip,
+  Icon,
+  Cascader,
+  Select,
+  Row,
+  Col,
+  Checkbox,
+  Button,
+  AutoComplete
+} from "antd";
+import "./Register.css";
+import Loading from "../Home/Loading";
 
+const FormItem = Form.Item;
+const Option = Select.Option;
 
-export default class Registration extends Component {
-  state = {
-    emailInput: "",
-    fullNameInput: "",
-    usernameInput: "",
-    passwordInput: "",
-    confirmInput: "",
-    message: "",
-    registered: false,
-    alert: false,
-    languages: [],
-    countries: [],
-    lanSelected: '',
-    conSelected: ''
-  };
+export default Form.create()(
+  class Registration extends Component {
+    state = {
+      emailInput: "",
+      fullNameInput: "",
+      usernameInput: "",
+      passwordInput: "",
+      confirmInput: "",
+      message: "",
+      registered: false,
+      alert: false,
+      languages: [],
+      countries: [],
+      lanSelected: "en",
+      conSelected: "US",
+      confirmDirty: false
+    };
 
-  handleUsernameChange = e => {
-    this.setState({
-      usernameInput: e.target.value
-    });
-  };
+    handleConfirmBlur = e => {
+      const value = e.target.value;
+      this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    };
 
-  handlePasswordChange = e => {
-    this.setState({
-      passwordInput: e.target.value
-    });
-  };
+    compareToFirstPassword = (rule, value, callback) => {
+      const form = this.props.form;
+      if (value && value !== form.getFieldValue("password")) {
+        callback("Two passwords that you enter is inconsistent!");
+      } else {
+        callback();
+      }
+    };
 
-  handleConfirmChange = e => {
-    this.setState({
-      confirmInput: e.target.value
-    });
-  };
+    validateToNextPassword = (rule, value, callback) => {
+      const form = this.props.form;
+      if (value && this.state.confirmDirty) {
+        form.validateFields(["confirm"], { force: true });
+      }
+      callback();
+    };
 
-  handleEmailChange = e => {
-    this.setState({
-      emailInput: e.target.value
-    });
-  };
-
-  handleFullNameChange = e => {
-    this.setState({
-      fullNameInput: e.target.value
-    });
-  };
-
-  handleLanguageSelector = e => {
-    this.setState({
-      lanSelected: e.target.value
-    })
-  }
-
-  handleCountrySelector = e => {
-    this.setState({
-      conSelected: e.target.value
-    })
-  }
-
-  
-  submitForm = (e) => {
-   e.preventDefault()
-    const {
-      emailInput,
-      fullNameInput,
-      usernameInput,
-      passwordInput,
-      confirmInput,
-      message,
-      registered,
-      conSelected,
-      lanSelected,
-    } = this.state;
-
-    axios
-      .post("/register", {
-        username: usernameInput,
-        password: passwordInput,
-        email: emailInput,
-        fullname: fullNameInput,
-        language: lanSelected,
-        country: conSelected
-      })
-      .then(res => {
-        console.log(res.data);
-        this.setState({
-          registered: true,
-          confirmInput: "",
-          submitted: true,
-          emailInput: "",
-          lanSelected: '',
-          message: `Welcome to the site ${this.state.usernameInput}`
-        });
-      })
-      .catch(err => {
-        console.log("error: ", err);
-        this.setState({
-          usernameInput: "",
-          passwordInput: "",
-          confirmInput: "",
-          emailInput: "",
-          fullNameInput: '',
-          lanSelected: '',
-          conSelected: '',
-          message: "Error inserting user"
-        });
+    handleUsernameChange = e => {
+      this.setState({
+        usernameInput: e.target.value
       });
-  };
+    };
 
-  componentDidMount(){
-    axios
-    .get('/lang')
-    .then(res => {
+    handlePasswordChange = e => {
       this.setState({
-        languages: res.data.languages
-      })
-    })
-    .catch(err => console.log('Couldnt Fetch Languages:', err))
+        passwordInput: e.target.value
+      });
+    };
 
-    axios
-    .get('/countries')
-    .then(res => {
+    handleConfirmChange = e => {
       this.setState({
-        countries: res.data.countries
-      })
-    })
-    .catch(err => console.log('Couldnt Fetch Languages:', err))
-  }
+        confirmInput: e.target.value
+      });
+    };
 
-  render() {
-    const {
-      emailInput,
-      fullNameInput,
-      usernameInput,
-      passwordInput,
-      confirmInput,
-      message,
-      registered,
-      languages,
-      lanSelected,
-      countries
-    } = this.state;
+    handleEmailChange = e => {
+      this.setState({
+        emailInput: e.target.value
+      });
+    };
 
-    const {
-      submitForm,
-      handleEmailChange,
-      handleFullNameChange,
-      handleUsernameChange,
-      handleCountrySelector,
-      handlePasswordChange,
-      handleConfirmChange,
-      handleLanguageSelector
-    } = this;
+    handleFullNameChange = e => {
+      this.setState({
+        fullNameInput: e.target.value
+      });
+    };
 
-      if (registered) {
-        axios
-        .post('/login', {
+    handleLanguageSelector = value => {
+      this.setState({
+        lanSelected: value
+      });
+    };
+
+    handleCountrySelector = value => {
+      this.setState({
+        conSelected: value
+      });
+    };
+
+    submitForm = e => {
+      e.preventDefault();
+      const {
+        emailInput,
+        fullNameInput,
+        usernameInput,
+        passwordInput,
+        confirmInput,
+        message,
+        registered,
+        conSelected,
+        lanSelected
+      } = this.state;
+
+      axios
+        .post("/register", {
           username: usernameInput,
-          password: passwordInput
+          password: passwordInput,
+          email: emailInput,
+          fullname: fullNameInput,
+          language: lanSelected,
+          country: conSelected
         })
         .then(res => {
+          console.log(res.data);
           this.setState({
-            registered: false,
-            usernameInput: '',
-            passwordInput: ''
+            registered: true,
+            confirmInput: "",
+            submitted: true,
+            emailInput: "",
+            lanSelected: "",
+            message: `Welcome to the site ${this.state.usernameInput}`
           });
         })
         .catch(err => {
+          console.log("error: ", err);
+
+          this.props.form.setFieldsValue({
+            email: '',
+            password: '',
+            confirm: ''
+          })
           this.setState({
-            message: 'username/password not found',
-            registered: false
+            usernameInput: "",
+            passwordInput: "",
+            confirmInput: "",
+            emailInput: "",
+            fullNameInput: "",
+            lanSelected: "",
+            conSelected: "",
+            message: "Error inserting user"
           });
         });
+    };
 
-        return <Redirect to='/dashboard' />
-        
+    componentDidMount() {
+      axios
+        .get("/lang")
+        .then(res => {
+          this.setState({
+            languages: res.data.languages
+          });
+        })
+        .catch(err => console.log("Couldnt Fetch Languages:", err));
+
+      axios
+        .get("/countries")
+        .then(res => {
+          this.setState({
+            countries: res.data.countries
+          });
+        })
+        .catch(err => console.log("Couldnt Fetch Languages:", err));
+    }
+
+    render() {
+      const {
+        emailInput,
+        fullNameInput,
+        usernameInput,
+        passwordInput,
+        confirmInput,
+        message,
+        registered,
+        languages,
+        lanSelected,
+        countries
+      } = this.state;
+
+      const {
+        submitForm,
+        handleEmailChange,
+        handleFullNameChange,
+        handleUsernameChange,
+        handleCountrySelector,
+        handlePasswordChange,
+        handleConfirmChange,
+        handleLanguageSelector
+      } = this;
+
+      if (registered) {
+        axios
+          .post("/login", {
+            username: usernameInput,
+            password: passwordInput
+          })
+          .then(res => {
+            this.setState({
+              registered: false,
+              usernameInput: "",
+              passwordInput: ""
+            });
+          })
+          .catch(err => {
+            this.setState({
+              message: "username/password not found",
+              registered: false
+            });
+          });
+
+        return <Redirect to="/dashboard" />;
       }
 
-    return (
-            <div id="signup-form-container">
-              <p id="signup-title">
-                <strong>Sign Up To Chat With Anyone In The World</strong>
-              </p>
-              <div id="form-container">
-                <form onSubmit={submitForm}>
-                  <input
-                    class="input"
-                    id="login-input"
-                    type="email"
-                    name="Email"
-                    placeholder="Email"
-                    value={emailInput}
-                    onChange={handleEmailChange}
-                  />
-                  <br />
-                  <input
-                    class="input"
-                    id="login-input"
-                    type="text"
-                    name="Full name"
-                    placeholder="Full name"
-                    value={fullNameInput}
-                    onChange={handleFullNameChange}
-                  />
-                  <br />
-                  <input
-                    class="input"
-                    id="login-input"
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    value={usernameInput}
-                    onChange={handleUsernameChange}
-                  />
-                  <br />
-                  <input
-                    class="input"
-                    id="login-password"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={passwordInput}
-                    onChange={handlePasswordChange}
-                  />
-                  <br />
-                  <input
-                    class="input"
-                    id="login-password"
-                    type="password"
-                    name="confirm-input"
-                    placeholder="Confirm Password"
-                    value={confirmInput}
-                    onChange={handleConfirmChange}
-                  />
-                  <br />
+      const { getFieldDecorator } = this.props.form;
+      const formItemLayout = {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 8 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 }
+        }
+      };
 
-                   <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  bsClass="formControlsSelect"
-                  onChange={handleCountrySelector}
-                  
-                >
-                  {countries.map((c, i) => {
-                    return (
-                      <option key={i} value={c.code}>
-                        {c.name}
-                      </option>
-                    );
-                  })}
-                </FormControl>
-                <br />
+      const tailFormItemLayout = {
+        wrapperCol: {
+          xs: {
+            span: 24,
+            offset: 0
+          },
+          sm: {
+            span: 16,
+            offset: 8
+          }
+        }
+      };
 
-                  <FormControl
-                  componentClass="select"
-                  placeholder="select"
-                  bsClass="formControlsSelect"
-                  onChange={handleLanguageSelector}
-                  
-                >
-                  {languages.map((lan, i) => {
-                    return (
-                      <option key={i} value={lan.abbreviation}>
-                        {lan.name}
-                      </option>
-                    );
-                  })}
-                </FormControl>
-                <br />
+      // const prefixSelector = getFieldDecorator("prefix", {
+      //   initialValue: "86"
+      // })(
+      //   <Select style={{ width: 70 }}>
+      //     <Option value="86">+86</Option>
+      //     <Option value="87">+87</Option>
+      //   </Select>
+      // );
 
-                  <input
-                    class="input"
-                    id="login-submit"
-                    type="submit"
-                    value="Sign Up"
-                  />
-
-                  <p>{message}</p>
-                  <p id="question">
-                    Have an account? <Link to="/login">Log In</Link>
-                  </p>
-                </form>
-              </div>
-            </div>
-    );
+      return (
+        <div id="signup-form-container">
+          <div className="pageHeader_register">
+            <h2 id="uchat-title">
+              <strong>Welcome To Universal Chat</strong>
+            </h2>
+          </div>
+          <div className="loading_container loading_container_register">
+            <Loading />
+          </div>
+          <Form 
+          id='register-form'
+          onSubmit={submitForm}>
+            <FormItem {...formItemLayout} label="E-mail">
+              {getFieldDecorator("email", {
+                rules: [
+                  {
+                    type: "email",
+                    message: "The input is not valid E-mail!"
+                  },
+                  {
+                    required: true,
+                    message: "Please input your E-mail!"
+                  }
+                ]
+              })(<Input onChange={handleEmailChange} />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Password">
+              {getFieldDecorator("password", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input your password!"
+                  },
+                  {
+                    validator: this.validateToNextPassword
+                  }
+                ]
+              })(<Input type="password" onChange={handlePasswordChange} />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Confirm Password">
+              {getFieldDecorator("confirm", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please confirm your password!"
+                  },
+                  {
+                    validator: this.compareToFirstPassword
+                  }
+                ]
+              })(
+                <Input
+                  type="password"
+                  onBlur={this.handleConfirmBlur}
+                  onChange={handleConfirmChange}
+                />
+              )}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={
+                <span>
+                  Full Name&nbsp;
+                  <Tooltip title="Your Full Name">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>
+              }
+            >
+              <Input value={fullNameInput} onChange={handleFullNameChange} />
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={
+                <span>
+                  Username&nbsp;
+                  <Tooltip title="What do you want others to call you?">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>
+              }
+            >
+              <Input value={usernameInput} onChange={handleUsernameChange} />
+            </FormItem>
+            <FormItem label="Language" {...formItemLayout}>
+              <Select
+                defaultValue="en"
+                onChange={handleLanguageSelector}
+                style={{ width: 330 }}
+                dropdownStyle={{ maxHeight: 200 }}
+              >
+                {languages.map((lan, i) => {
+                  return (
+                    <Option key={i.toString(36) + i} value={lan.abbreviation}>
+                      {lan.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </FormItem>
+            <FormItem label="Region" {...formItemLayout}>
+              <Select
+                defaultValue="US"
+                onChange={handleCountrySelector}
+                style={{ width: 330 }}
+                dropdownStyle={{ maxHeight: 138 }}
+              >
+                {countries.map((c, i) => {
+                  return (
+                    <Option key={i.toString(36) + i} value={c.code}>
+                      {c.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </FormItem>
+            {/* <FormItem
+        {...formItemLayout}
+        label="Phone Number"
+      >
+        {getFieldDecorator('phone', {
+          rules: [{ required: true, message: 'Please input your phone number!' }],
+        })(
+          <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+        )}
+      </FormItem> */}
+            {/* <FormItem
+        {...formItemLayout}
+        label="Captcha"
+        extra="We must make sure that your are a human."
+      >
+        <Row gutter={8}>
+          <Col span={12}>
+            {getFieldDecorator('captcha', {
+              rules: [{ required: true, message: 'Please input the captcha you got!' }],
+            })(
+              <Input />
+            )}
+          </Col>
+          <Col span={12}>
+            <Button>Get captcha</Button>
+          </Col>
+        </Row>
+      </FormItem> */}
+            {/* <FormItem {...tailFormItemLayout}>
+        {getFieldDecorator('agreement', {
+          valuePropName: 'checked',
+        })(
+          <Checkbox>I have read the <a href="">agreement</a></Checkbox>
+        )}
+      </FormItem> */}
+            <FormItem {...tailFormItemLayout}>
+              <Button type="primary" htmlType="submit">
+                Register
+              </Button>
+            </FormItem>
+            <p id="question">
+              Have an account? <Link to="/login">Log In</Link>
+            </p>
+          </Form>
+        </div>
+      );
+    }
   }
-}
+);

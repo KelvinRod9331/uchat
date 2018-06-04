@@ -69,7 +69,6 @@ class ChatRoom extends Component {
 
     var date = new Date();
     var time = dateFormat(date, "h:MMtt");
-    console.log(contactUser.id)
 
     if (messageValue) {
       googleTranslate.translate(messageValue, contactUser.language, function(

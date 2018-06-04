@@ -1,8 +1,11 @@
 import React, { Component } from "react";
-// import "./Login.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { Redirect } from "react-router";
+import axios from "axios";
+import { Form, Icon, Input, Button, Checkbox } from "antd";
+import Loading from "./Loading";
+import "./Home.css";
+const FormItem = Form.Item;
 
 export default class Login extends Component {
   state = {
@@ -10,7 +13,8 @@ export default class Login extends Component {
     passwordInput: this.props.passwordInput || "",
     loggedIn: false,
     message: "",
-    user: null
+    user: null,
+    checked: false
   };
 
   /**
@@ -64,18 +68,19 @@ export default class Login extends Component {
       });
   };
 
-  componentDidMount(){
+  componentDidMount() {
     axios
-    .get('/singleUser')
-    .then(res => {
+      .get("/singleUser")
+      .then(res => {
         this.setState({
-            user: res.data.data[0].username
-        })
-    }).catch(err => {
+          user: res.data.data[0].username
+        });
+      })
+      .catch(err => {
         this.setState({
-            user: null
-        })
-    })
+          user: null
+        });
+      });
   }
 
   render() {
@@ -84,7 +89,8 @@ export default class Login extends Component {
       passwordInput,
       message,
       loggedIn,
-      user
+      user,
+      checked,
     } = this.state;
     // eslint-disable-next-line
     const { submitForm } = this;
@@ -92,40 +98,65 @@ export default class Login extends Component {
     if (loggedIn || user) {
       return <Redirect to="/" />;
     }
-    
+
     return (
       <div className="login_container">
-        <div className="pageHeader" />
+        <div className="loading_container">
+          <Loading />
+        </div>
+        <div className="pageHeader">
+          <h1 id="uchat-title">
+            <strong>Welcome To Universal Chat</strong>
+          </h1>
+        </div>
         <div id="form_container">
-          <p id="login">Log In</p>
           <div id="form_div">
-            <form onSubmit={this.submitForm}>
-              <input
-                id="login-input"
-                type="input"
-                placeholder="Username or E-mail"
-                name="username"
-                value={usernameInput}
-                onChange={this.handleUsernameChange}
-              />
-              <br />
-              <input
-                id="login-password"
-                type="password"
-                placeholder="Password"
-                name="username"
-                value={passwordInput}
-                onChange={this.handlePasswordChange}
-              />
-              <br />
-              <input id="login-submit" type="submit" value="Submit" />
-              <p id="homPage-question">
-                Don't have an account?{" "}
+            <Form onSubmit={this.submitForm} className="login-form">
+              <FormItem>
+                <Input
+                  prefix={
+                    <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  value={usernameInput}
+                  onChange={this.handleUsernameChange}
+                  placeholder="Username"
+                />
+              </FormItem>
+              <FormItem>
+                <Input
+                  prefix={
+                    <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  type="password"
+                  placeholder="Password"
+                  value={passwordInput}
+                  onChange={this.handlePasswordChange}
+                />
+              </FormItem>
+              <FormItem>
+                <Checkbox
+                value={checked}
+                onClick={() => this.setState({checked: true})}
+                >
+                <strong>Remember me</strong>
+                </Checkbox>
+                <a className="login-form-forgot" href="/">
+                 <strong>Forgot password</strong> 
+                </a>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="login-form-button"
+                >
+                  Log in
+                </Button>
+               <strong>Or</strong> 
+                {" "}
                 <Link id="signup" to="/register">
-                  Sign Up
+                <strong>Register</strong> 
                 </Link>
-              </p>
-            </form>
+              </FormItem>
+            </Form>
           </div>
         </div>
         {message}

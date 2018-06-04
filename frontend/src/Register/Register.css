@@ -1,0 +1,24 @@
+#signup-form-container {
+  position: absolute;
+  margin: 10% 0 0 40%;
+}
+
+.loading_container_register {
+  width: 230%;
+  height: 200%;
+  margin: -80% 0 0 -160%;
+  position: absolute;
+  z-index: -3;
+}
+
+#register-form{
+  width: 500px;
+}
+
+.pageHeader_register{
+    margin-left: 30%;
+}
+
+strong {
+  color: #fbfbfb;
+}

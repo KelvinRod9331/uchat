@@ -13,6 +13,7 @@
     "flag-icon-css": "^3.0.0",
     "google-translate": "^2.1.0",
     "jquery": "^3.3.1",
+    "lottie-web": "^5.1.16",
     "proxy": "^0.2.4",
     "react": "^16.3.2",
     "react-bootstrap": "^0.32.1",
