@@ -13,6 +13,7 @@
 
 #register-form{
   width: 500px;
+  margin-left: 35%
 }
 
 .pageHeader_register{
@@ -21,4 +22,25 @@
 
 strong {
   color: #fbfbfb;
+}
+
+.language-dropdown{
+  height: 200px
+}
+
+.language-dropdown > div{
+  max-height: 200px;
+}
+
+.region-dropdown{
+  height: 138px
+}
+
+.region-dropdown > div{
+  max-height: 138px
+}
+
+#question{
+  margin-left: -40%;
+  font-size: 15px;
 }

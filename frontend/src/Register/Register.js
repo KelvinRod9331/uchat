@@ -141,10 +141,10 @@ export default Form.create()(
           console.log("error: ", err);
 
           this.props.form.setFieldsValue({
-            email: '',
-            password: '',
-            confirm: ''
-          })
+            email: "",
+            password: "",
+            confirm: ""
+          });
           this.setState({
             usernameInput: "",
             passwordInput: "",
@@ -246,7 +246,7 @@ export default Form.create()(
           },
           sm: {
             span: 16,
-            offset: 8
+            offset: 0
           }
         }
       };
@@ -270,10 +270,12 @@ export default Form.create()(
           <div className="loading_container loading_container_register">
             <Loading />
           </div>
-          <Form 
-          id='register-form'
-          onSubmit={submitForm}>
-            <FormItem {...formItemLayout} label="E-mail">
+          <Form
+            style={{ color: "white" }}
+            id="register-form"
+            onSubmit={submitForm}
+          >
+            <FormItem {...formItemLayout}>
               {getFieldDecorator("email", {
                 rules: [
                   {
@@ -285,22 +287,29 @@ export default Form.create()(
                     message: "Please input your E-mail!"
                   }
                 ]
-              })(<Input onChange={handleEmailChange} />)}
+              })(<Input onChange={handleEmailChange} placeholder="E-Mail" />)}
             </FormItem>
-            <FormItem {...formItemLayout} label="Password">
+            <FormItem {...formItemLayout}>
               {getFieldDecorator("password", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input your password!"
+                    message: "Please input your password!",
+                    whitespace: true
                   },
                   {
                     validator: this.validateToNextPassword
                   }
                 ]
-              })(<Input type="password" onChange={handlePasswordChange} />)}
+              })(
+                <Input
+                  type="password"
+                  onChange={handlePasswordChange}
+                  placeholder="Password"
+                />
+              )}
             </FormItem>
-            <FormItem {...formItemLayout} label="Confirm Password">
+            <FormItem {...formItemLayout}>
               {getFieldDecorator("confirm", {
                 rules: [
                   {
@@ -316,41 +325,30 @@ export default Form.create()(
                   type="password"
                   onBlur={this.handleConfirmBlur}
                   onChange={handleConfirmChange}
+                  placeholder="Confirm Password"
                 />
               )}
             </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  Full Name&nbsp;
-                  <Tooltip title="Your Full Name">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
-                </span>
-              }
-            >
-              <Input value={fullNameInput} onChange={handleFullNameChange} />
+            <FormItem {...formItemLayout} required={true}>
+              <Input
+                value={fullNameInput}
+                onChange={handleFullNameChange}
+                placeholder="Full Name"
+              />
             </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  Username&nbsp;
-                  <Tooltip title="What do you want others to call you?">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
-                </span>
-              }
-            >
-              <Input value={usernameInput} onChange={handleUsernameChange} />
+            <FormItem {...formItemLayout} required={true}>
+              <Input
+                value={usernameInput}
+                onChange={handleUsernameChange}
+                placeholder="Username"
+              />
             </FormItem>
-            <FormItem label="Language" {...formItemLayout}>
+            <FormItem required={true} {...formItemLayout}>
               <Select
-                defaultValue="en"
+                defaultValue="Select Language"
                 onChange={handleLanguageSelector}
                 style={{ width: 330 }}
-                dropdownStyle={{ maxHeight: 200 }}
+                dropdownClassName="language-dropdown"
               >
                 {languages.map((lan, i) => {
                   return (
@@ -361,12 +359,13 @@ export default Form.create()(
                 })}
               </Select>
             </FormItem>
-            <FormItem label="Region" {...formItemLayout}>
+            <FormItem required={true} {...formItemLayout}>
               <Select
                 defaultValue="US"
+                defaultValue="Select Region"
                 onChange={handleCountrySelector}
                 style={{ width: 330 }}
-                dropdownStyle={{ maxHeight: 138 }}
+                dropdownClassName="region-dropdown"
               >
                 {countries.map((c, i) => {
                   return (

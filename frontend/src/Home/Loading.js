@@ -1,10 +1,9 @@
+// eslint-disable-next-line 
 import React, { Component } from "react";
 import bodymovin from "lottie-web";
 
 export default class LoadingScreen extends Component {
-  state = {
-    animationWindow: null
-  };
+
   select = s => {
     return document.querySelector(s);
   };
@@ -21,7 +20,7 @@ export default class LoadingScreen extends Component {
     };
     let anim;
     anim = bodymovin.loadAnimation(animData);
-    anim.setSpeed(0.8);
+    anim.setSpeed(0.7);
     return null
   }
 }

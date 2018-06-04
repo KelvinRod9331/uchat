@@ -65,6 +65,12 @@ export default class Login extends Component {
           passwordInput: "",
           message: "username/password not found"
         });
+
+        setTimeout(() => {
+          this.setState({
+            message: ""
+          })
+        }, 2000)
       });
   };
 
@@ -141,7 +147,7 @@ export default class Login extends Component {
                 <strong>Remember me</strong>
                 </Checkbox>
                 <a className="login-form-forgot" href="/">
-                 <strong>Forgot password</strong> 
+                 <strong>Forgot Password</strong> 
                 </a>
                 <Button
                   type="primary"
@@ -153,13 +159,13 @@ export default class Login extends Component {
                <strong>Or</strong> 
                 {" "}
                 <Link id="signup" to="/register">
-                <strong>Register</strong> 
+                <strong id='register-tag'>Register</strong> 
                 </Link>
               </FormItem>
             </Form>
           </div>
+        <strong style={{color: "red"}}>{message}</strong>
         </div>
-        {message}
       </div>
     );
   }
