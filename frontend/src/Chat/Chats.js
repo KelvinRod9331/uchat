@@ -50,13 +50,14 @@ export default class Chats extends Component {
               let shortMsg =
                 recentObj.receiver_message
                   .split(" ")
-                  .slice(0, 2)
+                  .slice(0, 3)
                   .join(" ") + "...";
 
               recentObj.receiver_message = shortMsg;
             }
 
             if (currentUser.id === thread.user_one) {
+             
               return (
                 <div
                   className="individual-thread"

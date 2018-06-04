@@ -1,0 +1,38 @@
+body {
+  background-color: #0e4fb1;
+  overflow: hidden;
+}
+
+.loading_container {
+  width: 90%;
+  height: 170%;
+  margin: -20%;
+  position: absolute;
+  z-index: -3;
+}
+
+#form_container {
+  position: absolute;
+  margin: 20% 0 0 49%;
+}
+
+.pageHeader{
+   position: absolute;
+   margin: 15% 0 0 46%;
+}
+
+strong{
+    color: #FBFBFB;
+}
+
+.login-form {
+    max-width: 300px;
+  }
+
+.login-form-forgot {
+    float: right;
+  }
+
+.login-form-button {
+    width: 100%;
+  }

@@ -13,6 +13,7 @@
     "flag-icon-css": "^3.0.0",
     "google-translate": "^2.1.0",
     "jquery": "^3.3.1",
+    "lottie-web": "^5.1.16",
     "proxy": "^0.2.4",
     "react": "^16.3.2",
     "react-bootstrap": "^0.32.1",
@@ -24,7 +25,8 @@
     "react-scripts": "1.1.4",
     "react-scroll": "^1.7.9",
     "socket.io-client": "^2.1.0",
-    "socket.io-p2p": "^2.2.0"
+    "socket.io-p2p": "^2.2.0",
+    "uuid": "^3.2.1"
   },
   "scripts": {
     "start": "react-scripts start",

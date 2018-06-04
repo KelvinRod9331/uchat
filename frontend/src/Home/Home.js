@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import axios from 'axios';
-
+import "./Home.css"
 
 class Home extends React.Component {
     state = { user: undefined }

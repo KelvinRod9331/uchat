@@ -1,15 +1,12 @@
 import React from "react";
-import axios from "axios";
+
 import socketIOClient from "socket.io-client";
 import {
   Modal,
   Popover,
-  Button,
-  Input,
   Icon,
   Badge,
   Card,
-  Avatar,
   Tooltip
 } from "antd";
 import UChat from "../UChatAPI";
@@ -144,7 +141,7 @@ class Notifications extends React.Component {
     const { notificationData } = this.state;
 
     if(notificationData.length){
-        return notificationData.map(data => {
+        return notificationData.map((data, idx) => {
           return (
             <div
               className="notifications"
@@ -157,6 +154,7 @@ class Notifications extends React.Component {
                 onClick={() => this.showModal(data)}
               >
                 <img
+                  alt={idx}
                   className="contact-profile-pic "
                   id={data.sender_id}
                   src={data.sender_profile_pic}

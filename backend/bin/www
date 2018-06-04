@@ -56,6 +56,10 @@ io.on("connection", socket => {
   });
 
   socket.on("chat", data => {
+
+    // socket.broadcast.to(clientsObj[data.receiver_id].connectionId).emit("chat", {
+    //   threadID: data.threadID
+    // });
   
     io.sockets.emit("chat", {
           threadID: data.threadID
