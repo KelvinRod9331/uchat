@@ -3,6 +3,14 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Redirect } from "react-router";
 import { Grid } from "react-bootstrap";
+import {
+  Modal,
+  Popover,
+  Icon,
+  Badge,
+  Card,
+  Tooltip
+} from "antd";
 import Search from "./Search";
 
 export default class Contacts extends Component {
@@ -35,8 +43,6 @@ export default class Contacts extends Component {
       fetchUserThreads
     } = this.props;
 
-    console.log(usersThreads);
-
     let contactSelected = e.target.id;
 
     let contact = allUsers.find(u => {
@@ -50,8 +56,7 @@ export default class Contacts extends Component {
         return thread;
       }
     });
-    console.log("Over here", isChatRoomOpen, { contact: contact });
-    console.log(!Boolean(isChatRoomOpen));
+
     if (!Boolean(isChatRoomOpen)) {
       axios
         .post("/newThread", {
@@ -115,9 +120,15 @@ export default class Contacts extends Component {
                 <br />
                 <span id={c.contact_id}>{c.about}</span>
               </div>
+              <Tooltip title={
+              `Region: ${c.country.toUpperCase()} 
+              Language: ${c.language}`
+              } >
               <div
+                id={c.contact_id}
                 className={`flag-background flag-${c.country.toLowerCase()}`}
               />
+            </Tooltip>
 
               <div className="borderBottom" />
             </div>
