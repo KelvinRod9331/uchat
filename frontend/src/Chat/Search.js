@@ -146,11 +146,10 @@ export default class Search extends Component {
   sendRequest = user => {
     const { currentUser } = this.props;
     const { requests } = this.state;
-   
 
     var date = new Date();
     var time = dateFormat(date, "h:MMtt");
-  
+
     UChat.postNotifications({
       receiver_id: user.id,
       sender_id: currentUser.id,
@@ -190,7 +189,7 @@ export default class Search extends Component {
             modifiedArr.push(requests[i]);
           }
         }
-        
+
         this.setState({
           requests: modifiedArr,
           icon: <Icon type="user-add" style={{ fontSize: "180%" }} />
@@ -426,6 +425,7 @@ export default class Search extends Component {
         position: "absolute",
         zIndex: 3,
         marginTop: "14.9%",
+        overflowY: "scroll",
         width: "100%",
         height: "74%",
         backgroundColor: "white"

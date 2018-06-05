@@ -102,7 +102,7 @@ export default class Contacts extends Component {
                 onClick={this.createChatRoom}
               >
                 <img
-                  className="contact-profile-pic "
+                  className="contact-profile-pic"
                   id={c.contact_id}
                   src={c.profile_pic}
                 />
