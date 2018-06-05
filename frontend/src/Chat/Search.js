@@ -247,10 +247,16 @@ export default class Search extends Component {
                   <br />
                   <span id={contact.contact_id}>{contact.about}</span>
                 </div>
-                <div
-                  id={contact.contact_id}
-                  className={`flag-background flag-${contact.country.toLowerCase()}`}
-                />
+                <Tooltip
+                  title={
+                        `Region: ${contact.country.toUpperCase()} 
+                        Language: ${contact.language}`}
+                >
+                  <div
+                    id={contact.contact_id}
+                    className={`flag-background flag-${contact.country.toLowerCase()}`}
+                  />
+                </Tooltip>
 
                 <div className="borderBottom" />
               </div>
