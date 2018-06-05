@@ -35,8 +35,6 @@ export default class Contacts extends Component {
       fetchUserThreads
     } = this.props;
 
-    console.log(usersThreads);
-
     let contactSelected = e.target.id;
 
     let contact = allUsers.find(u => {
@@ -50,8 +48,7 @@ export default class Contacts extends Component {
         return thread;
       }
     });
-    console.log("Over here", isChatRoomOpen, { contact: contact });
-    console.log(!Boolean(isChatRoomOpen));
+
     if (!Boolean(isChatRoomOpen)) {
       axios
         .post("/newThread", {
@@ -116,6 +113,7 @@ export default class Contacts extends Component {
                 <span id={c.contact_id}>{c.about}</span>
               </div>
               <div
+                id={c.contact_id}
                 className={`flag-background flag-${c.country.toLowerCase()}`}
               />
 

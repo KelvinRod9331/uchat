@@ -248,6 +248,7 @@ export default class Search extends Component {
                   <span id={contact.contact_id}>{contact.about}</span>
                 </div>
                 <div
+                  id={contact.contact_id}
                   className={`flag-background flag-${contact.country.toLowerCase()}`}
                 />
 

@@ -36,7 +36,8 @@ export default Form.create()(
       countries: [],
       lanSelected: "en",
       conSelected: "US",
-      confirmDirty: false
+      confirmDirty: false,
+      user: null
     };
 
     handleConfirmBlur = e => {
@@ -158,7 +159,20 @@ export default Form.create()(
         });
     };
 
-    componentDidMount() {
+    componentWillMount() {
+      axios
+      .get("/singleUser")
+      .then(res => {
+        this.setState({
+          user: res.data.data[0].username
+        });
+      })
+      .catch(err => {
+        this.setState({
+          user: null
+        });
+      });
+      
       axios
         .get("/lang")
         .then(res => {
@@ -178,6 +192,7 @@ export default Form.create()(
         .catch(err => console.log("Couldnt Fetch Languages:", err));
     }
 
+  
     render() {
       const {
         emailInput,
@@ -189,7 +204,8 @@ export default Form.create()(
         registered,
         languages,
         lanSelected,
-        countries
+        countries,
+        user
       } = this.state;
 
       const {
@@ -202,6 +218,10 @@ export default Form.create()(
         handleConfirmChange,
         handleLanguageSelector
       } = this;
+
+      if (user) {
+        return <Redirect to="/dashboard" />;
+      }
 
       if (registered) {
         axios
@@ -225,6 +245,7 @@ export default Form.create()(
 
         return <Redirect to="/dashboard" />;
       }
+
 
       const { getFieldDecorator } = this.props.form;
       const formItemLayout = {
