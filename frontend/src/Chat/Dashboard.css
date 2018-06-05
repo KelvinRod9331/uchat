@@ -110,15 +110,13 @@ html {
 }
 
 .inner-component-box > img {
-  padding-top: 14px;
-  width: 40px;
+  padding-top: 8%;
+  width: 30%;
 }
 
 .inner-component-box > p {
-  position: absolute;
   font-size: 14px;
   margin-top: -1%;
-  margin-left: 10%;
   visibility: hidden;
 }
 
