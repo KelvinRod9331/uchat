@@ -28,9 +28,7 @@ class Home extends React.Component {
         } else if (user === null) {
             return <Redirect to='/login' />
         }
-        return (
-            <span>loading...</span>
-        )
+        return null
     }
 }
 

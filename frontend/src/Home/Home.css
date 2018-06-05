@@ -1,6 +1,6 @@
 body {
   background-color: #0e4fb1;
-  overflow: hidden;
+ 
 }
 
 .loading_container {
@@ -24,6 +24,11 @@ body {
 strong{
     color: #FBFBFB;
 }
+
+
+#register-tag:hover{
+  color: #46ABFC
+  } 
 
 .login-form {
     max-width: 300px;

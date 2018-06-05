@@ -16,6 +16,7 @@ import Notify from "./Notify";
 import ModalPages from "./ModalPages";
 import Menu from "./Menu";
 import Notifications from './Notifications'
+import Discovery from './Discovery'
 
 const socket = socketIOClient("http://localhost:3100");
 
@@ -194,7 +195,7 @@ export default class DashboardUpdate extends Component {
 
       case "discovery":
         return (
-          <Search
+          <Discovery
             currentUser={currentUser}
             search={"discovery"}
             allUsers={allUsers}
