@@ -1,8 +1,21 @@
 {
-    "name": "UChat",
-    "version": "9.8.0",
-    "scripts": {
-      "start": "cd backend && node ./bin/www",
-      "heroku-postbuild": "cd frontend && npm install --only=dev && npm install && npm run build"
-    }
-  }
+  "name": "UChat",
+  "version": "9.8.0",
+  "scripts": {
+    "start": "cd backend && node ./bin/www",
+    "heroku-postbuild": "cd frontend && npm install --only=dev && npm install && npm run build"
+  },
+  "description": "A messaging app that allow users to communicate with anyone across the world in their own native language avoiding language barriers",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KelvinRod9331/uchat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KelvinRod9331/uchat/issues"
+  },
+  "homepage": "https://github.com/KelvinRod9331/uchat#readme"
+}
