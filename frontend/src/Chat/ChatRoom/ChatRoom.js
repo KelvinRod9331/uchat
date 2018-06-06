@@ -20,8 +20,9 @@ import ImagesAPI from "../../Images/ImagesAPI";
 import dateFormat from "dateformat";
 import { animateScroll } from "react-scroll";
 
-var APIKey = require("../config");
-var googleTranslate = require("google-translate")(APIKey.keys.googleTranslate);
+require('dotenv').config()
+const { REACT_APP_GOOGLE_API } = process.env
+var googleTranslate = require("google-translate")(REACT_APP_GOOGLE_API);
 
 const socket = socketIOClient("http://localhost:3100");
 

@@ -1,5 +1,6 @@
+require('dotenv').load()
 var pgp = require("pg-promise")({});
-var connectionString = "postgres://localhost/uchat";
+var connectionString = process.env.DATABASE_URL;
 var db = pgp(connectionString);
 
 module.exports = db;
