@@ -38,8 +38,6 @@ export default class Chats extends Component {
         </div>
         <div className="threads-container">
           {usersThreads.map(thread => {
-
-            console.log(thread)
             let recentObj = recentMsg.find(msg => {
               if (msg.thread_id === thread.id) {
                 return msg;
